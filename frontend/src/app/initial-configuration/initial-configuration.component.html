@@ -1,0 +1,15 @@
+<div class="container" fxLayout="column" fxLayoutGap="20px" style="width: 300px; margin: 20px">
+  <mat-label>Parametry startowe symulacji</mat-label>
+
+  <div [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Liczba węzłów górniczych</mat-label>
+      <input formControlName="nodesType1FC" matInput>
+    </mat-form-field>
+  </div>
+
+  <button mat-stroked-button (click)="onClick()">
+    <mat-icon>done</mat-icon>
+    <span>Przejdź do symulacji z wartością {{nodesType1FC.value}}</span>
+  </button>
+</div>
