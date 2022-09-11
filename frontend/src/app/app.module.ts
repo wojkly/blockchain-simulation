@@ -17,12 +17,20 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatCardModule} from "@angular/material/card";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { NetworkComponent } from './simulation/network/network.component';
+import { ButtonsComponent } from './simulation/buttons/buttons.component';
+import { MinersComponent } from './simulation/miners/miners.component';
+import { ParametersComponent } from './simulation/parameters/parameters.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InitialConfigurationComponent,
-    SimulationComponent
+    SimulationComponent,
+    NetworkComponent,
+    ButtonsComponent,
+    MinersComponent,
+    ParametersComponent
   ],
   imports: [
     BrowserModule,

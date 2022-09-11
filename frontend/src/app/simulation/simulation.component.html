@@ -1,1 +1,11 @@
 <p>simulation works with nodes count: {{nodesCount}}!</p>
+<app-buttons></app-buttons>
+<div class="container">
+  <nav mat-tab-nav-bar>
+    <a #rla="routerLinkActive" *ngFor="let tab of tabs" [active]="rla.isActive" [routerLink]="tab.path" fxFlex
+       mat-tab-link routerLinkActive>
+      {{tab.name}}
+    </a>
+  </nav>
+</div>
+<router-outlet></router-outlet>
