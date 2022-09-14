@@ -21,6 +21,9 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "@types/cytoscape": "^3.19.8",
+    "cytoscape": "^3.23.0",
+    "cytoscape-angular": "^0.8.12",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
