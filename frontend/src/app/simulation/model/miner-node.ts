@@ -1,4 +1,4 @@
-export class Miner {
+export class MinerNode {
 
   public mined = 0;
 
