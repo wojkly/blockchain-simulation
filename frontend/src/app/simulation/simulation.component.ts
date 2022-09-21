@@ -4,6 +4,7 @@ import {tap} from "rxjs";
 import {MINERS_PATH, NETWORK_PATH, PARAMETERS_PATH} from "../app-routing-paths";
 import {ParametersService} from "../services/parameters.service";
 import {Tab} from "./tab";
+import {SimulationService} from "../services/simulation.service";
 
 @Component({
   selector: 'app-simulation',
@@ -20,20 +21,12 @@ export class SimulationComponent implements OnInit {
   ];
 
   constructor(private activatedRoute: ActivatedRoute,
-              private parametersService: ParametersService) { }
+              private parametersService: ParametersService,
+              private simulationService: SimulationService) { }
 
   ngOnInit(): void {
-    //todo emit some observable to initialize graph
-    //todo pass params to parameter service
-    this.activatedRoute.paramMap.pipe(
-      tap(m => {
-        let paramValue = m.get("nodesCount");
-
-        if (paramValue != null) {
-          this.nodesCount = +paramValue;
-        }
-      })
-    ).subscribe();
+    this.nodesCount = this.parametersService.getMinerNodes();
+    this.simulationService.initializeSimulation();
   }
 
 }

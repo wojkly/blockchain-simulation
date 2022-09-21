@@ -4,6 +4,8 @@ import {SIMULATION_PATH} from "../app-routing-paths";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {config} from "rxjs";
+import {ParametersService} from "../services/parameters.service";
+import {SimulationService} from "../services/simulation.service";
 
 @Component({
   selector: 'app-initial-configuration',
@@ -20,7 +22,9 @@ export class InitialConfigurationComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private formBuilder: FormBuilder,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private parametersService: ParametersService,
+              private simulationService: SimulationService) {
   }
 
   ngOnInit(): void {
@@ -31,7 +35,11 @@ export class InitialConfigurationComponent implements OnInit {
       this.snackBar.open("Błędnie wypełniony formularz!",'',{ duration: 500 });
     } else {
       this.snackBar.open("Przechodzenie do symulacji",'',{ duration: 500 });
-      this.router.navigate([SIMULATION_PATH, this.nodesType1FC.value], {relativeTo: this.activatedRoute.parent});
+      let vStr = this.nodesType1FC.value;
+      if (vStr) {
+        this.parametersService.setMinerNodes(+vStr)
+        this.router.navigate([SIMULATION_PATH], {relativeTo: this.activatedRoute.parent});
+      }
     }
 
   }

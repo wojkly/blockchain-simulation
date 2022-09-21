@@ -23,7 +23,7 @@ const routes: Routes = [
     component: InitialConfigurationComponent
   },
   {
-    path: SIMULATION_PATH + "/:nodesCount",
+    path: SIMULATION_PATH,
     component: SimulationComponent,
     children: [
       {
