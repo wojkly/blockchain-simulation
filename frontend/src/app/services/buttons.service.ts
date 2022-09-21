@@ -21,17 +21,15 @@ export class ButtonsService {
     this.interval = interval(ButtonsService.DEFAULT_INTERVAL / speed)
       .pipe(
         tap(() => {
-          // console.log('emit step')
           this.stepService.emitStep();
         })
       ).subscribe();
 
     //emit block mined
     this.interval2?.unsubscribe();
-    this.interval2 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 1)
+    this.interval2 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 5)
       .pipe(
         tap(() => {
-          // console.log('emit mined')
           this.eventService.emitBlockMined();
         })
       ).subscribe();

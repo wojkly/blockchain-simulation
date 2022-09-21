@@ -2,12 +2,13 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {SimulationEvent} from "../simulation/model/simulation-event";
 import {SimulationEventType} from "../simulation/model/simulation-event-type";
+import {SimulationEventData} from "../simulation/model/simulation-event-data";
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
-  private event = new BehaviorSubject<SimulationEvent>(new SimulationEvent(SimulationEventType.INITIALIZATION));
+  private event = new BehaviorSubject<SimulationEvent>(new SimulationEvent(SimulationEventType.INITIALIZATION, new SimulationEventData()));
 
   constructor() { }
 
@@ -22,7 +23,9 @@ export class EventService {
 
 
   public emitBlockMined() {
-    let  event = new SimulationEvent(SimulationEventType.BLOCK_MINED, 1);
+    let data = new SimulationEventData();
+    data.minerId = 1;
+    let  event = new SimulationEvent(SimulationEventType.BLOCK_MINED, data);
     this.emitSimulationEvent(event);
   }
 }

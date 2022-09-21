@@ -38,7 +38,6 @@ export class InitialConfigurationComponent implements OnInit {
       let vStr = this.nodesType1FC.value;
       if (vStr) {
         this.parametersService.setMinerNodes(+vStr)
-        this.simulationService.initializeNetwork();
         this.router.navigate([SIMULATION_PATH], {relativeTo: this.activatedRoute.parent});
       }
     }

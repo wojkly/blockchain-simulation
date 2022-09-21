@@ -6,13 +6,8 @@ type Edge = {
 }
 
 export class Graph {
-  // minerNodes: MinerNode[];
-  // edgesSet: Set<Edge>
-
-  // constructor(private nodes: MinerNode[], private edges: Set<Edge>) {
-  //   this.minerNodes = nodes;
-  //   this.edgesSet = edges;
-  // }
+  constructor(public nodes: Map<number, MinerNode>) {
+  }
 
   // public static generateGraph(minerNodes: number): Graph {
   //   let nodes = [];
