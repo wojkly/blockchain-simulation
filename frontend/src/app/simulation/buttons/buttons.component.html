@@ -1,0 +1,16 @@
+<div class="buttons" fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="10px">
+  <mat-slider fxFlex="200px"
+    [disabled]="disabled"
+    [max]="10"
+    [min]="1"
+    [step]="1"
+    [thumbLabel]="true"
+    [(ngModel)]="value">
+  </mat-slider>
+  <button mat-fab color="primary" (click)="startSimulation()">
+    Start
+  </button>
+  <button mat-fab color="accent" (click)="stopSimulation()">
+    Stop
+  </button>
+</div>
