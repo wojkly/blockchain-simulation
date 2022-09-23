@@ -48,8 +48,9 @@ export class SimulationService {
 
           console.log('emiting graph');
           this.visualisationService.emitGraph(this.graph);
-      }}
-        )
+        }
+        this.stepService.unblockSemaphore();
+      })
     ).subscribe();
   }
 

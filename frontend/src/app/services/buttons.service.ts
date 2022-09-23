@@ -27,7 +27,7 @@ export class ButtonsService {
 
     //emit block mined
     this.interval2?.unsubscribe();
-    this.interval2 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 5)
+    this.interval2 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 20)
       .pipe(
         tap(() => {
           this.eventService.emitBlockMined();

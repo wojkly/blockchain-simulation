@@ -8,6 +8,8 @@ import {Graph} from "../simulation/model/graph";
 export class StepService {
   private step = new BehaviorSubject<string>('');
 
+  private stepSemaphore = false;
+
   constructor() { }
 
   public getStep(): Observable<string> {
@@ -15,7 +17,16 @@ export class StepService {
   }
 
   public emitStep() {
-    // console.log('step.next')
-    this.step.next('');
+    if (this.stepSemaphore) {
+      this.blockSemaphore();
+      this.step.next('');
+    }
+  }
+
+  public unblockSemaphore() {
+    this.stepSemaphore = true;
+  }
+  public blockSemaphore() {
+    this.stepSemaphore = false;
   }
 }
