@@ -28,8 +28,9 @@ export class NetworkComponent implements OnInit {
             'width': '100px',
             'height': '100px',
             'background-color': '#43fsdf',
-            'label':  'data(id)',
-            // 'content': 'data(value.mined)'
+            'label': function(node: any) {
+              return `ID: ${node.data("id")}, Mined: ${node.data("value.mined")}, Len: ${node.data("value.blockChainLength")}`
+            },
           }
         },
         {
@@ -47,10 +48,11 @@ export class NetworkComponent implements OnInit {
     this.visualisationService.getGraph()
       .pipe(
         tap((g: Graph) => {
+          this.cy.remove('nodes');
           this.createNodes(g);
           this.createEdges(g);
           this.cy.layout({
-            name: 'circle'
+            name: 'circle',
           }).run()
           this.cy.nodes().on('click', function(e){
             var node = e.target;
@@ -72,7 +74,9 @@ export class NetworkComponent implements OnInit {
   createEdges(graph: Graph) {
     graph.nodes.forEach((item) => {
       item.neighbours.forEach((neighbour) => {
-        this.cy.add({data: {id: 'edge_' + item.id + '_' + neighbour, source: 'node_' + item.id, target: 'node_' + neighbour}})
+        if(!(this.cy.getElementById(`edge_${neighbour}_${item.id}`).length > 0)){
+          this.cy.add({data: {id: 'edge_' + item.id + '_' + neighbour, source: 'node_' + item.id, target: 'node_' + neighbour}})
+        }
       })
     })
   }
