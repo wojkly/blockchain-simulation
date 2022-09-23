@@ -27,7 +27,17 @@ export class NetworkComponent implements OnInit {
           style: {
             'width': '100px',
             'height': '100px',
-            'background-color': '#43fsdf',
+            'background-color': function(node: any) {
+              let mod = node.data("value.blockChainLength") % 3;
+              switch (mod) {
+                case 0:
+                  return `red`;
+                case 1:
+                  return `green`;
+                default:
+                  return `blue`;
+              }
+            },
             'label': function(node: any) {
               return `ID: ${node.data("id")}, Mined: ${node.data("value.mined")}, Len: ${node.data("value.blockChainLength")}`
             },
