@@ -70,10 +70,10 @@ export class SimulationService {
     nodes.set(5, node5);
     nodes.set(6, node6);
 
-    this.graph = new Graph(nodes);
+    // this.graph = new Graph(nodes);
 
     //todo
-    // this.graph = Graph.generateGraph(this.parametersService.getMinerNodes());
+    this.graph = Graph.generateGraph(this.parametersService.getMinerNodes());
   }
 
   private handleBlockMined(eventData: SimulationEventData): void {

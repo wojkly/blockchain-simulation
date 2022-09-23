@@ -6,4 +6,12 @@ export class MinerNode {
               public neighbours: number[] = []) {
   }
 
+  public addNeighbour(minerId: number): void {
+    if (!this.isConnected(minerId)) this.neighbours.push(minerId);
+  }
+
+  public isConnected(minerId: number): boolean {
+    return this.neighbours.includes(minerId);
+  }
+
 }
