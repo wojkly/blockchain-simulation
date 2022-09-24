@@ -1,6 +1,4 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
-import {MatSliderChange} from "@angular/material/slider";
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -21,17 +19,28 @@ export class ParametersService {
     this.minerNodes = value;
   }
 
-  setPrice(value: any) {
+  public setPrice(value: any): void {
     this.price = value;
   }
 
-  setFrequency(value: any) {
+  public getPrice(): number {
+    return this.price;
+  }
+
+  public setFrequency(value: any): void {
     this.frequency = value;
   }
 
-  setAward(value: any) {
+  public getFrequency(): number {
+    return this.frequency;
+  }
+
+  public setAward(value: any): void {
     this.award = value;
   }
 
+  public getAward(): number {
+    return this.award;
+  }
 
 }
