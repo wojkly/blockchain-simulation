@@ -33,6 +33,8 @@ export class ButtonsService {
           this.eventService.emitBlockMined();
         })
       ).subscribe();
+
+    //todo emit update miners account status
   }
 
   public stopSimulation() {

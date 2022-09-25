@@ -10,6 +10,7 @@ import {SimulationEvent} from "../simulation/model/simulation-event";
 import {SimulationEventType} from "../simulation/model/simulation-event-type";
 import {MinerNode} from "../simulation/model/miner-node";
 import {SimulationEventData} from "../simulation/model/simulation-event-data";
+import {randomIntFromInterval} from "../utils/numbers";
 
 @Injectable({
   providedIn: 'root'
@@ -55,39 +56,41 @@ export class SimulationService {
   }
 
   private handleInitialization(): void {
-    let node1 = new MinerNode(1, [2, 5, 6]);
-    let node2 = new MinerNode(2, [1, 3, 5, 4]);
-    let node3 = new MinerNode(3, [2, 4]);
-    let node4 = new MinerNode(4, [2, 3, 5]);
-    let node5 = new MinerNode(5, [1, 2, 4]);
-    let node6 = new MinerNode(6, [1, 5]);
-
-    let nodes = new Map<number, MinerNode>;
-    nodes.set(1, node1);
-    nodes.set(2, node2);
-    nodes.set(3, node3);
-    nodes.set(4, node4);
-    nodes.set(5, node5);
-    nodes.set(6, node6);
+    // let node1 = new MinerNode(1, [2, 5, 6]);
+    // let node2 = new MinerNode(2, [1, 3, 5, 4]);
+    // let node3 = new MinerNode(3, [2, 4]);
+    // let node4 = new MinerNode(4, [2, 3, 5]);
+    // let node5 = new MinerNode(5, [1, 2, 4]);
+    // let node6 = new MinerNode(6, [1, 5]);
+    //
+    // let nodes = new Map<number, MinerNode>;
+    // nodes.set(1, node1);
+    // nodes.set(2, node2);
+    // nodes.set(3, node3);
+    // nodes.set(4, node4);
+    // nodes.set(5, node5);
+    // nodes.set(6, node6);
 
     // this.graph = new Graph(nodes);
 
-    //todo
     this.graph = Graph.generateGraph(this.parametersService.getMinerNodes());
   }
 
   private handleBlockMined(eventData: SimulationEventData): void {
-    let minerNode = this.graph?.nodes.get(eventData.minerId)
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAA')
-    if (!minerNode) return;
-    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
+    let allMiners = Array.from(this.graph.nodes.keys());
+
+    let randArrayIndex = randomIntFromInterval(0, allMiners.length - 1);
+    let minerId = allMiners[randArrayIndex];
+    let minerNode = this.graph.nodes.get(minerId);
+
+    if (minerNode === undefined) return;
 
     minerNode.mined++;
     minerNode.blockChainLength++;
 
     minerNode.neighbours.forEach((neighbour) => {
       let responseEventData = new SimulationEventData();
-      responseEventData.senderId = eventData.minerId;
+      responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
       console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC: ' + responseEventData.senderId + '  ' + responseEventData.receiverId)
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
