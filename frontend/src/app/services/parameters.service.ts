@@ -5,9 +5,9 @@ import {Injectable} from '@angular/core';
 })
 export class ParametersService {
   minerNodes = 10;
-  price: any;
-  frequency: any;
-  award: any;
+  price: number = 0;
+  frequency: number = 0;
+  award: number = 0;
 
   constructor() { }
 
@@ -19,11 +19,11 @@ export class ParametersService {
     this.minerNodes = value;
   }
 
-  public setPrice(value: any): void {
+  public setElectricityPrice(value: any): void {
     this.price = value;
   }
 
-  public getPrice(): number {
+  public getElectricityPrice(): number {
     return this.price;
   }
 
@@ -35,11 +35,11 @@ export class ParametersService {
     return this.frequency;
   }
 
-  public setAward(value: any): void {
+  public setReward(value: any): void {
     this.award = value;
   }
 
-  public getAward(): number {
+  public getReward(): number {
     return this.award;
   }
 

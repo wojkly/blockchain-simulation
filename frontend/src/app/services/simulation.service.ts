@@ -98,7 +98,7 @@ export class SimulationService {
 
     minerNode.mined++;
     minerNode.blockChainLength++;
-    minerNode.receiveReward(this.DEFAULT_REWARD_AMOUNT);
+    minerNode.receiveReward(this.parametersService.getReward());
 
     minerNode.neighbours.forEach((neighbour) => {
       let responseEventData = new SimulationEventData();
