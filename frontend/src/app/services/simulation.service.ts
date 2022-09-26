@@ -10,6 +10,7 @@ import {SimulationEvent} from "../simulation/model/simulation-event";
 import {SimulationEventType} from "../simulation/model/simulation-event-type";
 import {MinerNode} from "../simulation/model/miner-node";
 import {SimulationEventData} from "../simulation/model/simulation-event-data";
+import {PaymentService} from "./payment.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,14 @@ import {SimulationEventData} from "../simulation/model/simulation-event-data";
 export class SimulationService {
   private graph = new Graph(new Map<number, MinerNode>());
 
+  private readonly DEFAULT_REWARD_AMOUNT: number = 10;
+
   constructor(private parametersService: ParametersService,
               private buttonsService: ButtonsService,
               private visualisationService: VisualisationService,
               private stepService: StepService,
               private eventService: EventService,
+              private paymentService: PaymentService,
   ) { }
 
 
@@ -52,6 +56,15 @@ export class SimulationService {
         this.stepService.unblockSemaphore();
       })
     ).subscribe();
+
+    this.paymentService.getPayment()
+      .pipe(
+        tap(paymentAmount => {
+          this.graph.nodes.forEach(miner => {
+            miner.settlePayment(paymentAmount);
+          })
+        })
+      ).subscribe();
   }
 
   private handleInitialization(): void {
@@ -84,6 +97,7 @@ export class SimulationService {
 
     minerNode.mined++;
     minerNode.blockChainLength++;
+    minerNode.receiveReward(this.DEFAULT_REWARD_AMOUNT);
 
     minerNode.neighbours.forEach((neighbour) => {
       let responseEventData = new SimulationEventData();
