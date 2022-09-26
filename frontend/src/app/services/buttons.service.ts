@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {interval, Observable, Subscription, tap} from "rxjs";
 import {StepService} from "./step.service";
 import {EventService} from "./event.service";
+import {PaymentService} from "./payment.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,11 @@ export class ButtonsService {
 
   interval: Subscription | undefined;
   interval2: Subscription | undefined;
+  interval3: Subscription | undefined;
 
   constructor(private eventService: EventService,
-              private stepService: StepService) { }
+              private stepService: StepService,
+              private paymentService: PaymentService) { }
 
   public startSimulation(speed: number) {
     //emit step
@@ -33,10 +36,20 @@ export class ButtonsService {
           this.eventService.emitBlockMined();
         })
       ).subscribe();
+
+    //emit money removal
+    this.interval3?.unsubscribe();
+    this.interval3 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 10)
+      .pipe(
+        tap(() => {
+          this.paymentService.emitPayment();
+        })
+      ).subscribe();
   }
 
   public stopSimulation() {
     this.interval?.unsubscribe();
     this.interval2?.unsubscribe();
+    this.interval3?.unsubscribe();
   }
 }
