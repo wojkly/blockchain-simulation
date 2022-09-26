@@ -1,29 +1,32 @@
 <div class="container">
   <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
     <mat-card>
-      <mat-card-title>Cena prądu</mat-card-title>
+      <mat-card-title>Ustal Cenę prądu</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <mat-card-subtitle>Ustal aktualną cenę prądu:</mat-card-subtitle>
-            <label>{{price}}</label>
-          <mat-slider (input)="onPriceChange($event)" thumbLabel ></mat-slider>
+            <mat-card-subtitle>Aktualna cena prądu:
+            <mat-label>{{ electricitySlider.value}}</mat-label>
+            </mat-card-subtitle>
+          <mat-slider #electricitySlider [value]="electricityPrice" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
       </div>
     </mat-card>
 
     <mat-card>
-      <mat-card-title>Dodawanie nowego górnika</mat-card-title>
+      <mat-card-title>Częstotliwość Dodawanie nowego górnika</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <mat-card-subtitle>Ustal "częstotliwość" dodawania nowego górnika do sieci:</mat-card-subtitle>
-            <label>{{frequency}}</label>
-          <mat-slider (input)="onFrequencyChange($event)" thumbLabel></mat-slider>
+            <mat-card-subtitle>Aktualna częstotliwość dodawania nowego górnika do sieci:
+              <mat-label>{{ frequencySlider.value}}</mat-label>
+            </mat-card-subtitle>
+          <mat-slider #frequencySlider [value]="frequency" (change)="onFrequencyChange($event)" thumbLabel></mat-slider>
       </div>
     </mat-card>
 
     <mat-card>
-      <mat-card-title>Nagroda</mat-card-title>
+      <mat-card-title>Ustal wartość nagrody</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <mat-card-subtitle>Ustal aktualną nagrodę za wykopanie bloku:</mat-card-subtitle>
-            <label>{{award}}</label>
-          <mat-slider (input)="onAwardChange($event)" thumbLabel></mat-slider>
+            <mat-card-subtitle>Aktualna nagroda za wykopanie bloku:
+              <mat-label>{{ rewardSlider.value}}</mat-label>
+            </mat-card-subtitle>
+          <mat-slider #rewardSlider [value]="reward" (change)="onRewardChange($event)" thumbLabel></mat-slider>
       </div>
     </mat-card>
   </div>

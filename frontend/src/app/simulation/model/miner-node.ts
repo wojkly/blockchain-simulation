@@ -24,6 +24,9 @@ export class MinerNode {
   }
 
   public settlePayment(paymentAmount: number): boolean {
+    console.log("PAYMENT " + paymentAmount)
+    console.log("MONEY " + this.money)
+    console.log(this.money - paymentAmount)
     if (this.money < 1) {
       // kill the miner
       //console.log(`kill miner ${this.id}`);

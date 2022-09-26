@@ -9,27 +9,38 @@ import {ParametersService} from "../../services/parameters.service";
 })
 export class ParametersComponent implements OnInit {
 
-  price: any;
+  electricityPrice: any;
   frequency: any;
-  award: any;
+  reward: any;
 
   constructor(
-    private readonly parametersService: ParametersService) {
+    public parametersService: ParametersService) {
   }
 
   ngOnInit(): void {
+    this.setSliders();
   }
 
-  onPriceChange(event: MatSliderChange) {
-    this.parametersService.setPrice(event.value);
+  setSliders(){
+    this.electricityPrice = this.parametersService.getElectricityPrice();
+    this.frequency = this.parametersService.getFrequency();
+    this.reward = this.parametersService.getReward();
+  }
+
+  onElectricityPriceChange(event: MatSliderChange) {
+    console.log("EVENT " + event.value)
+    this.parametersService.setElectricityPrice(event.value);
+    this.electricityPrice = event.value;
   }
 
   onFrequencyChange(event: MatSliderChange) {
     this.parametersService.setFrequency(event.value);
+    this.frequency = event.value;
   }
 
-  onAwardChange(event: MatSliderChange) {
-    this.parametersService.setAward(event.value);
+  onRewardChange(event: MatSliderChange) {
+    this.parametersService.setReward(event.value);
+    this.reward = event.value;
   }
 
 }
