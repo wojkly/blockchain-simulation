@@ -61,7 +61,12 @@ export class SimulationService {
       .pipe(
         tap(paymentAmount => {
           this.graph.nodes.forEach(miner => {
-            miner.settlePayment(paymentAmount);
+            if (!miner.settlePayment(paymentAmount)) {
+              miner.neighbours.forEach(neighbour => {
+                this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
+              })
+              this.graph.nodes.delete(miner.id);
+            }
           })
         })
       ).subscribe();
