@@ -5,9 +5,9 @@ import {Injectable} from '@angular/core';
 })
 export class ParametersService {
   minerNodes = 10;
-  price: any;
-  frequency: any;
-  award: any;
+  price: number = 0;
+  frequency: number = 0;
+  award: number = 0;
 
   constructor() { }
 
