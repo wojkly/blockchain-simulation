@@ -64,10 +64,17 @@ export class SimulationService {
           this.graph.nodes.forEach(miner => {
             if (!miner.settlePayment(paymentAmount)) {
               miner.neighbours.forEach(neighbour => {
-                const arr = this.graph.nodes.get(neighbour)?.neighbours;
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
+                if(this.graph.nodes.get(neighbour)?.neighbours.length === 0) {
+                  let randomKey = this.getRandomNodeKey();
+                  console.log(`Random key generated ${randomKey}`);
+                  while(randomKey === neighbour || !this.graph.nodes.get(randomKey)?.isAlive()) {
+                    randomKey = this.getRandomNodeKey();
+                  }
+                  this.graph.nodes.get(neighbour)?.neighbours.push(randomKey);
+                }
                 //console.log(this.graph.nodes.get(neighbour)?.neighbours !== arr)
-                miner.detachMiner(neighbour);
+                // miner.detachMiner(neighbour);
               })
               this.graph.nodes.delete(miner.id);
             }
@@ -124,6 +131,11 @@ export class SimulationService {
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
     }
+  }
+
+  private getRandomNodeKey() {
+    let keys = Array.from(this.graph.nodes.keys());
+    return keys[Math.floor(Math.random() * keys.length)];
   }
 
 

@@ -3,6 +3,7 @@ export class MinerNode {
   public mined: number = 0;
 
   private money: number = 10;
+  private alive: boolean = true;
 
 
   constructor(public readonly id: number,
@@ -30,6 +31,7 @@ export class MinerNode {
     if (this.money < 1) {
       // kill the miner
       //console.log(`kill miner ${this.id}`);
+      this.alive = false;
       return false;
     }
     this.money -= paymentAmount;
@@ -40,6 +42,10 @@ export class MinerNode {
   public receiveReward(reward: number): void {
     this.money += reward;
     //console.log(`miner ${this.id} received ${reward}$`);
+  }
+
+  public isAlive() {
+    return this.alive;
   }
 
 }
