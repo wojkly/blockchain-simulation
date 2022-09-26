@@ -1,8 +1,10 @@
 export class MinerNode {
-  public blockChainLength = 1;
-  public mined = 0;
+  public blockChainLength: number = 1;
+  public mined: number = 0;
 
-  private money = 50;
+  private money: number = 50;
+  private isAlive: boolean = true;
+
 
   constructor(public readonly id: number,
               public neighbours: number[] = []) {
@@ -10,6 +12,12 @@ export class MinerNode {
 
   public addNeighbour(minerId: number): void {
     if (!this.isConnected(minerId)) this.neighbours.push(minerId);
+  }
+
+  public detachMiner(minerId: number): void {
+    this.neighbours.filter(el => {
+      return el !== minerId;
+    })
   }
 
   public isConnected(minerId: number): boolean {
@@ -20,6 +28,7 @@ export class MinerNode {
     if (this.money < 1) {
       // kill the miner
       console.log(`kill miner ${this.id}`);
+      this.isAlive = false;
       return false;
     }
     this.money -= paymentAmount;
