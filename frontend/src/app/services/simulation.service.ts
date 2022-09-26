@@ -35,10 +35,10 @@ export class SimulationService {
       this.stepService.getStep(),
       this.eventService.getSimulationEvent()])
     .pipe(
-      tap(() => console.log('zipped')),
+      //tap(() => console.log('zipped')),
       tap(([a, b]) => {
         if (b instanceof SimulationEvent){
-          console.log('handling event ' + b.eventType);
+          //console.log('handling event ' + b.eventType);
           switch (b.eventType) {
             case SimulationEventType.INITIALIZATION:
               this.handleInitialization();
@@ -51,7 +51,7 @@ export class SimulationService {
               break;
           }
 
-          console.log('emiting graph');
+          //console.log('emiting graph');
           this.visualisationService.emitGraph(this.graph);
         }
         this.stepService.unblockSemaphore();
@@ -64,7 +64,10 @@ export class SimulationService {
           this.graph.nodes.forEach(miner => {
             if (!miner.settlePayment(paymentAmount)) {
               miner.neighbours.forEach(neighbour => {
+                const arr = this.graph.nodes.get(neighbour)?.neighbours;
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
+                //console.log(this.graph.nodes.get(neighbour)?.neighbours !== arr)
+                miner.detachMiner(neighbour);
               })
               this.graph.nodes.delete(miner.id);
             }
@@ -94,26 +97,26 @@ export class SimulationService {
       let responseEventData = new SimulationEventData();
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
-      console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC: ' + responseEventData.senderId + '  ' + responseEventData.receiverId)
+      //console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC: ' + responseEventData.senderId + '  ' + responseEventData.receiverId)
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
-    console.log('DDDDDDDDDDDDDDDDDDDDDDDDD1 ' + JSON.stringify(eventData))
+    //console.log('DDDDDDDDDDDDDDDDDDDDDDDDD1 ' + JSON.stringify(eventData))
     let senderNode = this.graph?.nodes.get(eventData.senderId)
     let receiverNode = this.graph?.nodes.get(eventData.receiverId)
-    console.log('DDDDDDDDDDDDDDDDDDDDDDDDD ' + senderNode + '    ' + receiverNode)
+    //console.log('DDDDDDDDDDDDDDDDDDDDDDDDD ' + senderNode + '    ' + receiverNode)
     if (!senderNode) return;
     if (!receiverNode) return;
-    console.log('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
+    //console.log('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
     if (receiverNode.blockChainLength < senderNode.blockChainLength) {
       receiverNode.blockChainLength = senderNode.blockChainLength;
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
-        console.log('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+        //console.log('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
