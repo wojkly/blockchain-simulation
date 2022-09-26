@@ -10,6 +10,7 @@ import {SimulationEvent} from "../simulation/model/simulation-event";
 import {SimulationEventType} from "../simulation/model/simulation-event-type";
 import {MinerNode} from "../simulation/model/miner-node";
 import {SimulationEventData} from "../simulation/model/simulation-event-data";
+import {PaymentService} from "./payment.service";
 import {randomIntFromInterval} from "../utils/numbers";
 
 @Injectable({
@@ -18,11 +19,14 @@ import {randomIntFromInterval} from "../utils/numbers";
 export class SimulationService {
   private graph = new Graph(new Map<number, MinerNode>());
 
+  private readonly DEFAULT_REWARD_AMOUNT: number = 10;
+
   constructor(private parametersService: ParametersService,
               private buttonsService: ButtonsService,
               private visualisationService: VisualisationService,
               private stepService: StepService,
               private eventService: EventService,
+              private paymentService: PaymentService,
   ) { }
 
 
@@ -53,26 +57,18 @@ export class SimulationService {
         this.stepService.unblockSemaphore();
       })
     ).subscribe();
+
+    this.paymentService.getPayment()
+      .pipe(
+        tap(paymentAmount => {
+          this.graph.nodes.forEach(miner => {
+            miner.settlePayment(paymentAmount);
+          })
+        })
+      ).subscribe();
   }
 
   private handleInitialization(): void {
-    // let node1 = new MinerNode(1, [2, 5, 6]);
-    // let node2 = new MinerNode(2, [1, 3, 5, 4]);
-    // let node3 = new MinerNode(3, [2, 4]);
-    // let node4 = new MinerNode(4, [2, 3, 5]);
-    // let node5 = new MinerNode(5, [1, 2, 4]);
-    // let node6 = new MinerNode(6, [1, 5]);
-    //
-    // let nodes = new Map<number, MinerNode>;
-    // nodes.set(1, node1);
-    // nodes.set(2, node2);
-    // nodes.set(3, node3);
-    // nodes.set(4, node4);
-    // nodes.set(5, node5);
-    // nodes.set(6, node6);
-
-    // this.graph = new Graph(nodes);
-
     this.graph = Graph.generateGraph(this.parametersService.getMinerNodes());
   }
 
@@ -87,6 +83,7 @@ export class SimulationService {
 
     minerNode.mined++;
     minerNode.blockChainLength++;
+    minerNode.receiveReward(this.DEFAULT_REWARD_AMOUNT);
 
     minerNode.neighbours.forEach((neighbour) => {
       let responseEventData = new SimulationEventData();

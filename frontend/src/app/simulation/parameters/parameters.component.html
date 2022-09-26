@@ -1,1 +1,32 @@
-<p>parameters works!</p>
+<div class="container">
+  <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+    <mat-card>
+      <mat-card-title>Cena prądu</mat-card-title>
+      <div fxLayout="column" fxLayoutAlign="space-around start" >
+            <mat-card-subtitle>Ustal aktualną cenę prądu:</mat-card-subtitle>
+            <label>{{price}}</label>
+          <mat-slider (input)="onPriceChange($event)" thumbLabel ></mat-slider>
+      </div>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Dodawanie nowego górnika</mat-card-title>
+      <div fxLayout="column" fxLayoutAlign="space-around start" >
+            <mat-card-subtitle>Ustal "częstotliwość" dodawania nowego górnika do sieci:</mat-card-subtitle>
+            <label>{{frequency}}</label>
+          <mat-slider (input)="onFrequencyChange($event)" thumbLabel></mat-slider>
+      </div>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Nagroda</mat-card-title>
+      <div fxLayout="column" fxLayoutAlign="space-around start" >
+            <mat-card-subtitle>Ustal aktualną nagrodę za wykopanie bloku:</mat-card-subtitle>
+            <label>{{award}}</label>
+          <mat-slider (input)="onAwardChange($event)" thumbLabel></mat-slider>
+      </div>
+    </mat-card>
+  </div>
+  <app-buttons></app-buttons>
+</div>
+

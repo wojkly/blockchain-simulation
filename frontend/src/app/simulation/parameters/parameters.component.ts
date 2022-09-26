@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MatSliderChange} from "@angular/material/slider";
+import {ParametersService} from "../../services/parameters.service";
 
 @Component({
   selector: 'app-parameters',
@@ -7,9 +9,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ParametersComponent implements OnInit {
 
-  constructor() { }
+  price: any;
+  frequency: any;
+  award: any;
+
+  constructor(
+    private readonly parametersService: ParametersService) {
+  }
 
   ngOnInit(): void {
+  }
+
+  onPriceChange(event: MatSliderChange) {
+    this.parametersService.setPrice(event.value);
+  }
+
+  onFrequencyChange(event: MatSliderChange) {
+    this.parametersService.setFrequency(event.value);
+  }
+
+  onAwardChange(event: MatSliderChange) {
+    this.parametersService.setAward(event.value);
   }
 
 }
