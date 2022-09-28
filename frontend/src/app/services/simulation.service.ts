@@ -137,5 +137,9 @@ export class SimulationService {
     }
   }
 
+  public getMiners(): IterableIterator<MinerNode> {
+    return this.graph.nodes.values();
+  }
+
 
 }
