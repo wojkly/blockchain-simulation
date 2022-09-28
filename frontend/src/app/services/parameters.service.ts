@@ -4,10 +4,10 @@ import {Injectable} from '@angular/core';
   providedIn: 'root'
 })
 export class ParametersService {
-  minerNodes = 10;
-  price: number = 0;
+  minerNodes: number = 10;
+  price: number = 1;
   frequency: number = 0;
-  award: number = 0;
+  reward: number = 7;
 
   constructor() { }
 
@@ -36,11 +36,11 @@ export class ParametersService {
   }
 
   public setReward(value: any): void {
-    this.award = value;
+    this.reward = value;
   }
 
   public getReward(): number {
-    return this.award;
+    return this.reward;
   }
 
 }

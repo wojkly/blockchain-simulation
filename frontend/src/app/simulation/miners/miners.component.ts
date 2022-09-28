@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {SimulationService} from "../../services/simulation.service";
+import {MinerNode} from "../model/miner-node";
+import {catchError, of, tap} from "rxjs";
+import {MinerService} from "../../services/miner.service";
 
 @Component({
   selector: 'app-miners',
@@ -7,9 +11,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MinersComponent implements OnInit {
 
-  constructor() { }
+  minerList: MinerNode[];
+  displayedColumns = ['id', 'money', 'mined', 'length']
 
-  ngOnInit(): void {
+  constructor(
+    private simulationService: SimulationService,
+    private minerService: MinerService
+  ) {
+    this.minerList = this.simulationService.getMiners();
   }
 
+  ngOnInit(): void {
+    this.minerService.get()
+      .pipe(
+        tap( () => {
+          this.minerList = this.simulationService.getMiners();
+          console.log(this.minerList);
+        }),
+        catchError(err => {
+          console.log(err.error.error);
+          return of({});
+        })
+      ).subscribe();
+  }
 }
