@@ -2,6 +2,31 @@
 
 <div class="mat-elevation-z8">
 
-  
+  <mat-table [dataSource]="minerList">
+
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+      <mat-cell *matCellDef="let miner">{{miner.id}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="money">
+      <mat-header-cell *matHeaderCellDef>Money</mat-header-cell>
+      <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="mined">
+      <mat-header-cell *matHeaderCellDef>Blocks mined</mat-header-cell>
+      <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="length">
+      <mat-header-cell *matHeaderCellDef>Blockchain length</mat-header-cell>
+      <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+  </mat-table>
 
 </div>

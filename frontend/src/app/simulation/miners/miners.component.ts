@@ -11,20 +11,21 @@ import {catchError, of, tap} from "rxjs";
 })
 export class MinersComponent implements OnInit {
 
-  minerList: IterableIterator<MinerNode>;
+  minerList: MinerNode[];
+  displayedColumns = ['id', 'money', 'mined', 'length']
 
   constructor(
     private simulationService: SimulationService,
     private minersService: MinersService
   ) {
-    this.minerList = this.simulationService.getMiners();
+    this.minerList = Array.from(this.simulationService.getMiners());
   }
 
   ngOnInit(): void {
     this.minersService.get()
       .pipe(
         tap( () => {
-          this.minerList = this.simulationService.getMiners();
+          this.minerList = Array.from(this.simulationService.getMiners());
           console.log(this.minerList);
         }),
         catchError(err => {

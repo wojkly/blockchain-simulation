@@ -2,7 +2,7 @@ export class MinerNode {
   public blockChainLength: number = 1;
   public mined: number = 0;
 
-  private money: number = 50;
+  private money: number = 20;
   private isAlive: boolean = true;
 
 
@@ -27,18 +27,18 @@ export class MinerNode {
   public settlePayment(paymentAmount: number): boolean {
     if (this.money < 1) {
       // kill the miner
-      console.log(`kill miner ${this.id}`);
+      //console.log(`kill miner ${this.id}`);
       this.isAlive = false;
       return false;
     }
     this.money -= paymentAmount;
-    console.log(`miner ${this.id} now has ${this.money}`);
+    //console.log(`miner ${this.id} now has ${this.money}`);
     return true;
   }
 
   public receiveReward(reward: number): void {
     this.money += reward;
-    console.log(`miner ${this.id} received ${reward}$`);
+    //console.log(`miner ${this.id} received ${reward}$`);
   }
 
 }

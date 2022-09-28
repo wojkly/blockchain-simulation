@@ -11,6 +11,7 @@ import {SimulationEventType} from "../simulation/model/simulation-event-type";
 import {MinerNode} from "../simulation/model/miner-node";
 import {SimulationEventData} from "../simulation/model/simulation-event-data";
 import {PaymentService} from "./payment.service";
+import {MinersService} from "./miners.service";
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class SimulationService {
               private stepService: StepService,
               private eventService: EventService,
               private paymentService: PaymentService,
+              private minersService: MinersService,
   ) { }
 
 
@@ -34,10 +36,10 @@ export class SimulationService {
       this.stepService.getStep(),
       this.eventService.getSimulationEvent()])
     .pipe(
-      tap(() => console.log('zipped')),
+      //tap(() => console.log('zipped')),
       tap(([a, b]) => {
         if (b instanceof SimulationEvent){
-          console.log('handling event ' + b.eventType);
+          //console.log('handling event ' + b.eventType);
           switch (b.eventType) {
             case SimulationEventType.INITIALIZATION:
               this.handleInitialization();
@@ -50,8 +52,9 @@ export class SimulationService {
               break;
           }
 
-          console.log('emiting graph');
+          //console.log('emiting graph');
           this.visualisationService.emitGraph(this.graph);
+          this.minersService.emit();
         }
         this.stepService.unblockSemaphore();
       })
@@ -66,6 +69,7 @@ export class SimulationService {
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
               })
               this.graph.nodes.delete(miner.id);
+              this.minersService.emit();
             }
           })
         })
@@ -96,9 +100,7 @@ export class SimulationService {
 
   private handleBlockMined(eventData: SimulationEventData): void {
     let minerNode = this.graph?.nodes.get(eventData.minerId)
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAA')
     if (!minerNode) return;
-    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
 
     minerNode.mined++;
     minerNode.blockChainLength++;
@@ -108,26 +110,21 @@ export class SimulationService {
       let responseEventData = new SimulationEventData();
       responseEventData.senderId = eventData.minerId;
       responseEventData.receiverId = neighbour;
-      console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC: ' + responseEventData.senderId + '  ' + responseEventData.receiverId)
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
-    console.log('DDDDDDDDDDDDDDDDDDDDDDDDD1 ' + JSON.stringify(eventData))
     let senderNode = this.graph?.nodes.get(eventData.senderId)
     let receiverNode = this.graph?.nodes.get(eventData.receiverId)
-    console.log('DDDDDDDDDDDDDDDDDDDDDDDDD ' + senderNode + '    ' + receiverNode)
     if (!senderNode) return;
     if (!receiverNode) return;
-    console.log('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
     if (receiverNode.blockChainLength < senderNode.blockChainLength) {
       receiverNode.blockChainLength = senderNode.blockChainLength;
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
-        console.log('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
