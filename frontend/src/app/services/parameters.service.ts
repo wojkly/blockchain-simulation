@@ -6,7 +6,7 @@ import {Injectable} from '@angular/core';
 export class ParametersService {
   fullNodes: number = 1;
   lightNodes: number = 1;
-  minerNodes: number = 10;
+  minerNodes: number = 1;
   listeningNodes: number = 1;
   price: number = 1;
   frequency: number = 0;
