@@ -10,7 +10,7 @@ export class ParametersService {
   listeningNodes: number = 1;
   price: number = 1;
   frequency: number = 0;
-  reward: number = 7;
+  reward: number = 5;
 
   constructor() { }
 
