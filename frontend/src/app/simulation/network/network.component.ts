@@ -66,7 +66,7 @@ export class NetworkComponent implements OnInit {
           }).run()
           this.cy.nodes().on('click', function(e){
             var node = e.target;
-            console.log(node.data());
+            // console.log(node.data());
           });
         })
       )

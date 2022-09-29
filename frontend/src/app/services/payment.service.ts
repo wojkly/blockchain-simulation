@@ -17,7 +17,6 @@ export class PaymentService {
   }
 
   public emitPayment() {
-    console.log("GOWNO" + this.parametersService.getElectricityPrice())
     this.payment$.next(this.parametersService.getElectricityPrice());
   }
 }

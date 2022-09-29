@@ -1,15 +1,33 @@
 <div class="container" fxLayout="column" fxLayoutGap="20px" style="width: 300px; margin: 20px">
-  <mat-label>Parametry startowe symulacji</mat-label>
+  <mat-label>Ustal ilości węzłów w symulacji</mat-label>
 
-  <div [formGroup]="form">
+  <div [formGroup]="form" fxLayout="column" fxLayoutGap="20px" style="width: 200px; margin: 20px">
+    <mat-form-field>
+      <mat-label>Liczba węzłów pełnych</mat-label>
+      <input type="number" formControlName="nodesType1FC" (change)="setNumberOfNodes()" matInput>
+      <mat-error *ngIf="nodesType1FC.errors">Liczba musi być większa niż 0</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Liczba węzłów lekkich</mat-label>
+      <input type="number" formControlName="nodesType2FC" (change)="setNumberOfNodes()" matInput>
+      <mat-error *ngIf="nodesType2FC.errors">Liczba musi być większa niż 0</mat-error>
+    </mat-form-field>
     <mat-form-field>
       <mat-label>Liczba węzłów górniczych</mat-label>
-      <input formControlName="nodesType1FC" matInput>
+      <input type="number" formControlName="nodesType3FC" (change)="setNumberOfNodes()" matInput>
+      <mat-error *ngIf="nodesType3FC.errors">Liczba musi być większa niż 0</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Liczba węzłów nasłuchujących</mat-label>
+      <input type="number" formControlName="nodesType4FC" (change)="setNumberOfNodes()" matInput>
+      <mat-error *ngIf="nodesType4FC.errors">Liczba musi być większa niż 0</mat-error>
     </mat-form-field>
   </div>
 
+  <p>ustawianie jakis poczatkowych parametrów typu majatek startowy gornikow?? itd???</p>
+
   <button mat-stroked-button (click)="onClick()">
     <mat-icon>done</mat-icon>
-    <span>Przejdź do symulacji z wartością {{nodesType1FC.value}}</span>
+    <span>Przejdź do symulacji z {{numberOfNodes}} węzłami</span>
   </button>
 </div>

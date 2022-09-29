@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {tap} from "rxjs";
 import {MINERS_PATH, NETWORK_PATH, PARAMETERS_PATH} from "../app-routing-paths";
 import {ParametersService} from "../services/parameters.service";
 import {Tab} from "./tab";
@@ -25,7 +24,7 @@ export class SimulationComponent implements OnInit {
               private simulationService: SimulationService) { }
 
   ngOnInit(): void {
-    this.nodesCount = this.parametersService.getMinerNodes();
+    this.nodesCount = this.parametersService.getAllNodes();
     this.simulationService.initializeSimulation();
   }
 
