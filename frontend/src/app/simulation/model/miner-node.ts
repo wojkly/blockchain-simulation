@@ -1,3 +1,5 @@
+import {Block} from "./block";
+
 export class MinerNode {
   public blockChainLength: number = 1;
   public mined: number = 0;
@@ -5,6 +7,7 @@ export class MinerNode {
   private money: number = 10;
   private alive: boolean = true;
 
+  private blockChain?: Block;
 
   constructor(public readonly id: number,
               public neighbours: number[] = []) {
@@ -40,6 +43,23 @@ export class MinerNode {
 
   public isAlive() {
     return this.alive;
+  }
+
+  public getBlockchain() {
+    return this.blockChain;
+  }
+
+  public attachBlock(id: number, minedBy: number): void {
+    if(this.blockChain) {
+      let temp = this.blockChain;
+      while(temp?.next !== null) {
+        temp = temp?.next;
+      }
+      temp.next = new Block(id, minedBy);
+      temp.next.previous = temp;
+      return;
+    }
+    this.blockChain = new Block(id, minedBy);
   }
 
 }
