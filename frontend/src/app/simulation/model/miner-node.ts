@@ -2,7 +2,7 @@ export class MinerNode {
   public blockChainLength: number = 1;
   public mined: number = 0;
 
-  public money: number = 10;
+  private money: number = 10;
   private alive: boolean = true;
 
 
