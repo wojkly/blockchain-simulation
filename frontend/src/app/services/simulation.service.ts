@@ -19,8 +19,6 @@ import {randomIntFromInterval} from "../utils/numbers";
 export class SimulationService {
   private graph = new Graph(new Map<number, MinerNode>());
 
-  private readonly DEFAULT_REWARD_AMOUNT: number = 10;
-
   constructor(private parametersService: ParametersService,
               private buttonsService: ButtonsService,
               private visualisationService: VisualisationService,

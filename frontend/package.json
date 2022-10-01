@@ -24,7 +24,9 @@
     "@types/cytoscape": "^3.19.8",
     "cytoscape": "^3.23.0",
     "cytoscape-angular": "^0.8.12",
+    "cytoscape-popper": "^2.0.0",
     "rxjs": "~7.5.0",
+    "tippy.js": "^6.3.7",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
@@ -32,6 +34,7 @@
     "@angular-devkit/build-angular": "^14.2.2",
     "@angular/cli": "~14.2.2",
     "@angular/compiler-cli": "^14.2.0",
+    "@types/cytoscape-popper": "^2.0.0",
     "@types/jasmine": "~4.0.0",
     "@types/node": "^18.7.16",
     "jasmine-core": "~4.3.0",

@@ -11,7 +11,7 @@ export class ParametersComponent implements OnInit {
 
   electricityPrice: any;
   frequency: any;
-  reward: any;
+  reward: number | null = 0;
 
   constructor(
     public parametersService: ParametersService) {
@@ -28,7 +28,6 @@ export class ParametersComponent implements OnInit {
   }
 
   onElectricityPriceChange(event: MatSliderChange) {
-    console.log("EVENT " + event.value)
     this.parametersService.setElectricityPrice(event.value);
     this.electricityPrice = event.value;
   }
