@@ -12,6 +12,7 @@ import {MinerNode} from "../simulation/model/miner-node";
 import {SimulationEventData} from "../simulation/model/simulation-event-data";
 import {PaymentService} from "./payment.service";
 import {randomIntFromInterval} from "../utils/numbers";
+import {MinerService} from "./miner.service";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class SimulationService {
               private stepService: StepService,
               private eventService: EventService,
               private paymentService: PaymentService,
+              private minerService: MinerService,
   ) { }
 
 
@@ -51,6 +53,7 @@ export class SimulationService {
 
           //console.log('emiting graph');
           this.visualisationService.emitGraph(this.graph);
+          this.minerService.emit();
         }
         this.stepService.unblockSemaphore();
       })
@@ -63,7 +66,7 @@ export class SimulationService {
             if (!miner.settlePayment(paymentAmount)) {
               miner.neighbours.forEach(neighbour => {
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
-                if(this.graph.nodes.get(neighbour)?.neighbours.length === 0) {
+                if(this.graph.nodes.get(neighbour)?.neighbours.length === 0 && this.graph.nodes.size > 1) {
                   let randomKey = this.getRandomNodeKey();
                   console.log(`Random key generated ${randomKey}`);
                   while(randomKey === neighbour || !this.graph.nodes.get(randomKey)?.isAlive()) {
@@ -71,10 +74,9 @@ export class SimulationService {
                   }
                   this.graph.nodes.get(neighbour)?.neighbours.push(randomKey);
                 }
-                //console.log(this.graph.nodes.get(neighbour)?.neighbours !== arr)
-                // miner.detachMiner(neighbour);
               })
               this.graph.nodes.delete(miner.id);
+              this.minerService.emit();
             }
           })
         })
@@ -82,7 +84,7 @@ export class SimulationService {
   }
 
   private handleInitialization(): void {
-    this.graph = Graph.generateGraph(this.parametersService.getMinerNodes());
+    this.graph = Graph.generateGraph(this.parametersService.getFullNodes());
   }
 
   private handleBlockMined(eventData: SimulationEventData): void {
@@ -102,26 +104,21 @@ export class SimulationService {
       let responseEventData = new SimulationEventData();
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
-      //console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC: ' + responseEventData.senderId + '  ' + responseEventData.receiverId)
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
-    //console.log('DDDDDDDDDDDDDDDDDDDDDDDDD1 ' + JSON.stringify(eventData))
     let senderNode = this.graph?.nodes.get(eventData.senderId)
     let receiverNode = this.graph?.nodes.get(eventData.receiverId)
-    //console.log('DDDDDDDDDDDDDDDDDDDDDDDDD ' + senderNode + '    ' + receiverNode)
     if (!senderNode) return;
     if (!receiverNode) return;
-    //console.log('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
     if (receiverNode.blockChainLength < senderNode.blockChainLength) {
       receiverNode.blockChainLength = senderNode.blockChainLength;
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
-        //console.log('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
@@ -134,6 +131,10 @@ export class SimulationService {
   private getRandomNodeKey() {
     let keys = Array.from(this.graph.nodes.keys());
     return keys[Math.floor(Math.random() * keys.length)];
+  }
+
+  public getMiners() {
+    return Array.from(this.graph.nodes.values());
   }
 
 

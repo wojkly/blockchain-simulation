@@ -9,9 +9,9 @@ import {ParametersService} from "../../services/parameters.service";
 })
 export class ParametersComponent implements OnInit {
 
-  electricityPrice: any;
-  frequency: any;
-  reward: number | null = 0;
+  electricityPrice: number | null = 1;
+  frequency: number | null = 1;
+  reward: number | null = 5;
 
   constructor(
     public parametersService: ParametersService) {
