@@ -108,6 +108,8 @@ export class SimulationService {
     minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
 
+    console.log(this.graph.nodes);
+
     minerNode.mined++;
     minerNode.blockChainLength++;
     minerNode.receiveReward(this.parametersService.getReward());
@@ -128,6 +130,12 @@ export class SimulationService {
 
     if (receiverNode.blockChainLength < senderNode.blockChainLength) {
       receiverNode.blockChainLength = senderNode.blockChainLength;
+
+      const receivedBlock = senderNode.getLast();
+
+      if(receiverNode) {
+        receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
+      }
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;

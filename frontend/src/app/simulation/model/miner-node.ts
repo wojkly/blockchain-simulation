@@ -45,8 +45,19 @@ export class MinerNode {
     return this.alive;
   }
 
-  public getBlockchain() {
+  public getFirst() {
     return this.blockChain;
+  }
+
+  public getLast(): Block | undefined {
+    if(this.blockChain) {
+      let temp = this.blockChain;
+      while(temp?.next !== null) {
+        temp = temp?.next;
+      }
+      return temp;
+    }
+    return undefined;
   }
 
   public attachBlock(id: number, minedBy: number): void {
