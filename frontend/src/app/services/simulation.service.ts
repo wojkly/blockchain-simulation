@@ -84,7 +84,7 @@ export class SimulationService {
   }
 
   private handleInitialization(): void {
-    this.graph = Graph.generateGraph(this.parametersService.getFullNodes());
+    this.graph = Graph.generateGraph(this.parametersService.getFullNodes(), this.parametersService.getMinerNodes(), this.parametersService.getLightNodes(), this.parametersService.getListeningNodes());
   }
 
   private handleBlockMined(eventData: SimulationEventData): void {

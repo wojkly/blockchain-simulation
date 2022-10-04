@@ -28,12 +28,16 @@ export class NetworkComponent implements OnInit {
             'width': '100px',
             'height': '100px',
             'background-color': function(node: any) {
-              let mod = node.data("value.blockChainLength") % 3;
-              switch (mod) {
+              let nodeType = node.data("value.type");
+              switch (nodeType) {
                 case 0:
                   return `red`;
                 case 1:
                   return `green`;
+                case 2:
+                  return `orange`;
+                case 3:
+                  return `brown`;
                 default:
                   return `blue`;
               }
@@ -62,7 +66,7 @@ export class NetworkComponent implements OnInit {
           this.createNodes(g);
           this.createEdges(g);
           this.cy.layout({
-            name: 'circle',
+            name: 'breadthfirst',
           }).run()
           this.cy.nodes().on('click', function(e){
             var node = e.target;
@@ -76,7 +80,7 @@ export class NetworkComponent implements OnInit {
   createNodes(graph: Graph) {
     graph.nodes.forEach((item) => {
       this.cy.add({
-        data: {id: 'node_' + item.id, value: {'blockChainLength': item.blockChainLength, 'mined': item.mined}}
+        data: {id: 'node_' + item.id, value: {'blockChainLength': item.blockChainLength, 'mined': item.mined, 'type': item.nodeType}}
       })
     })
   }
