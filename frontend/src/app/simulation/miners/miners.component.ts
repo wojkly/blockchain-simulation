@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {SimulationService} from "../../services/simulation.service";
-import {MinerNode} from "../model/miner-node";
+import {Node} from "../model/node";
 import {catchError, of, tap} from "rxjs";
 import {MinerService} from "../../services/miner.service";
 import {defaultLogger} from "@angular/cdk/schematics/update-tool/logger";
@@ -12,7 +12,7 @@ import {defaultLogger} from "@angular/cdk/schematics/update-tool/logger";
 })
 export class MinersComponent implements OnInit {
 
-  minerList: MinerNode[];
+  minerList: Node[];
   displayedColumns = ['id', 'money', 'mined', 'length']
 
   constructor(

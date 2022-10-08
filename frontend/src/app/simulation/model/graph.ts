@@ -1,4 +1,4 @@
-import {MinerNode} from "./miner-node";
+import {Node} from "./node";
 import {randomIntFromInterval} from "../../utils/numbers";
 import {NodeType} from "../nodeType";
 
@@ -8,22 +8,22 @@ type Edge = {
 }
 
 export class Graph {
-  constructor(public nodes: Map<number, MinerNode>) {
+  constructor(public nodes: Map<number, Node>) {
   }
 
   public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, additionalConnectionsRatio: number = 1 / 2, maxTime: number = 10): Graph {
-    let nodes = new Map<number, MinerNode>;
+    let nodes = new Map<number, Node>;
     let id: number = 1;
     let numberOfNodes = fullNodes + minerNodes + lightNodes + listeningNodes;
 
     // create first miner
-    let miner = new MinerNode(id, []);
+    let miner = new Node(id, []);
     nodes.set(id, miner);
 
     for (let i = 0; i < numberOfNodes - 1; i++) {
       // create new miner
       let newId = id + 1;
-      let newMiner = new MinerNode(newId, []);
+      let newMiner = new Node(newId, []);
 
       // connect two miners
       newMiner.addNeighbour(id);

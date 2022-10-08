@@ -1,6 +1,6 @@
 import {NodeType} from "../nodeType";
 
-export class MinerNode {
+export class Node {
   public blockChainLength: number = 1;
   public mined: number = 0;
   public nodeType: NodeType = NodeType.Miner;

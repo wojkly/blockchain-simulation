@@ -8,7 +8,7 @@ import {StepService} from "./step.service";
 import {EventService} from "./event.service";
 import {SimulationEvent} from "../simulation/model/simulation-event";
 import {SimulationEventType} from "../simulation/model/simulation-event-type";
-import {MinerNode} from "../simulation/model/miner-node";
+import {Node} from "../simulation/model/node";
 import {SimulationEventData} from "../simulation/model/simulation-event-data";
 import {PaymentService} from "./payment.service";
 import {randomIntFromInterval} from "../utils/numbers";
@@ -18,7 +18,7 @@ import {MinerService} from "./miner.service";
   providedIn: 'root'
 })
 export class SimulationService {
-  private graph = new Graph(new Map<number, MinerNode>());
+  private graph = new Graph(new Map<number, Node>());
 
   constructor(private parametersService: ParametersService,
               private buttonsService: ButtonsService,
@@ -89,7 +89,7 @@ export class SimulationService {
 
   private handleBlockMined(eventData: SimulationEventData): void {
     let allMiners: number[] = [];
-    this.graph.nodes.forEach((value: MinerNode, key: number) => {
+    this.graph.nodes.forEach((value: Node, key: number) => {
       if(value.nodeType == 0){
         allMiners.push(key)
       }
