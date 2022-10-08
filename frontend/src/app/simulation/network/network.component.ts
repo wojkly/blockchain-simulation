@@ -62,7 +62,7 @@ export class NetworkComponent implements OnInit {
           this.createNodes(g);
           this.createEdges(g);
           this.cy.layout({
-            name: 'circle',
+            name: 'circle', // są też inne, np. breadthfirst
           }).run()
           this.cy.nodes().on('click', function(e){
             var node = e.target;

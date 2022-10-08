@@ -21,6 +21,7 @@ import { NetworkComponent } from './simulation/network/network.component';
 import { ButtonsComponent } from './simulation/buttons/buttons.component';
 import { MinersComponent } from './simulation/miners/miners.component';
 import { ParametersComponent } from './simulation/parameters/parameters.component';
+import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ParametersComponent } from './simulation/parameters/parameters.componen
     NetworkComponent,
     ButtonsComponent,
     MinersComponent,
-    ParametersComponent
+    ParametersComponent,
+    BlockchainComponent
   ],
   imports: [
     BrowserModule,
