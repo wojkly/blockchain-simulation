@@ -88,7 +88,12 @@ export class SimulationService {
   }
 
   private handleBlockMined(eventData: SimulationEventData): void {
-    let allMiners = Array.from(this.graph.nodes.keys());
+    let allMiners: number[] = [];
+    this.graph.nodes.forEach((value: MinerNode, key: number) => {
+      if(value.nodeType == 0){
+        allMiners.push(key)
+      }
+    })
 
     let randArrayIndex = randomIntFromInterval(0, allMiners.length - 1);
     let minerId = allMiners[randArrayIndex];
