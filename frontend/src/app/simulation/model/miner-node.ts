@@ -5,7 +5,7 @@ export class MinerNode {
   public mined: number = 0;
   public nodeType: NodeType = NodeType.Miner;
 
-  private money: number = 10;
+  public money: number = 10;
   private alive: boolean = true;
 
 
