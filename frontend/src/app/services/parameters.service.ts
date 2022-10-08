@@ -8,9 +8,9 @@ export class ParametersService {
   lightNodes: number = 1;
   minerNodes: number = 1;
   listeningNodes: number = 1;
-  price: number = 0;
+  price: number = 1;
   frequency: number = 0;
-  award: number = 0;
+  reward: number = 5;
 
   constructor() { }
 
@@ -67,11 +67,11 @@ export class ParametersService {
   }
 
   public setReward(value: any): void {
-    this.award = value;
+    this.reward = value;
   }
 
   public getReward(): number {
-    return this.award;
+    return this.reward;
   }
 
 }

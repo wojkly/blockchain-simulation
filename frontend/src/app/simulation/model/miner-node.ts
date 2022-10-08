@@ -30,18 +30,15 @@ export class MinerNode {
   public settlePayment(paymentAmount: number): boolean {
     if (this.money < 1) {
       // kill the miner
-      //console.log(`kill miner ${this.id}`);
       this.alive = false;
       return false;
     }
     this.money -= paymentAmount;
-    //console.log(`miner ${this.id} now has ${this.money}`);
     return true;
   }
 
   public receiveReward(reward: number): void {
     this.money += reward;
-    //console.log(`miner ${this.id} received ${reward}$`);
   }
 
   public isAlive() {
