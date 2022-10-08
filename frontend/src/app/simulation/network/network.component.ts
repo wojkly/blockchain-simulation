@@ -28,13 +28,17 @@ export class NetworkComponent implements OnInit {
           style: {
             'width': '100px',
             'height': '100px',
-            'background-color': function (node: any) {
-              let mod = node.data("value.blockChainLength") % 3;
-              switch (mod) {
+            'background-color': function(node: any) {
+              let nodeType = node.data("value.type");
+              switch (nodeType) {
                 case 0:
                   return `red`;
                 case 1:
                   return `green`;
+                case 2:
+                  return `orange`;
+                case 3:
+                  return `brown`;
                 default:
                   return `blue`;
               }
@@ -64,7 +68,7 @@ export class NetworkComponent implements OnInit {
           this.createEdges(g, cy);
           this.makeTooltips(cy);
           cy.layout({
-            name: 'circle',
+            name: 'breadthfirst',
           }).run();
           cy.nodes().bind("tap", event => {
             this.id2tip[event.target.id()].show();
@@ -84,7 +88,7 @@ export class NetworkComponent implements OnInit {
   createNodes(graph: Graph, cy: cytoscape.Core) {
     graph.nodes.forEach((item) => {
       cy.add({
-        data: {id: 'node_' + item.id, value: {'blockChainLength': item.blockChainLength, 'mined': item.mined, 'money': item.money}}
+        data: {id: 'node_' + item.id, value: {'blockChainLength': item.blockChainLength, 'mined': item.mined, 'money': item.money, 'type': item.nodeType}}
       })
     })
   }
