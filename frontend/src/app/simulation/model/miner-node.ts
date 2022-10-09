@@ -1,10 +1,12 @@
 import {Block} from "./block";
+import {NodeType} from "../nodeType";
 
 export class MinerNode {
   public blockChainLength: number = 1;
   public mined: number = 0;
+  public nodeType: NodeType = NodeType.Miner;
 
-  private money: number = 10;
+  public money: number = 10;
   private alive: boolean = true;
 
   private blockChain?: Block;
@@ -71,6 +73,10 @@ export class MinerNode {
       return;
     }
     this.blockChain = new Block(id, minedBy);
+  }
+
+  public setNodeType(nodeType: NodeType){
+    this.nodeType = nodeType;
   }
 
 }

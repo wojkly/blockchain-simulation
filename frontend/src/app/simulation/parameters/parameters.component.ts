@@ -28,7 +28,6 @@ export class ParametersComponent implements OnInit {
   }
 
   onElectricityPriceChange(event: MatSliderChange) {
-    //console.log("EVENT " + event.value)
     this.parametersService.setElectricityPrice(event.value);
     this.electricityPrice = event.value;
   }
