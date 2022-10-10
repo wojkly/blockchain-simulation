@@ -13,6 +13,8 @@ import {SimulationEventData} from "../simulation/model/simulation-event-data";
 import {PaymentService} from "./payment.service";
 import {randomIntFromInterval} from "../utils/numbers";
 import {MinerService} from "./miner.service";
+import {BlockchainService} from "./blockchain.service";
+import {Block} from "../simulation/model/block";
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +29,10 @@ export class SimulationService {
               private eventService: EventService,
               private paymentService: PaymentService,
               private minerService: MinerService,
+              private blockchainService: BlockchainService,
   ) { }
+
+  nextId: number = 0;
 
 
   public initializeSimulation() {
@@ -81,6 +86,10 @@ export class SimulationService {
           })
         })
       ).subscribe();
+
+    this.blockchainService.get().subscribe(id => {
+      this.nextId = id;
+    })
   }
 
   private handleInitialization(): void {
@@ -95,6 +104,11 @@ export class SimulationService {
     let minerNode = this.graph.nodes.get(minerId);
 
     if (minerNode === undefined) return;
+
+    minerNode.attachBlock(this.nextId, minerNode.id);
+    this.blockchainService.emit();
+
+    console.log(this.graph.nodes);
 
     minerNode.mined++;
     minerNode.blockChainLength++;
@@ -116,6 +130,12 @@ export class SimulationService {
 
     if (receiverNode.blockChainLength < senderNode.blockChainLength) {
       receiverNode.blockChainLength = senderNode.blockChainLength;
+
+      const receivedBlock = senderNode.getLast();
+
+      if(receiverNode) {
+        receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
+      }
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
