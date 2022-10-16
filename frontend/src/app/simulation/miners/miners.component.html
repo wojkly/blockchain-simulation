@@ -2,25 +2,25 @@
 
 <div class="mat-elevation-z8">
 
-  <mat-table [dataSource]="minerList">
+  <mat-table [dataSource]="minerList" matSort>
 
     <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
       <mat-cell *matCellDef="let miner">{{miner.id}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="money">
-      <mat-header-cell *matHeaderCellDef>Money</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Money</mat-header-cell>
       <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="mined">
-      <mat-header-cell *matHeaderCellDef>Blocks mined</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Blocks mined</mat-header-cell>
       <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="length">
-      <mat-header-cell *matHeaderCellDef>Blockchain length</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Blockchain length</mat-header-cell>
       <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
     </ng-container>
 
@@ -28,5 +28,9 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
   </mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons>
+  </mat-paginator>
 
 </div>
