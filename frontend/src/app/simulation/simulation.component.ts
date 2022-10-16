@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {MINERS_PATH, NETWORK_PATH, PARAMETERS_PATH} from "../app-routing-paths";
+import {BLOCKCHAIN_PATH, MINERS_PATH, NETWORK_PATH, PARAMETERS_PATH} from "../app-routing-paths";
 import {ParametersService} from "../services/parameters.service";
 import {Tab} from "./tab";
 import {SimulationService} from "../services/simulation.service";
@@ -17,6 +17,7 @@ export class SimulationComponent implements OnInit {
     new Tab('Network', NETWORK_PATH),
     new Tab('Miners', MINERS_PATH),
     new Tab('Parameters', PARAMETERS_PATH),
+    new Tab('Blockchain', BLOCKCHAIN_PATH)
   ];
 
   constructor(private activatedRoute: ActivatedRoute,

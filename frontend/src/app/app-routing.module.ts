@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
+  BLOCKCHAIN_PATH,
   INITIAL_CONFIGURIATION_PATH,
   MINERS_PATH,
   NETWORK_PATH, PARAMETERS_PATH,
@@ -11,6 +12,7 @@ import {SimulationComponent} from "./simulation/simulation.component";
 import {NetworkComponent} from "./simulation/network/network.component";
 import {MinersComponent} from "./simulation/miners/miners.component";
 import {ParametersComponent} from "./simulation/parameters/parameters.component";
+import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
 
 const routes: Routes = [
   {
@@ -42,6 +44,10 @@ const routes: Routes = [
       {
         path: PARAMETERS_PATH,
         component: ParametersComponent
+      },
+      {
+        path: BLOCKCHAIN_PATH,
+        component: BlockchainComponent
       }
     ]
   }

@@ -12,6 +12,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatSliderModule} from "@angular/material/slider";
@@ -21,6 +22,7 @@ import { NetworkComponent } from './simulation/network/network.component';
 import { ButtonsComponent } from './simulation/buttons/buttons.component';
 import { MinersComponent } from './simulation/miners/miners.component';
 import { ParametersComponent } from './simulation/parameters/parameters.component';
+import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { ParametersComponent } from './simulation/parameters/parameters.componen
     NetworkComponent,
     ButtonsComponent,
     MinersComponent,
-    ParametersComponent
+    ParametersComponent,
+    BlockchainComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +51,8 @@ import { ParametersComponent } from './simulation/parameters/parameters.componen
     FormsModule,
     MatSliderModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

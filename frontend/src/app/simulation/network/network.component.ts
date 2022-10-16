@@ -63,6 +63,7 @@ export class NetworkComponent implements OnInit {
     this.visualisationService.getGraph()
       .pipe(
         tap((g: Graph) => {
+
           cy.remove('nodes');
           this.createNodes(g, cy);
           this.createEdges(g, cy);
