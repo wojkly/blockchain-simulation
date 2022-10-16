@@ -14,7 +14,6 @@ import {PaymentService} from "./payment.service";
 import {randomIntFromInterval} from "../utils/numbers";
 import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
-import {Block} from "../simulation/model/block";
 
 @Injectable({
   providedIn: 'root'

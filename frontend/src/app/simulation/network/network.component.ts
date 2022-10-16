@@ -96,7 +96,7 @@ export class NetworkComponent implements OnInit {
 
   createEdges(graph: Graph, cy: cytoscape.Core) {
     graph.nodes.forEach((item) => {
-      item.neighbours.forEach((neighbour) => {
+      item.neighbours.forEach((neighbour ) => {
         if(!(cy.getElementById(`edge_${neighbour}_${item.id}`).length > 0)){
           cy.add({data: {id: 'edge_' + item.id + '_' + neighbour, source: 'node_' + item.id, target: 'node_' + neighbour}})
         }

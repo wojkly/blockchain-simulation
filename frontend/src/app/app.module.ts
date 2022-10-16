@@ -18,6 +18,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatCardModule} from "@angular/material/card";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
 import { NetworkComponent } from './simulation/network/network.component';
 import { ButtonsComponent } from './simulation/buttons/buttons.component';
 import { MinersComponent } from './simulation/miners/miners.component';
@@ -52,7 +54,9 @@ import { BlockchainComponent } from './simulation/blockchain/blockchain.componen
     MatSliderModule,
     MatCardModule,
     MatSnackBarModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]
