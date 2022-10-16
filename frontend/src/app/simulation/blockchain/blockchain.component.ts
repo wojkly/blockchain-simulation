@@ -132,7 +132,9 @@ export class BlockchainComponent implements OnInit {
   }
 
   private cleanHighlighting(): void {
-    this.cy.nodes().classes([]);
+    this.cy.nodes().forEach(n => {
+      n.removeClass('highlighted')
+    });
   }
 
   // do testowania i początkowej wizualizacji
