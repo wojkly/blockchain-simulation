@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {Graph} from "../simulation/model/graph";
-import {MinerNode} from "../simulation/model/miner-node";
+import {Node} from "../simulation/model/node";
 
 @Injectable({
   providedIn: 'root'
 })
 export class VisualisationService {
-  private graph = new BehaviorSubject<Graph>(new Graph(new Map<number, MinerNode>()));
+  private graph = new BehaviorSubject<Graph>(new Graph(new Map<number, Node>()));
 
   constructor() { }
 
