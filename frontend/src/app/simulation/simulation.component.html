@@ -1,5 +1,9 @@
-<p>simulation works with nodes count: {{nodesCount}}!</p>
+
 <app-buttons></app-buttons>
+<button mat-raised-button color="primary" [routerLink]="'../initial-configuration'">
+  <span>Początkowa konfiguracja węzłów </span>
+  <mat-icon>edit</mat-icon>
+</button>
 <div class="container">
   <nav mat-tab-nav-bar>
     <a #rla="routerLinkActive" *ngFor="let tab of tabs" [active]="rla.isActive" [routerLink]="tab.path" fxFlex

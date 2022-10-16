@@ -1,5 +1,5 @@
-<div class="container" fxLayout="column" fxLayoutGap="20px" style="width: 300px; margin: 20px">
-  <mat-label>Ustal ilości węzłów w symulacji</mat-label>
+<div fxLayout="column" fxLayoutAlign="space-evenly center" fxLayoutGap="20px" >
+  <h2>Ustal początkową ilości węzłów w symulacji</h2>
 
   <div [formGroup]="form" fxLayout="column" fxLayoutGap="20px" style="width: 200px; margin: 20px">
     <mat-form-field>
@@ -24,10 +24,8 @@
     </mat-form-field>
   </div>
 
-  <p>ustawianie jakis poczatkowych parametrów typu majatek startowy gornikow?? itd???</p>
-
-  <button mat-stroked-button (click)="onClick()">
+  <button mat-raised-button color="primary" [disabled]="!formValidation()" (click)="onClick()">
+    <span>Przejdź do symulacji z {{numberOfNodes}} węzłami </span>
     <mat-icon>done</mat-icon>
-    <span>Przejdź do symulacji z {{numberOfNodes}} węzłami</span>
   </button>
 </div>
