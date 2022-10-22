@@ -20,11 +20,13 @@ import {MatCardModule} from "@angular/material/card";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
+import {MatDialogModule} from '@angular/material/dialog';
 import { NetworkComponent } from './simulation/network/network.component';
 import { ButtonsComponent } from './simulation/buttons/buttons.component';
 import { MinersComponent } from './simulation/miners/miners.component';
 import { ParametersComponent } from './simulation/parameters/parameters.component';
 import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
+import { InitConfigDialogComponent } from './initial-configuration/init-config-dialog/init-config-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { BlockchainComponent } from './simulation/blockchain/blockchain.componen
     ButtonsComponent,
     MinersComponent,
     ParametersComponent,
-    BlockchainComponent
+    BlockchainComponent,
+    InitConfigDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +59,8 @@ import { BlockchainComponent } from './simulation/blockchain/blockchain.componen
     MatSnackBarModule,
     MatButtonToggleModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
