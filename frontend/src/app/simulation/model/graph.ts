@@ -96,7 +96,7 @@ export class Graph {
       const newId = id + 1;
       const newMiner = new Node(newId, []);
 
-      const randIdx = randomIntFromInterval(1, immortalNodes);
+      const randIdx = randomIntFromInterval(1, immortalNodes - 1);
 
       // // connect two miners
       newMiner.addNeighbour(randIdx);
@@ -108,7 +108,7 @@ export class Graph {
       id = newId;
     }
 
-    console.log(nodes.values());
+    //console.log(nodes.values());
 
     return new Graph(nodes);
   }

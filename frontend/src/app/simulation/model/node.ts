@@ -30,6 +30,9 @@ export class Node {
   }
 
   public settlePayment(paymentAmount: number): boolean {
+    if (this.nodeType != NodeType.Miner) {
+      return true;
+    }
     if (this.money < 1) {
       // kill the miner
       this.alive = false;
