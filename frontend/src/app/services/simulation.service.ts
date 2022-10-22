@@ -55,7 +55,6 @@ export class SimulationService {
               break;
           }
 
-          //console.log('emiting graph');
           this.visualisationService.emitGraph(this.graph);
           this.minerService.emit();
         }
