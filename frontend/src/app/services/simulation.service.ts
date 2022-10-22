@@ -14,6 +14,7 @@ import {PaymentService} from "./payment.service";
 import {randomIntFromInterval} from "../utils/numbers";
 import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
+import {NodeType} from "../simulation/nodeType";
 
 @Injectable({
   providedIn: 'root'
@@ -55,7 +56,6 @@ export class SimulationService {
               break;
           }
 
-          //console.log('emiting graph');
           this.visualisationService.emitGraph(this.graph);
           this.minerService.emit();
         }
@@ -98,7 +98,7 @@ export class SimulationService {
   private handleBlockMined(eventData: SimulationEventData): void {
     let allMiners: number[] = [];
     this.graph.nodes.forEach((value: Node, key: number) => {
-      if(value.nodeType == 0){
+      if(value.nodeType == NodeType.Miner){
         allMiners.push(key)
       }
     })
@@ -158,7 +158,7 @@ export class SimulationService {
   }
 
   public getMiners() {
-    return Array.from(this.graph.nodes.values());
+    return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner);
   }
 
 

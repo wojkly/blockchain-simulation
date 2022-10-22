@@ -11,27 +11,31 @@ export class Graph {
   constructor(public nodes: Map<number, Node>) {
   }
 
+  private randomInteger(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, additionalConnectionsRatio: number = 1 / 2, maxTime: number = 10): Graph {
     let nodes = new Map<number, Node>;
     let id: number = 1;
-    let numberOfNodes = fullNodes + minerNodes + lightNodes + listeningNodes;
+    const immortalNodes = fullNodes + lightNodes + listeningNodes;
 
     // create first miner
-    let miner = new Node(id, []);
-    nodes.set(id, miner);
+    let node = new Node(id, []);
+    nodes.set(id, node);
 
-    for (let i = 0; i < numberOfNodes - 1; i++) {
+    for (let i = 0; i < immortalNodes - 1; i++) {
       // create new miner
       let newId = id + 1;
-      let newMiner = new Node(newId, []);
+      let newNode = new Node(newId, []);
 
       // connect two miners
-      newMiner.addNeighbour(id);
-      miner.addNeighbour(newId);
+      newNode.addNeighbour(id);
+      node.addNeighbour(newId);
 
       // next iteration, connect all of them with each other
-      nodes.set(newId, newMiner)
-      miner = newMiner;
+      nodes.set(newId, newNode)
+      node = newNode;
       id = newId;
     }
 
@@ -39,19 +43,16 @@ export class Graph {
     nodes.get(1)?.addNeighbour(id);
     nodes.get(id)?.addNeighbour(1);
 
-    let idxArr = Array.from(Array(numberOfNodes).keys())
+    let idxArr = Array.from(Array(immortalNodes).keys())
     idxArr.sort(() => Math.random() - 0.5);
 
-    for(var idx = 0; idx < minerNodes; idx++) {
-      nodes.get(idxArr[idx])?.setNodeType(NodeType.Miner);
-    }
-    for(let i = 0; i < fullNodes; i++, idx++) {
+    for (var idx = 0; idx < fullNodes; idx++) {
       nodes.get(idxArr[idx])?.setNodeType(NodeType.Full);
     }
-    for(let i = 0; i < lightNodes; i++, idx++) {
+    for (let i = 0; i < lightNodes; i++, idx++) {
       nodes.get(idxArr[idx])?.setNodeType(NodeType.Spv);
     }
-    for(let i = 0; i < listeningNodes; i++, idx++) {
+    for (let i = 0; i < listeningNodes; i++, idx++) {
       nodes.get(idxArr[idx])?.setNodeType(NodeType.Listening);
     }
 
@@ -65,15 +66,15 @@ export class Graph {
     let flag = true;
     const start = new Date().getTime();
 
-    while (i < additionalConnectionsRatio * numberOfNodes && flag) {
+    while (i < additionalConnectionsRatio * immortalNodes && flag) {
       // choose one miner
-      let randId = randomIntFromInterval(1, numberOfNodes);
+      let randId = randomIntFromInterval(1, immortalNodes);
 
       // look for a newMiner that isn't his neighbour
-      let randNeighbourId = randomIntFromInterval(1, numberOfNodes);
+      let randNeighbourId = randomIntFromInterval(1, immortalNodes);
 
       while (randNeighbourId == randId || nodes.get(randId)?.isConnected(randNeighbourId)) {
-        randNeighbourId = randomIntFromInterval(1, numberOfNodes);
+        randNeighbourId = randomIntFromInterval(1, immortalNodes);
 
         // trying to avoid infinite loop
         let elapsedTime = (new Date().getTime() - start) / 1000;
@@ -89,6 +90,25 @@ export class Graph {
 
       i += 1;
     }
+
+    for (let i = 0; i < minerNodes; i++) {
+      // create new miner
+      const newId = id + 1;
+      const newMiner = new Node(newId, []);
+
+      const randIdx = randomIntFromInterval(1, immortalNodes - 1);
+
+      // // connect two miners
+      newMiner.addNeighbour(randIdx);
+      nodes.get(randIdx)?.addNeighbour(newId)
+      //
+      // // next iteration, connect all of them with each other
+      nodes.set(newId, newMiner)
+      // miner = newMiner;
+      id = newId;
+    }
+
+    //console.log(nodes.values());
 
     return new Graph(nodes);
   }
