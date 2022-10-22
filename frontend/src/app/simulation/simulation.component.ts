@@ -28,8 +28,7 @@ export class SimulationComponent implements OnInit {
     new Tab('Blockchain', BLOCKCHAIN_PATH)
   ];
 
-  constructor(private router: Router,
-              private parametersService: ParametersService,
+  constructor(private parametersService: ParametersService,
               private simulationService: SimulationService,
               private dialog: MatDialog) { }
 
