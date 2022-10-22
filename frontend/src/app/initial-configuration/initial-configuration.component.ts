@@ -11,10 +11,10 @@ import {ParametersService} from "../services/parameters.service";
   styleUrls: ['./initial-configuration.component.scss']
 })
 export class InitialConfigurationComponent implements OnInit {
-  nodesType1FC: FormControl = new FormControl(this.parametersService.getFullNodes(), [Validators.required, Validators.min(1)]);
-  nodesType2FC: FormControl = new FormControl(this.parametersService.getLightNodes(), [Validators.required, Validators.min(1)]);
-  nodesType3FC: FormControl = new FormControl(this.parametersService.getMinerNodes(), [Validators.required, Validators.min(1)]);
-  nodesType4FC: FormControl = new FormControl(this.parametersService.getLightNodes(), [Validators.required, Validators.min(1)]);
+  nodesType1FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
+  nodesType2FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
+  nodesType3FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
+  nodesType4FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
 
   form = this.formBuilder.group({
     nodesType1FC: this.nodesType1FC,

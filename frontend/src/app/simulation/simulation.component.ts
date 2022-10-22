@@ -1,9 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {BLOCKCHAIN_PATH, MINERS_PATH, NETWORK_PATH, PARAMETERS_PATH} from "../app-routing-paths";
+import {ActivatedRoute, Router} from "@angular/router";
+import {
+  BLOCKCHAIN_PATH,
+  INITIAL_CONFIGURIATION_PATH,
+  MINERS_PATH,
+  NETWORK_PATH,
+  PARAMETERS_PATH
+} from "../app-routing-paths";
 import {ParametersService} from "../services/parameters.service";
 import {Tab} from "./tab";
 import {SimulationService} from "../services/simulation.service";
+import {MatDialog} from "@angular/material/dialog";
+import {InitConfigDialogComponent} from "../initial-configuration/init-config-dialog/init-config-dialog.component";
 
 @Component({
   selector: 'app-simulation',
@@ -20,13 +28,24 @@ export class SimulationComponent implements OnInit {
     new Tab('Blockchain', BLOCKCHAIN_PATH)
   ];
 
-  constructor(private activatedRoute: ActivatedRoute,
+  constructor(private router: Router,
               private parametersService: ParametersService,
-              private simulationService: SimulationService) { }
+              private simulationService: SimulationService,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.nodesCount = this.parametersService.getAllNodes();
     this.simulationService.initializeSimulation();
+  }
+
+  goBackToInitConfig(){
+    const dialogRef = this.dialog.open(InitConfigDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        location.href = INITIAL_CONFIGURIATION_PATH;
+      }
+    });
   }
 
 }

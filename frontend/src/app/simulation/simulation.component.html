@@ -1,8 +1,8 @@
 
 <app-buttons></app-buttons>
-<button mat-raised-button color="primary" [routerLink]="'../initial-configuration'">
+<button mat-raised-button color="primary" (click)="goBackToInitConfig()">
   <span>Początkowa konfiguracja węzłów </span>
-  <mat-icon>edit</mat-icon>
+  <mat-icon>undo</mat-icon>
 </button>
 <div class="container">
   <nav mat-tab-nav-bar>
