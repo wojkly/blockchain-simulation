@@ -5,6 +5,7 @@ import {Graph} from "../model/graph";
 import * as cytoscape from 'cytoscape';
 import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
+import {NodeType} from "../nodeType";
 
 @Component({
   selector: 'app-network',
@@ -44,7 +45,12 @@ export class NetworkComponent implements OnInit {
               }
             },
             'label': function (node: any) {
-              return `ID: ${node.data("id")}, Money: ${node.data("value.money")}`
+              switch (node.data("value.type")) {
+                case NodeType.Miner:
+                  return `ID: ${node.data("id")}, Money: ${node.data("value.money")}`;
+                default:
+                  return `ID: ${node.data("id")}`;
+              }
             },
           }
         },
@@ -88,9 +94,25 @@ export class NetworkComponent implements OnInit {
 
   createNodes(graph: Graph, cy: cytoscape.Core) {
     graph.nodes.forEach((item) => {
-      cy.add({
-        data: {id: 'node_' + item.id, value: {'blockChainLength': item.blockChainLength, 'mined': item.mined, 'money': item.money, 'type': item.nodeType}}
-      })
+      if (item.nodeType === NodeType.Miner) {
+        cy.add({
+          data: {
+            id: 'node_' + item.id,
+            value: {
+              'blockChainLength': item.blockChainLength,
+              'mined': item.mined,
+              'money': item.money,
+              'type': item.nodeType}}
+        })
+      } else {
+        cy.add({
+          data: {
+            id: 'node_' + item.id,
+            value: {
+              'blockChainLength': item.blockChainLength,
+              'type': item.nodeType}}
+        })
+      }
     })
   }
 
