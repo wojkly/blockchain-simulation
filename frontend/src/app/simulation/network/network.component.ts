@@ -136,7 +136,11 @@ export class NetworkComponent implements OnInit {
         content: () => {
           let content = document.createElement("div");
           content.setAttribute("style", "font-size:1em; padding-top: 2vh")
-          content.innerHTML = `Mined: ${node._private.data.value.mined}, Len: ${node._private.data.value.blockChainLength}`;
+          if(node.data("value.type") === NodeType.Miner) {
+            content.innerHTML = `Mined: ${node._private.data.value.mined}, Len: ${node._private.data.value.blockChainLength}`;
+          } else {
+            content.innerHTML = `Len: ${node._private.data.value.blockChainLength}`;
+          }
           return content;
         }
       });
