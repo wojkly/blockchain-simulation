@@ -5,9 +5,9 @@ export class Node {
   public blockChainLength: number = 1;
   public mined: number = 0;
   public nodeType: NodeType = NodeType.Miner;
-
   public money: number = 10;
   private alive: boolean = true;
+  public computingPower: number = 0;
 
   private blockChain?: Block;
 
@@ -79,6 +79,7 @@ export class Node {
   }
 
   public setNodeType(nodeType: NodeType){
+    console.log("NODE TYPEEEEEEEEE")
     this.nodeType = nodeType;
   }
 

@@ -14,6 +14,11 @@
       <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="power">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Computing power</mat-header-cell>
+      <mat-cell *matCellDef="let miner">{{miner.computingPower}}</mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="mined">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Blocks mined</mat-header-cell>
       <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
