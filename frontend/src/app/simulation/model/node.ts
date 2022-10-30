@@ -4,7 +4,8 @@ import {NodeType} from "../nodeType";
 export class Node {
   public blockChainLength: number = 1;
   public mined: number = 0;
-  public nodeType: NodeType = NodeType.Miner;
+  public neighbours: number[] = [];
+
   public money: number = 10;
   private alive: boolean = true;
   public computingPower: number = 0;
@@ -12,11 +13,11 @@ export class Node {
   private blockChain?: Block;
 
   constructor(public readonly id: number,
-              public neighbours: number[] = []) {
+              public readonly nodeType: NodeType) {
   }
 
-  public addNeighbour(minerId: number): void {
-    if (!this.isConnected(minerId)) this.neighbours.push(minerId);
+  public connect(nodeId: number): void {
+    if (!this.isConnected(nodeId)) this.neighbours.push(nodeId);
   }
 
   public detachMiner(minerId: number): void {
@@ -77,10 +78,4 @@ export class Node {
     }
     this.blockChain = new Block(id, minedBy);
   }
-
-  public setNodeType(nodeType: NodeType){
-    console.log("NODE TYPEEEEEEEEE")
-    this.nodeType = nodeType;
-  }
-
 }

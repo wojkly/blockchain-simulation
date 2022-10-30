@@ -15,102 +15,103 @@ export class Graph {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, additionalConnectionsRatio: number = 1 / 2, maxTime: number = 10): Graph {
-    let nodes = new Map<number, Node>;
-    let id: number = 1;
+  public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, immortalNodesConnectionRatio: number = 1 / 2): Graph {
+    let nodesMap = new Map<number, Node>;
+    let id: number = 0;
     const immortalNodes = fullNodes + lightNodes + listeningNodes;
+    const maxPossibleEdgesBetweenImmortalNodes = immortalNodes * (immortalNodes - 1) / 2;
+    let totalEdges = 0;
+    let neighbour = -1;
 
-    // create first miner
-    let node = new Node(id, []);
-    nodes.set(id, node);
+    // create first node (full)
+    let node = new Node(id, NodeType.Full);
+    nodesMap.set(id, node);
 
-    for (let i = 0; i < immortalNodes - 1; i++) {
-      // create new miner
-      let newId = id + 1;
-      let newNode = new Node(newId, []);
+    id += 1;
 
-      // connect two miners
-      newNode.addNeighbour(id);
-      node.addNeighbour(newId);
+    //create other full nodes
+    for (let i = 1; i < fullNodes; i++) {
+      let node = new Node(id, NodeType.Full);
+      neighbour = Graph.genrateRandomNumber(id - 1);
+      let neighbourNode = nodesMap.get(neighbour);
 
-      // next iteration, connect all of them with each other
-      nodes.set(newId, newNode)
-      node = newNode;
-      id = newId;
+      node.connect(neighbour);
+      neighbourNode?.connect(id);
+      totalEdges += 1;
+
+      nodesMap.set(id, node);
+      id += 1;
     }
 
-    // connect first miner to the last one to create a cycle
-    nodes.get(1)?.addNeighbour(id);
-    nodes.get(id)?.addNeighbour(1);
+    //create listening nodes
+    for (let i = 0; i < listeningNodes; i++) {
+      let node = new Node(id, NodeType.Listening);
+      neighbour = Graph.genrateRandomNumber(id - 1);
+      let neighbourNode = nodesMap.get(neighbour);
 
-    let idxArr = Array.from(Array(immortalNodes).keys())
-    idxArr.sort(() => Math.random() - 0.5);
+      node.connect(neighbour);
+      neighbourNode?.connect(id);
+      totalEdges += 1;
 
-    for (var idx = 0; idx < fullNodes; idx++) {
-      nodes.get(idxArr[idx])?.setNodeType(NodeType.Full);
-    }
-    for (let i = 0; i < lightNodes; i++, idx++) {
-      nodes.get(idxArr[idx])?.setNodeType(NodeType.Spv);
-    }
-    for (let i = 0; i < listeningNodes; i++, idx++) {
-      nodes.get(idxArr[idx])?.setNodeType(NodeType.Listening);
+      nodesMap.set(id, node);
+      id += 1;
     }
 
+    //create light nodes
+    for (let i = 0; i < lightNodes; i++) {
+      let node = new Node(id, NodeType.Spv);
+      neighbour = Graph.genrateRandomNumber(id - 1);
+      let neighbourNode = nodesMap.get(neighbour);
 
-    // ok we've got a cycle, now let's create additional random connections
-    // to make it look "random"
+      node.connect(neighbour);
+      neighbourNode?.connect(id);
+      totalEdges += 1;
 
-    let i: number = 0;
+      nodesMap.set(id, node);
+      id += 1;
+    }
 
-    // adding time constraints
-    let flag = true;
-    const start = new Date().getTime();
+    //add some more edges
+    const maxImmortalNodeId = id - 1;
+    let addedEdges = 0;
+    let edgesToAdd = (maxPossibleEdgesBetweenImmortalNodes * immortalNodesConnectionRatio) - totalEdges;
 
-    while (i < additionalConnectionsRatio * immortalNodes && flag) {
-      // choose one miner
-      let randId = randomIntFromInterval(1, immortalNodes);
-
-      // look for a newMiner that isn't his neighbour
-      let randNeighbourId = randomIntFromInterval(1, immortalNodes);
-
-      while (randNeighbourId == randId || nodes.get(randId)?.isConnected(randNeighbourId)) {
-        randNeighbourId = randomIntFromInterval(1, immortalNodes);
-
-        // trying to avoid infinite loop
-        let elapsedTime = (new Date().getTime() - start) / 1000;
-        if (elapsedTime >= maxTime) {
-          flag = false;
-          break;
-        }
+    while (addedEdges < edgesToAdd) {
+      let u = Graph.genrateRandomNumber(maxImmortalNodeId);
+      let v = Graph.genrateRandomNumber(maxImmortalNodeId);
+      if (u == v) {
+        continue;
+      }
+      if (nodesMap.get(u)?.isConnected(v)) {
+        continue;
       }
 
-      // connect them
-      nodes.get(randId)?.addNeighbour(randNeighbourId);
-      nodes.get(randNeighbourId)?.addNeighbour(randId);
+      nodesMap.get(u)?.connect(v);
+      nodesMap.get(v)?.connect(u);
 
-      i += 1;
+      addedEdges += 1;
     }
 
+
+    //create miner nodes
     for (let i = 0; i < minerNodes; i++) {
-      // create new miner
-      const newId = id + 1;
-      const newMiner = new Node(newId, []);
-      newMiner.computingPower = randomIntFromInterval(1, 10)
+      let node = new Node(id, NodeType.Miner);
+      node.computingPower = randomIntFromInterval(1, 10)
+      neighbour = Graph.genrateRandomNumber(maxImmortalNodeId);
+      let neighbourNode = nodesMap.get(neighbour);
 
-      const randIdx = randomIntFromInterval(1, immortalNodes - 1);
+      node.connect(neighbour);
+      neighbourNode?.connect(id);
 
-      // // connect two miners
-      newMiner.addNeighbour(randIdx);
-      nodes.get(randIdx)?.addNeighbour(newId)
-      //
-      // // next iteration, connect all of them with each other
-      nodes.set(newId, newMiner)
-      // miner = newMiner;
-      id = newId;
+      nodesMap.set(id, node);
+      id += 1;
     }
 
-    //console.log(nodes.values());
+    //todo optional add more connections between miners and immortal ndoes
+    return new Graph(nodesMap);
+  }
 
-    return new Graph(nodes);
+  private static genrateRandomNumber(max: number) {
+    return Math.floor(Math.random() * (max + 1));
   }
 }
