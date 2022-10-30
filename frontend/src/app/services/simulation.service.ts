@@ -72,7 +72,6 @@ export class SimulationService {
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
                 if(this.graph.nodes.get(neighbour)?.neighbours.length === 0 && this.graph.nodes.size > 1) {
                   let randomKey = this.getRandomNodeKey();
-                  console.log(`Random key generated ${randomKey}`);
                   while(randomKey === neighbour || !this.graph.nodes.get(randomKey)?.isAlive()) {
                     randomKey = this.getRandomNodeKey();
                   }
@@ -111,8 +110,6 @@ export class SimulationService {
 
     minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
-
-    console.log(this.graph.nodes);
 
     minerNode.mined++;
     minerNode.blockChainLength++;
