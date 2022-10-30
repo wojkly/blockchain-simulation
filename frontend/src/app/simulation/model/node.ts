@@ -34,7 +34,7 @@ export class Node {
     if (this.nodeType != NodeType.Miner) {
       return true;
     }
-    if (this.money < 1) {
+    if (this.money < paymentAmount) {
       // kill the miner
       this.alive = false;
       return false;

@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,9 @@ export class ParametersService {
   minerNodes: number = 1;
   listeningNodes: number = 1;
   price: number = 1;
-  frequency: number = 0;
   reward: number = 5;
+
+  addNewMiner$ = new BehaviorSubject<number>(1);
 
   constructor() { }
 
@@ -58,12 +60,12 @@ export class ParametersService {
     return this.price;
   }
 
-  public setFrequency(value: any): void {
-    this.frequency = value;
+  public emitAddNewMinerFrequency(value: any): void {
+    this.addNewMiner$.next(value);
   }
 
-  public getFrequency(): number {
-    return this.frequency;
+  public getAddNewMinerFrequency(): Observable<number> {
+    return this.addNewMiner$.asObservable();
   }
 
   public setReward(value: any): void {
