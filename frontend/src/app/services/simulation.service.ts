@@ -98,7 +98,9 @@ export class SimulationService {
     let allMiners: number[] = [];
     this.graph.nodes.forEach((value: Node, key: number) => {
       if(value.nodeType == NodeType.Miner){
-        allMiners.push(key)
+        for (let i = 0; i < value.computingPower; i++){
+          allMiners.push(key)
+        }
       }
     })
 

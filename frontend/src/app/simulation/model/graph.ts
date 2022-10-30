@@ -96,6 +96,7 @@ export class Graph {
     //create miner nodes
     for (let i = 0; i < minerNodes; i++) {
       let node = new Node(id, NodeType.Miner);
+      node.computingPower = randomIntFromInterval(1, 10)
       neighbour = Graph.genrateRandomNumber(maxImmortalNodeId);
       let neighbourNode = nodesMap.get(neighbour);
 

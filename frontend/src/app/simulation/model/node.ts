@@ -8,6 +8,7 @@ export class Node {
 
   public money: number = 10;
   private alive: boolean = true;
+  public computingPower: number = 0;
 
   private blockChain?: Block;
 
