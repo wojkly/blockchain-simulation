@@ -23,7 +23,6 @@ export class ParametersComponent implements OnInit {
 
   setSliders(){
     this.electricityPrice = this.parametersService.getElectricityPrice();
-    this.frequency = this.parametersService.getFrequency();
     this.reward = this.parametersService.getReward();
   }
 
@@ -33,7 +32,7 @@ export class ParametersComponent implements OnInit {
   }
 
   onFrequencyChange(event: MatSliderChange) {
-    this.parametersService.setFrequency(event.value);
+    this.parametersService.emitAddNewMinerFrequency(event.value);
     this.frequency = event.value;
   }
 

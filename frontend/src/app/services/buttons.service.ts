@@ -3,6 +3,7 @@ import {interval, Observable, Subscription, tap} from "rxjs";
 import {StepService} from "./step.service";
 import {EventService} from "./event.service";
 import {PaymentService} from "./payment.service";
+import {AddMinerService} from "./add-miner.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class ButtonsService {
 
   constructor(private eventService: EventService,
               private stepService: StepService,
-              private paymentService: PaymentService) { }
+              private paymentService: PaymentService,
+              private addMinerService: AddMinerService,) { }
 
   public startSimulation(speed: number) {
     //emit step
@@ -45,11 +47,16 @@ export class ButtonsService {
           this.paymentService.emitPayment();
         })
       ).subscribe();
+
+
+    //emit create new miner
+    this.addMinerService.emitStart();
   }
 
   public stopSimulation() {
     this.interval?.unsubscribe();
     this.interval2?.unsubscribe();
     this.interval3?.unsubscribe();
+    this.addMinerService.emitStop();
   }
 }

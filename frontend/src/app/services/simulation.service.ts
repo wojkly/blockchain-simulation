@@ -3,7 +3,7 @@ import {Graph} from "../simulation/model/graph";
 import {ParametersService} from "./parameters.service";
 import {ButtonsService} from "./buttons.service";
 import {VisualisationService} from "./visualisation.service";
-import {tap, zip} from "rxjs";
+import {interval, Subscription, tap, zip} from "rxjs";
 import {StepService} from "./step.service";
 import {EventService} from "./event.service";
 import {SimulationEvent} from "../simulation/model/simulation-event";
@@ -15,6 +15,7 @@ import {randomIntFromInterval} from "../utils/numbers";
 import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
+import {AddMinerService} from "./add-miner.service";
 
 @Injectable({
   providedIn: 'root'
@@ -30,10 +31,13 @@ export class SimulationService {
               private paymentService: PaymentService,
               private minerService: MinerService,
               private blockchainService: BlockchainService,
+              private addMinerService: AddMinerService
   ) { }
 
   nextId: number = 0;
 
+  private addMinerFrequencySubscription: Subscription | undefined;
+  private addMinerSubscription: Subscription | undefined;
 
   public initializeSimulation() {
     zip([
@@ -70,13 +74,6 @@ export class SimulationService {
             if (!miner.settlePayment(paymentAmount)) {
               miner.neighbours.forEach(neighbour => {
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
-                if(this.graph.nodes.get(neighbour)?.neighbours.length === 0 && this.graph.nodes.size > 1) {
-                  let randomKey = this.getRandomNodeKey();
-                  while(randomKey === neighbour || !this.graph.nodes.get(randomKey)?.isAlive()) {
-                    randomKey = this.getRandomNodeKey();
-                  }
-                  this.graph.nodes.get(neighbour)?.neighbours.push(randomKey);
-                }
               })
               this.graph.nodes.delete(miner.id);
               this.minerService.emit();
@@ -88,6 +85,55 @@ export class SimulationService {
     this.blockchainService.get().subscribe(id => {
       this.nextId = id;
     })
+
+    this.addMinerService.getAddMiner()
+      .pipe(
+        tap((isAdd: boolean) => {
+          if(isAdd) {
+            this.startAddingMiners();
+          } else {
+            this.stopAddingMiners();
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  private startAddingMiners() {
+    this.addMinerFrequencySubscription = this.parametersService.getAddNewMinerFrequency()
+      .pipe(
+        tap((timeInterval: number) => {
+          if (timeInterval > 0) {
+            this.addMinerSubscription = interval(ButtonsService.DEFAULT_INTERVAL / timeInterval * 10).pipe(
+              tap(() => {
+                this.addNewMiner();
+                this.visualisationService.emitGraph(this.graph);
+              })
+            ).subscribe();
+          } else {
+            this.addMinerSubscription?.unsubscribe();
+          }
+        })
+      )
+      .subscribe();
+  }
+  private stopAddingMiners() {
+    this.addMinerFrequencySubscription?.unsubscribe();
+    this.addMinerSubscription?.unsubscribe();
+  }
+
+  private addNewMiner() {
+    let newMinerId = this.getMaxId() + 1;
+
+    const newMiner = new Node(newMinerId, NodeType.Miner);
+    newMiner.computingPower = randomIntFromInterval(1, 10);
+
+    const immortalNode = this.getRandomNonMiner();
+
+    newMiner.connect(immortalNode.id);
+    immortalNode.connect(newMiner.id);
+
+    this.graph.nodes.set(newMinerId, newMiner);
   }
 
   private handleInitialization(): void {
@@ -160,5 +206,16 @@ export class SimulationService {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner);
   }
 
+  private getRandomNonMiner(): Node {
+    const nonMiners = this.getNonMiners();
+    return nonMiners[Math.floor(Math.random() * nonMiners.length)];
+  }
 
+  private getNonMiners(): Node[] {
+    return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType != NodeType.Miner);
+  }
+
+  private getMaxId(): number {
+    return Math.max(...Array.from(this.graph.nodes.keys()));
+  }
 }
