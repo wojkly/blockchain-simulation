@@ -16,7 +16,7 @@
             <mat-card-subtitle>Aktualna częstotliwość dodawania nowego górnika do sieci:
               <mat-label>{{ frequencySlider.value}}</mat-label>
             </mat-card-subtitle>
-          <mat-slider #frequencySlider [value]="frequency" (change)="onFrequencyChange($event)" thumbLabel></mat-slider>
+          <mat-slider #frequencySlider [value]="frequency" [min]="0" [max]="10"  (change)="onFrequencyChange($event)" thumbLabel></mat-slider>
       </div>
     </mat-card>
 
@@ -32,4 +32,3 @@
   </div>
   <app-buttons></app-buttons>
 </div>
-
