@@ -18,7 +18,7 @@ export class MinersComponent implements AfterViewInit {
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
   minerList = new MatTableDataSource<Node>();
-  displayedColumns = ['id', 'money', 'mined', 'length']
+  displayedColumns = ['id', 'money', 'power', 'mined', 'length']
 
   constructor(
     private simulationService: SimulationService,

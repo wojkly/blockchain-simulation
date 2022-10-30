@@ -95,6 +95,7 @@ export class Graph {
       // create new miner
       const newId = id + 1;
       const newMiner = new Node(newId, []);
+      newMiner.computingPower = randomIntFromInterval(1, 10)
 
       const randIdx = randomIntFromInterval(1, immortalNodes - 1);
 
