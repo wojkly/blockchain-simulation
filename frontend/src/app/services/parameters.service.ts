@@ -8,6 +8,7 @@ export class ParametersService {
   fullNodes: number = 1;
   lightNodes: number = 1;
   minerNodes: number = 1;
+  initialMinersData = [];
   listeningNodes: number = 1;
   price: number = 1;
   reward: number = 5;
@@ -38,6 +39,15 @@ export class ParametersService {
 
   public setMinerNodes(value: number): void {
     this.minerNodes = value;
+  }
+
+
+  public getInitialMinersData(): any[] {
+    return this.initialMinersData;
+  }
+
+  public setInitialMinersData(value: []): void {
+    this.initialMinersData = value;
   }
 
   public getListeningNodes(): number {
