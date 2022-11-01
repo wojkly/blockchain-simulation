@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {SIMULATION_PATH} from "../app-routing-paths";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ParametersService} from "../services/parameters.service";
+import {COUNTRIES} from "../simulation/model/country";
 
 @Component({
   selector: 'app-initial-configuration',
@@ -16,13 +17,22 @@ export class InitialConfigurationComponent implements OnInit {
   nodesType3FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
   nodesType4FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
 
+  minersFormArray: FormArray = this.formBuilder.array([]);
+
   form = this.formBuilder.group({
     nodesType1FC: this.nodesType1FC,
     nodesType2FC: this.nodesType2FC,
     nodesType3FC: this.nodesType3FC,
-    nodesType4FC: this.nodesType4FC
+    nodesType4FC: this.nodesType4FC,
+    miners: this.minersFormArray
   });
 
+  COUNTRIES = COUNTRIES;
+
+  get miners() {
+    return this.form.controls["miners"] as FormArray;
+  }
+  minerNodesBeforeChange: number = this.parametersService.getMinerNodes();
   numberOfNodes: number = 4;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -34,13 +44,22 @@ export class InitialConfigurationComponent implements OnInit {
 
   ngOnInit(): void {
     this.numberOfNodes = this.parametersService.getAllNodes();
+
+    this.miners.push(this.formBuilder.group({
+      power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
+      country: new FormControl('', [Validators.required]),
+      money: new FormControl(1, [Validators.required, Validators.min(0), Validators.max(10000)]),
+    }))
+
+    this.form.markAllAsTouched();
   }
 
   formValidation(){
-    return this.nodesType1FC.valid && this.nodesType2FC.valid && this.nodesType3FC.valid && this.nodesType4FC.valid
+    return this.form.valid;
   }
 
   onClick(): void {
+    console.log(this.form.value)
     this.snackBar.open("Przechodzenie do symulacji",'',{ duration: 500 });
     this.setNodes();
     this.router.navigate([SIMULATION_PATH], {relativeTo: this.activatedRoute.parent});
@@ -51,10 +70,35 @@ export class InitialConfigurationComponent implements OnInit {
     this.parametersService.setLightNodes(this.nodesType2FC.value);
     this.parametersService.setMinerNodes(this.nodesType3FC.value);
     this.parametersService.setListeningNodes(this.nodesType4FC.value);
+    this.parametersService.setInitialMinersData(this.miners.value);
   }
 
   setNumberOfNodes(): void{
     this.numberOfNodes = this.nodesType1FC.value + this.nodesType2FC.value + this.nodesType3FC.value + this.nodesType4FC.value;
+  }
+
+  setMinersNumber(): void {
+    const minersBefore = this.minerNodesBeforeChange;
+    const minersNow = this.nodesType3FC.value;
+    console.log(minersBefore)
+    console.log(minersNow)
+    this.setNumberOfNodes();
+    if (minersBefore < minersNow) {
+      for (let i=minersBefore; i<minersNow; i++) {
+        this.miners.push(this.formBuilder.group({
+          power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
+          country: new FormControl('', [Validators.required]),
+          money: new FormControl(1, [Validators.required, Validators.min(0), Validators.max(10000)]),
+        }))
+      }
+    } else {
+      for (let i=minersBefore; i>minersNow; i--) {
+        this.miners.removeAt(this.miners.length - 1);
+      }
+    }
+
+    this.minerNodesBeforeChange = minersNow;
+    this.form.markAllAsTouched();
   }
 
 }

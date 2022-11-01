@@ -16,6 +16,7 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
+import {getPriceByEnumName} from "../simulation/model/country";
 
 @Injectable({
   providedIn: 'root'
@@ -124,11 +125,11 @@ export class SimulationService {
 
   private addNewMiner() {
     let newMinerId = this.getMaxId() + 1;
+    const immortalNode = this.getRandomNonMiner();
 
-    const newMiner = new Node(newMinerId, NodeType.Miner);
+    const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, 20); //todo add moeney parameter
     newMiner.computingPower = randomIntFromInterval(1, 10);
 
-    const immortalNode = this.getRandomNonMiner();
 
     newMiner.connect(immortalNode.id);
     immortalNode.connect(newMiner.id);
@@ -137,7 +138,7 @@ export class SimulationService {
   }
 
   private handleInitialization(): void {
-    this.graph = Graph.generateGraph(this.parametersService.getFullNodes(), this.parametersService.getMinerNodes(), this.parametersService.getLightNodes(), this.parametersService.getListeningNodes());
+    this.graph = Graph.generateGraph(this.parametersService.getFullNodes(), this.parametersService.getMinerNodes(), this.parametersService.getLightNodes(), this.parametersService.getListeningNodes(), this.parametersService.getInitialMinersData());
   }
 
   private handleBlockMined(eventData: SimulationEventData): void {
