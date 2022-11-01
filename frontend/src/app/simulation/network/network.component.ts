@@ -21,7 +21,7 @@ export class NetworkComponent implements OnInit {
 
   ngOnInit(): void {
     cytoscape.use( popper );
-    var cy = cytoscape({
+    let cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
