@@ -58,10 +58,13 @@ export class NetworkComponent implements OnInit {
           selector: 'edges',
           style: {
             'width': 3,
-            'line-color': '#dsd1aa3',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
+            'line-color': function (ele: any) {
+              console.log(ele._private.data);
+              return 'black';
+            }
           }
         }
       ]
@@ -97,7 +100,7 @@ export class NetworkComponent implements OnInit {
       if (item.nodeType === NodeType.Miner) {
         cy.add({
           data: {
-            id: 'node_' + item.id,
+            id: '' + item.id,
             value: {
               'blockChainLength': item.blockChainLength,
               'mined': item.mined,
@@ -107,7 +110,7 @@ export class NetworkComponent implements OnInit {
       } else {
         cy.add({
           data: {
-            id: 'node_' + item.id,
+            id: '' + item.id,
             value: {
               'blockChainLength': item.blockChainLength,
               'type': item.nodeType}}
@@ -119,8 +122,8 @@ export class NetworkComponent implements OnInit {
   createEdges(graph: Graph, cy: cytoscape.Core) {
     graph.nodes.forEach((item) => {
       item.neighbours.forEach((neighbour ) => {
-        if(!(cy.getElementById(`edge_${neighbour}_${item.id}`).length > 0)){
-          cy.add({data: {id: 'edge_' + item.id + '_' + neighbour, source: 'node_' + item.id, target: 'node_' + neighbour}})
+        if(!(cy.getElementById(`${neighbour}_${item.id}`).length > 0)){
+          cy.add({data: {id: '' + item.id + '_' + neighbour, source: '' + item.id, target: '' + neighbour}})
         }
       })
     })
