@@ -11,6 +11,7 @@ export class ParametersService {
   listeningNodes: number = 1;
   price: number = 1;
   reward: number = 5;
+  frequency: number = 1;
 
   addNewMiner$ = new BehaviorSubject<number>(1);
 
@@ -74,6 +75,14 @@ export class ParametersService {
 
   public getReward(): number {
     return this.reward;
+  }
+
+  public setFrequency(value: any): void {
+    this.frequency = value;
+  }
+
+  public getFrequency(): number {
+    return this.frequency;
   }
 
 }
