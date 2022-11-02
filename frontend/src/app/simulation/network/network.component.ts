@@ -6,6 +6,7 @@ import * as cytoscape from 'cytoscape';
 import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
+import {EdgeService} from "../../services/edge.service";
 
 @Component({
   selector: 'app-network',
@@ -16,7 +17,14 @@ export class NetworkComponent implements OnInit {
   @ViewChild("cy") el: ElementRef | undefined;
   id2tip:any = {};
 
-  constructor(private visualisationService: VisualisationService) {
+  public activeEdges: string[] = [];
+
+  constructor(
+    private visualisationService: VisualisationService,
+    private edgeService: EdgeService) {
+    this.edgeService.getEdges().subscribe(res => {
+      this.activeEdges = res;
+    })
   }
 
   ngOnInit(): void {
@@ -61,17 +69,14 @@ export class NetworkComponent implements OnInit {
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
-            'line-color': function (ele: any) {
-              console.log(ele._private.data);
-              return 'black';
-            }
+            'line-color': 'gray',
           }
         }
       ]
     });
     this.visualisationService.getGraph()
       .pipe(
-        tap((g: Graph) => {
+        tap(({graph: g, activeEdges: activeEdges}) => {
 
           cy.remove('nodes');
           this.createNodes(g, cy);
@@ -122,8 +127,28 @@ export class NetworkComponent implements OnInit {
   createEdges(graph: Graph, cy: cytoscape.Core) {
     graph.nodes.forEach((item) => {
       item.neighbours.forEach((neighbour ) => {
-        if(!(cy.getElementById(`${neighbour}_${item.id}`).length > 0)){
-          cy.add({data: {id: '' + item.id + '_' + neighbour, source: '' + item.id, target: '' + neighbour}})
+        const newId = `${item.id}_${neighbour}`;
+        if(cy.getElementById(`${neighbour}_${item.id}`).length === 0){
+          //console.log(this.activeEdges);
+          cy.add({
+            data: {
+              id: newId,
+              source: '' + item.id,
+              target: '' + neighbour
+            }});
+          // if(newId in this.activeEdges) {
+          //   console.log(newId);
+          //   cy.getElementById(newId).style({
+          //     'line-color': 'red'
+          //   })
+          // }
+          this.activeEdges.forEach(edge => {
+            if(edge === newId) {
+              cy.getElementById(newId).style({
+                'line-color': 'red'
+              })
+            }
+          });
         }
       })
     })

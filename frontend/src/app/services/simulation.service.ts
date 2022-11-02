@@ -62,6 +62,7 @@ export class SimulationService {
               break;
           }
 
+          this.edgeService.emitEdges();
           this.visualisationService.emitGraph(this.graph);
           this.minerService.emit();
         }
@@ -164,6 +165,8 @@ export class SimulationService {
     minerNode.mined++;
     minerNode.blockChainLength++;
     minerNode.receiveReward(this.parametersService.getReward());
+
+    this.edgeService.clearEdges();
 
     minerNode.neighbours.forEach((neighbour) => {
       let responseEventData = new SimulationEventData();
