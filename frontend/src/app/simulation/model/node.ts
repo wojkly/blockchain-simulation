@@ -1,19 +1,21 @@
 import {Block} from "./block";
 import {NodeType} from "../nodeType";
+import {getPriceByEnumName} from "./country";
 
 export class Node {
   public blockChainLength: number = 1;
   public mined: number = 0;
   public neighbours: number[] = [];
 
-  public money: number = 10;
   private alive: boolean = true;
   public computingPower: number = 0;
 
   private blockChain?: Block;
 
   constructor(public readonly id: number,
-              public readonly nodeType: NodeType) {
+              public readonly nodeType: NodeType,
+              public readonly country: string,
+              public money: number) {
   }
 
   public connect(nodeId: number): void {
@@ -31,6 +33,7 @@ export class Node {
   }
 
   public settlePayment(paymentAmount: number): boolean {
+    paymentAmount *= getPriceByEnumName(this.country)
     if (this.nodeType != NodeType.Miner) {
       return true;
     }

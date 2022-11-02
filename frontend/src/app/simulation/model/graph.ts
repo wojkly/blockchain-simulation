@@ -1,6 +1,7 @@
 import {Node} from "./node";
 import {randomIntFromInterval} from "../../utils/numbers";
 import {NodeType} from "../nodeType";
+import {getRandomCountryEnumName} from "./country";
 
 type Edge = {
   x: number,
@@ -15,7 +16,7 @@ export class Graph {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, immortalNodesConnectionRatio: number = 1 / 2): Graph {
+  public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, minersData: any[], immortalNodesConnectionRatio: number = 1 / 2): Graph {
     let nodesMap = new Map<number, Node>;
     let id: number = 0;
     const immortalNodes = fullNodes + lightNodes + listeningNodes;
@@ -24,14 +25,14 @@ export class Graph {
     let neighbour = -1;
 
     // create first node (full)
-    let node = new Node(id, NodeType.Full);
+    let node = new Node(id, NodeType.Full, getRandomCountryEnumName(), 0);
     nodesMap.set(id, node);
 
     id += 1;
 
     //create other full nodes
     for (let i = 1; i < fullNodes; i++) {
-      let node = new Node(id, NodeType.Full);
+      let node = new Node(id, NodeType.Full, getRandomCountryEnumName(), 0);
       neighbour = Graph.genrateRandomNumber(id - 1);
       let neighbourNode = nodesMap.get(neighbour);
 
@@ -45,7 +46,7 @@ export class Graph {
 
     //create listening nodes
     for (let i = 0; i < listeningNodes; i++) {
-      let node = new Node(id, NodeType.Listening);
+      let node = new Node(id, NodeType.Listening, getRandomCountryEnumName(), 0);
       neighbour = Graph.genrateRandomNumber(id - 1);
       let neighbourNode = nodesMap.get(neighbour);
 
@@ -59,7 +60,7 @@ export class Graph {
 
     //create light nodes
     for (let i = 0; i < lightNodes; i++) {
-      let node = new Node(id, NodeType.Spv);
+      let node = new Node(id, NodeType.Spv, getRandomCountryEnumName(), 0);
       neighbour = Graph.genrateRandomNumber(id - 1);
       let neighbourNode = nodesMap.get(neighbour);
 
@@ -95,9 +96,10 @@ export class Graph {
 
     //create miner nodes
     for (let i = 0; i < minerNodes; i++) {
-      let node = new Node(id, NodeType.Miner);
-      node.computingPower = randomIntFromInterval(1, 10)
+      console.log(minersData[i])
       neighbour = Graph.genrateRandomNumber(maxImmortalNodeId);
+      let node = new Node(id, NodeType.Miner, minersData[i].country, minersData[i].money);
+      node.computingPower = minersData[i].power;
       let neighbourNode = nodesMap.get(neighbour);
 
       node.connect(neighbour);

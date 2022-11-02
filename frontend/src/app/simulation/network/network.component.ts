@@ -21,7 +21,8 @@ export class NetworkComponent implements OnInit {
 
   constructor(
     private visualisationService: VisualisationService,
-    private edgeService: EdgeService) {
+    private edgeService: EdgeService
+  ) {
     this.edgeService.getEdges().subscribe(res => {
       this.activeEdges = res;
     })
