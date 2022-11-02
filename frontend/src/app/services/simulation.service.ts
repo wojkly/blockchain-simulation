@@ -16,6 +16,7 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
+import {EdgeService} from "./edge.service";
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,8 @@ export class SimulationService {
               private paymentService: PaymentService,
               private minerService: MinerService,
               private blockchainService: BlockchainService,
-              private addMinerService: AddMinerService
+              private addMinerService: AddMinerService,
+              private edgeService: EdgeService
   ) { }
 
   nextId: number = 0;
@@ -167,6 +169,7 @@ export class SimulationService {
       let responseEventData = new SimulationEventData();
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
+      this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
   }
@@ -192,6 +195,7 @@ export class SimulationService {
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
         responseEventData.receiverId = neighbour;
+        this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
     }
