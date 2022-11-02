@@ -33,7 +33,7 @@ export class NetworkComponent implements OnInit {
       container: document.getElementById('cy'),
       style: [
         {
-          selector: 'nodes',
+          selector: 'node',
           style: {
             'width': '100px',
             'height': '100px',
@@ -63,7 +63,7 @@ export class NetworkComponent implements OnInit {
           }
         },
         {
-          selector: 'edges',
+          selector: 'edge',
           style: {
             'width': 3,
             'target-arrow-color': '#ccc',
@@ -78,7 +78,7 @@ export class NetworkComponent implements OnInit {
       .pipe(
         tap(({graph: g, activeEdges: activeEdges}) => {
 
-          cy.remove('nodes');
+          cy.remove('node');
           this.createNodes(g, cy);
           this.createEdges(g, cy);
           this.makeTooltips(cy);
@@ -110,7 +110,8 @@ export class NetworkComponent implements OnInit {
               'blockChainLength': item.blockChainLength,
               'mined': item.mined,
               'money': item.money,
-              'type': item.nodeType}}
+              'type': item.nodeType
+            }}
         })
       } else {
         cy.add({
@@ -118,7 +119,8 @@ export class NetworkComponent implements OnInit {
             id: '' + item.id,
             value: {
               'blockChainLength': item.blockChainLength,
-              'type': item.nodeType}}
+              'type': item.nodeType
+            }}
         })
       }
     })
@@ -128,7 +130,8 @@ export class NetworkComponent implements OnInit {
     graph.nodes.forEach((item) => {
       item.neighbours.forEach((neighbour ) => {
         const newId = `${item.id}_${neighbour}`;
-        if(cy.getElementById(`${neighbour}_${item.id}`).length === 0){
+        const newIdInverted = `${neighbour}_${item.id}`;
+        if(cy.getElementById(newIdInverted).length === 0){
           //console.log(this.activeEdges);
           cy.add({
             data: {
@@ -136,15 +139,12 @@ export class NetworkComponent implements OnInit {
               source: '' + item.id,
               target: '' + neighbour
             }});
-          // if(newId in this.activeEdges) {
-          //   console.log(newId);
-          //   cy.getElementById(newId).style({
-          //     'line-color': 'red'
-          //   })
-          // }
           this.activeEdges.forEach(edge => {
             if(edge === newId) {
               cy.getElementById(newId).style({
+                'line-color': 'red'
+              })
+              cy.getElementById(newIdInverted).style({
                 'line-color': 'red'
               })
             }

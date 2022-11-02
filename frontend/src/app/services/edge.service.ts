@@ -13,6 +13,7 @@ export class EdgeService {
 
   public addEdge(source: number, target: number): void {
     this.activeEdges.push(`${source}_${target}`);
+    this.emitEdges();
   }
 
   public emitEdges() {
