@@ -17,6 +17,7 @@ import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
 import {getPriceByEnumName} from "../simulation/model/country";
+import { Block } from '../simulation/model/block';
 
 @Injectable({
   providedIn: 'root'
@@ -157,7 +158,10 @@ export class SimulationService {
 
     if (minerNode === undefined) return;
 
-    minerNode.attachBlock(this.nextId, minerNode.id);
+    let newBlock = new Block(this.nextId, minerNode.id, minerNode.getLast());
+    minerNode.getLast()?.children.push(newBlock);
+    minerNode.addBlock(newBlock);
+    // minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
 
     minerNode.mined++;
@@ -184,7 +188,8 @@ export class SimulationService {
       const receivedBlock = senderNode.getLast();
 
       if(receiverNode) {
-        receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
+        receiverNode.addBlock(receivedBlock)
+        // receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
       }
 
       receiverNode.neighbours.forEach((neighbour) => {
@@ -196,6 +201,11 @@ export class SimulationService {
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
     }
+  }
+
+  // step to update miner's last block - block to attach new blocks to
+  private updateBlockchain(eventData: SimulationEventData) {
+
   }
 
   private getRandomNodeKey() {

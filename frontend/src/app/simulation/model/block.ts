@@ -5,8 +5,11 @@ export class Block {
   private _previous: Block | null = null;
   private _next: Block | null = null;
 
+  private _parent: Block | null;
+  private _children: Block[] = [];
+
   // potrzebne do GHOST (chyba, że wymyśle coś lepszego)
-  private _weight: number;
+  private _weight: number = 1;
 
   get id(): number {
     return this._id;
@@ -48,7 +51,23 @@ export class Block {
     this._weight = value;
   }
 
-  constructor(id: number, minedBy: number, weight: number = 0) {
+  get parent(): Block | null {
+    return this._parent;
+  }
+
+  set parent(value: Block | null) {
+    this._parent = value;
+  }
+
+  get children(): Block[] {
+    return this._children;
+  }
+
+  set children(value: Block[]) {
+    this._children = value;
+  }
+
+  constructor(id: number, minedBy: number, parent: Block | null = null, children: Block[] = [], weight: number = 0) {
     this._id = id;
     this._minedBy = minedBy;
     this._next = null;
@@ -59,6 +78,8 @@ export class Block {
     // czyli wzór byłby jakoś tak 
     // 
     // block.weight = block.previous.weight + number_of_blocks_on_the_same_level(block.level)
-    this._weight = this.previous ? this.previous.weight + 1 : weight;
+    this._parent = parent;
+    this._children = children;
+    this._weight = this._parent ? this._parent.weight + 1 : weight;
   }
 }
