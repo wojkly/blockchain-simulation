@@ -16,7 +16,7 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-import {MinersToDeleteService} from "./miners-to-delete.service";
+import {MinersDeletingService} from "./miners-deleting.service";
 
 @Injectable({
   providedIn: 'root'
@@ -33,13 +33,14 @@ export class SimulationService {
               private minerService: MinerService,
               private blockchainService: BlockchainService,
               private addMinerService: AddMinerService,
-              private minersToDeleteService: MinersToDeleteService
+              private minersDeletingService: MinersDeletingService
   ) {
     this.nextMinerID = this.parametersService.getAllNodes();
   }
 
   nextId: number = 0;
   minersToDelete: string[] = [];
+  deadMiners: Node[] = [];
   nextMinerID: number;
 
   private addMinerFrequencySubscription: Subscription | undefined;
@@ -78,6 +79,7 @@ export class SimulationService {
         tap(paymentAmount => {
           this.graph.nodes.forEach(miner => {
             if (!miner.settlePayment(paymentAmount)) {
+              this.deadMiners.push(miner);
               this.minersToDelete.push('' + miner.id)
               miner.neighbours.forEach(neighbour => {
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
@@ -86,7 +88,7 @@ export class SimulationService {
               this.minerService.emit();
             }
           })
-          this.minersToDeleteService.emitMinersToDelete(this.minersToDelete);
+          this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
         })
       ).subscribe();

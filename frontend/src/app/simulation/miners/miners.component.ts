@@ -8,6 +8,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
 import {getCountryNameByEnumName, getPriceByEnumName} from "../model/country";
 import {ParametersService} from "../../services/parameters.service";
+import {MinersDeletingService} from "../../services/miners-deleting.service";
 
 @Component({
   selector: 'app-miners',
@@ -16,24 +17,32 @@ import {ParametersService} from "../../services/parameters.service";
 })
 export class MinersComponent implements AfterViewInit {
 
-  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort!: MatSort;
+  @ViewChild('activeMinersPaginator', { static: false }) activeMinersPaginator!: MatPaginator;
+  @ViewChild('deadMinersPaginator', { static: false }) deadMinersPaginator!: MatPaginator;
+  @ViewChild('activeMinersSort', { static: false }) activeMinersSort!: MatSort;
+  @ViewChild('deadMinersSort', { static: false }) deadMinersSort!: MatSort;
 
   minerList = new MatTableDataSource<Node>();
+  deadMinerList = new MatTableDataSource<Node>();
   displayedColumns = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity']
 
   constructor(
     private simulationService: SimulationService,
     private minerService: MinerService,
-    private parametersService: ParametersService
+    private parametersService: ParametersService,
+    private minersDeletingService: MinersDeletingService,
   ) {
     this.minerList.data = this.simulationService.getMiners();
+    this.deadMinerList.data = this.simulationService.deadMiners;
   }
 
   ngAfterViewInit() {
-    this.minerList.paginator = this.paginator;
-    this.minerList.sort = this.sort;
+    this.minerList.paginator = this.activeMinersPaginator;
+    this.minerList.sort = this.activeMinersSort;
+    this.deadMinerList.paginator = this.deadMinersPaginator;
+    this.deadMinerList.sort = this.deadMinersSort;
     this.getData();
+    this.getDeadMinersData();
   }
 
   calculateElectricity(country: string){
@@ -49,6 +58,22 @@ export class MinersComponent implements AfterViewInit {
       .pipe(
         tap( () => {
           this.minerList.data = this.simulationService.getMiners();
+          this.deadMinerList.data = this.simulationService.deadMiners;
+          console.log(this.deadMinerList.data)
+        }),
+        catchError(err => {
+          console.log(err.error.error);
+          return of({});
+        })
+      ).subscribe();
+  }
+
+  getDeadMinersData(): void {
+    this.minersDeletingService.getMinersToDelete()
+      .pipe(
+        tap( () => {
+          this.deadMinerList.data = this.simulationService.deadMiners;
+          console.log(this.deadMinerList.data)
         }),
         catchError(err => {
           console.log(err.error.error);

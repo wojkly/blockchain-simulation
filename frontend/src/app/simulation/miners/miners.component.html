@@ -1,51 +1,102 @@
 
 
 <div class="mat-elevation-z8">
+    <h2>Aktywni górnicy</h2>
 
-  <mat-table [dataSource]="minerList" matSort>
+    <mat-table [dataSource]="minerList" matSort #activeMinersSort="matSort">
 
-    <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{miner.id}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.id}}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="money">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Money</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="money">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Money</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="power">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Computing power</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{miner.computingPower}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="power">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Computing power</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.computingPower}}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="mined">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Blocks mined</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="mined">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Blocks mined</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="length">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Blockchain length</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="length">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Blockchain length</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="country">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Country</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{getCountryName(miner.country)}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="country">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Country</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{getCountryName(miner.country)}}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="electricity">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price</mat-header-cell>
-      <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="electricity">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
+      </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
-  </mat-table>
+    </mat-table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10]"
-                 showFirstLastButtons>
-  </mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5, 10]"
+                   showFirstLastButtons
+                   #activeMinersPaginator>
+    </mat-paginator>
 
+  <h2>Usunięci górnicy</h2>
+
+  <br> <br>
+    <mat-table [dataSource]="deadMinerList" matSort #deadMinersSort="matSort">
+
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.id}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="money">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Money</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="power">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Computing power</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.computingPower}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="mined">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Blocks mined</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="length">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Blockchain length</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="country">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Country</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{getCountryName(miner.country)}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="electricity">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price</mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10]"
+                   showFirstLastButtons
+                   #deadMinersPaginator>
+    </mat-paginator>
 </div>

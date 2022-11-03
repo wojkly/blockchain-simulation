@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MinersToDeleteService {
+export class MinersDeletingService {
 
   private minersToDelete = new BehaviorSubject<string[]>(new Array(""));
 
