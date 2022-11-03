@@ -16,7 +16,7 @@ export class Graph {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, minersData: any[], immortalNodesConnectionRatio: number = 1 / 2): Graph {
+  public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, minersData: any[], immortalNodesConnectionRatio: number = 1 / 10): Graph {
     let nodesMap = new Map<number, Node>;
     let id: number = 0;
     const immortalNodes = fullNodes + lightNodes + listeningNodes;

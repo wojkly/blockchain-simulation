@@ -6,6 +6,10 @@ import * as cytoscape from 'cytoscape';
 import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
+import {EventService} from "../../services/event.service";
+import {SimulationEventType} from "../model/simulation-event-type";
+import {SimulationEvent} from "../model/simulation-event";
+
 
 @Component({
   selector: 'app-network',
@@ -15,21 +19,29 @@ import {NodeType} from "../nodeType";
 export class NetworkComponent implements OnInit {
   @ViewChild("cy") el: ElementRef | undefined;
   id2tip:any = {};
+  graph!: Graph;
 
-  constructor(private visualisationService: VisualisationService) {
+  eventType: any;
+
+  constructor(private visualisationService: VisualisationService,
+              private eventService: EventService,) {
+    this.visualisationService.getGraph().subscribe((res) => {
+      this.graph = res;
+    })
   }
 
   ngOnInit(): void {
-    cytoscape.use( popper );
+    cytoscape.use(popper);
     var cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
           selector: 'nodes',
           style: {
-            'width': '100px',
-            'height': '100px',
-            'background-color': function(node: any) {
+            'width': '20px',
+            'height': '20px',
+            'font-size': '5px',
+            'background-color': function (node: any) {
               let nodeType = node.data("value.type");
               switch (nodeType) {
                 case 0:
@@ -37,92 +49,158 @@ export class NetworkComponent implements OnInit {
                 case 1:
                   return `green`;
                 case 2:
-                  return `orange`;
-                case 3:
-                  return `brown`;
-                default:
                   return `blue`;
+                default:
+                  return `orange`;
               }
             },
             'label': function (node: any) {
-              switch (node.data("value.type")) {
-                case NodeType.Miner:
-                  return `ID: ${node.data("id")}, Money: ${node.data("value.money")}`;
-                default:
-                  return `ID: ${node.data("id")}`;
+              if (node.data("value.type") == NodeType.Miner) {
+                return node.id();
               }
-            },
+            }
           }
         },
         {
           selector: 'edges',
           style: {
-            'width': 3,
-            'line-color': '#dsd1aa3',
-            'target-arrow-color': '#ccc',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier',
+            'width': 1,
+            // 'line-color': '#dsd1aa3',
+            // 'target-arrow-color': '#ccc',
+            // 'target-arrow-shape': 'triangle',
+            // 'curve-style': 'bezier',
           }
-        }
+        },
+        {
+          selector: ':parent',
+          style: {
+            'background-opacity': 0.333
+          }
+        },
       ]
     });
+    this.createNodes(this.graph, cy);
+    this.createEdges(cy);
     this.visualisationService.getGraph()
       .pipe(
         tap((g: Graph) => {
-
-          cy.remove('nodes');
-          this.createNodes(g, cy);
-          this.createEdges(g, cy);
+          cy.forceRender();
+          this.updateNodes(g, cy);
+          cy.remove('edges');
+          cy.forceRender();
+          this.createEdges(cy);
           this.makeTooltips(cy);
           cy.layout({
-            name: 'breadthfirst',
+            name: 'cose',
+            animate: false,
+            randomize: false,
+            refresh: 0,
+            padding: 30
+            // breadthfirst
           }).run();
-          cy.nodes().bind("tap", event => {
-            this.id2tip[event.target.id()].show();
-          });
-          // cy.nodes().unbind("mouseover");
-          // cy.nodes().bind("mouseover", event => {
-          //   this.id2tip[event.target.id()].show();
-          // });
-          // cy.nodes().unbind("mouseout");
-          // cy.nodes().bind("mouseout", event => {
-          //   this.id2tip[event.target.id()].hide();
-          // });
+          cy.nodes().lock()
+          cy.nodes().on('click ', (e) => {
+            this.id2tip[e.target.id()].show()
+          })
         })
       ).subscribe();
   }
+
 
   createNodes(graph: Graph, cy: cytoscape.Core) {
     graph.nodes.forEach((item) => {
       if (item.nodeType === NodeType.Miner) {
         cy.add({
           data: {
-            id: 'node_' + item.id,
+            id: '' + item.id,
             value: {
               'blockChainLength': item.blockChainLength,
               'mined': item.mined,
               'money': item.money,
-              'type': item.nodeType}}
+              'type': item.nodeType,
+              'country': item.country,
+              'computingPower': item.computingPower,
+              'neighbours': item.neighbours}
+          }
         })
+
       } else {
         cy.add({
           data: {
-            id: 'node_' + item.id,
+            id: '' + item.id,
             value: {
               'blockChainLength': item.blockChainLength,
-              'type': item.nodeType}}
+              'type': item.nodeType,
+              'neighbours': item.neighbours}}
         })
       }
     })
   }
 
-  createEdges(graph: Graph, cy: cytoscape.Core) {
-    graph.nodes.forEach((item) => {
-      item.neighbours.forEach((neighbour ) => {
-        if(!(cy.getElementById(`edge_${neighbour}_${item.id}`).length > 0)){
-          cy.add({data: {id: 'edge_' + item.id + '_' + neighbour, source: 'node_' + item.id, target: 'node_' + neighbour}})
+  createEdges(cy: cytoscape.Core) {
+    cy.nodes().forEach((item) => {
+      item.data("value.neighbours").forEach((neighbour ) => {
+        if(!(cy.getElementById(`${neighbour}_${item.id}`).length > 0)){
+          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}})
         }
       })
+    })
+  }
+
+  updateNodes(graph: Graph, cy: cytoscape.Core) {
+    graph.nodes.forEach((item) => {
+      if (item.nodeType === NodeType.Miner) {
+        if(item.money <= 0){
+          cy.getElementById('' + item.id).remove();
+          this.deleteFromNeighbours('' + item.id, cy);
+        }
+        else if (cy.getElementById('' + item.id).id() == '' + item.id){
+          cy.getElementById('' + item.id).data('value', {
+            'blockChainLength': item.blockChainLength,
+            'computingPower': item.computingPower,
+            'country': item.country,
+            'mined': item.mined,
+            'money': item.money,
+            'type': item.nodeType,
+            'neighbours': item.neighbours,
+          })
+        }
+        else{
+          cy.getElementById('' + item.id).removeData();
+          cy.add({
+            data: {
+              id: '' + item.id,
+              value: {
+                'blockChainLength': item.blockChainLength,
+                'mined': item.mined,
+                'money': item.money,
+                'type': item.nodeType,
+                'country': item.country,
+                'computingPower': item.computingPower,
+                'neighbours': item.neighbours}}
+          })
+        }
+
+      } else {
+        cy.getElementById('' + item.id).data(
+            'value', {
+              'blockChainLength': item.blockChainLength,
+              'type': item.nodeType,
+              'neighbours': item.neighbours
+        })
+      }
+    })
+  }
+
+  deleteFromNeighbours(name: string, cy: cytoscape.Core){
+    cy.nodes().forEach(item => {
+      let tmpArr: string[] = [];
+      item.data("value.neighbours").forEach((neighbour) => {
+        if(neighbour != name){
+          tmpArr.push(neighbour)
+        }
+      })
+      item.data("value.neighbours", tmpArr)
     })
   }
 
@@ -137,7 +215,7 @@ export class NetworkComponent implements OnInit {
           let content = document.createElement("div");
           content.setAttribute("style", "font-size:1em; padding-top: 2vh")
           if(node.data("value.type") === NodeType.Miner) {
-            content.innerHTML = `Mined: ${node._private.data.value.mined}, Len: ${node._private.data.value.blockChainLength}`;
+            content.innerHTML = `Mined: ${node._private.data.value.mined}, Len: ${node._private.data.value.blockChainLength}, Money: ${node._private.data.value.money}, Power: ${node._private.data.value.computingPower}`;
           } else {
             content.innerHTML = `Len: ${node._private.data.value.blockChainLength}`;
           }
