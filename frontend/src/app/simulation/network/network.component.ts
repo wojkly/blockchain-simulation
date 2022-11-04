@@ -1,15 +1,12 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {forkJoin, tap} from "rxjs";
+import {tap} from "rxjs";
 import {VisualisationService} from "../../services/visualisation.service";
 import {Graph} from "../model/graph";
 import * as cytoscape from 'cytoscape';
 import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
-import {EventService} from "../../services/event.service";
-import {SimulationEventType} from "../model/simulation-event-type";
-import {SimulationEvent} from "../model/simulation-event";
-import {MinersToDeleteService} from "../../services/miners-to-delete.service";
+import {MinersDeletingService} from "../../services/miners-deleting.service";
 
 
 @Component({
@@ -24,7 +21,7 @@ export class NetworkComponent implements OnInit {
   minersToDelete: string[] = [];
 
   constructor(private visualisationService: VisualisationService,
-              private minersToDeleteService: MinersToDeleteService) {
+              private minersToDeleteService: MinersDeletingService) {
     this.visualisationService.getGraph().subscribe((res) => {
       this.graph = res;
     })
@@ -83,7 +80,6 @@ export class NetworkComponent implements OnInit {
     this.createEdges(cy);
     this.visualisationService.getGraph()
       .pipe(tap((graph) => {
-          cy.forceRender();
           this.updateNodes(graph, cy);
           cy.remove('edges');
           cy.forceRender();
