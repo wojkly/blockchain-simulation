@@ -134,7 +134,7 @@ export class SimulationService {
     let newMinerId = this.getMaxId() + 1;
     const immortalNode = this.getRandomNonMiner();
 
-    const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, 20); //todo add moeney parameter
+    const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, 20); //todo add money parameter
     newMiner.computingPower = randomIntFromInterval(1, 10);
 
 
