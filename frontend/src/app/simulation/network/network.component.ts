@@ -80,7 +80,6 @@ export class NetworkComponent implements OnInit {
     this.createEdges(cy);
     this.visualisationService.getGraph()
       .pipe(tap((graph) => {
-          cy.forceRender();
           this.updateNodes(graph, cy);
           cy.remove('edges');
           cy.forceRender();
