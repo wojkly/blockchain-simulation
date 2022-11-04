@@ -153,7 +153,7 @@ export class SimulationService {
   private handleBlockMined(eventData: SimulationEventData): void {
     let allMiners: number[] = [];
     this.graph.nodes.forEach((value: Node, key: number) => {
-      if(value.nodeType == NodeType.Miner || value.money > 0){
+      if(value.nodeType == NodeType.Miner){
         for (let i = 0; i < value.computingPower; i++){
           allMiners.push(key)
         }
