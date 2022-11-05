@@ -51,7 +51,8 @@ export class BlockchainComponent implements OnInit {
             'shape': 'rectangle',
             'background-color': 'blue',
             'label': (node: any) => {
-              return node.data("block").id;
+                if (node.data("block").id == -1) return "root";
+                else return "block " + node.data("block").id;
             }
           },
         },
@@ -108,7 +109,7 @@ export class BlockchainComponent implements OnInit {
 
     if (this.toggleButtonValue != DEFAULT) {
       var dijkstra = this.cy.elements().dijkstra({
-        root: '#root'
+        root: '#-1'
       });
 
       if (this.toggleButtonValue == LONGEST_CHAIN) {

@@ -2,8 +2,8 @@ export class Block {
 
   private _id: number;
   private _minedBy: number;
-  private _previous: Block | null = null;
-  private _next: Block | null = null;
+  // private _previous: Block | null = null;
+  // private _next: Block | null = null;
 
   private _parent: Block | null;
   private _children: Block[] = [];
@@ -19,21 +19,21 @@ export class Block {
     this._id = value;
   }
 
-  get previous(): Block | null {
-    return this._previous;
-  }
+  // get previous(): Block | null {
+  //   return this._previous;
+  // }
 
-  set previous(value: Block | null) {
-    this._previous = value;
-  }
+  // set previous(value: Block | null) {
+  //   this._previous = value;
+  // }
 
-  get next(): Block | null {
-    return this._next;
-  }
+  // get next(): Block | null {
+  //   return this._next;
+  // }
 
-  set next(value: Block | null) {
-    this._next = value;
-  }
+  // set next(value: Block | null) {
+  //   this._next = value;
+  // }
 
   get minedBy(): number {
     return this._minedBy;
@@ -70,7 +70,7 @@ export class Block {
   constructor(id: number, minedBy: number, parent: Block | null = null, children: Block[] = [], weight: number = 0) {
     this._id = id;
     this._minedBy = minedBy;
-    this._next = null;
+    // this._next = null;
 
     // potrzebne do GHOST (chyba, że wymyśle coś lepszego)
     // przydałoby się też śledzić poziom drzewa, na tej podstawie wyznaczać wagę
