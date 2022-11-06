@@ -1,0 +1,27 @@
+<div fxLayout="column" fxLayoutAlign="space-evenly center" fxLayoutGap="20px" >
+  <h2>Edytuj parametry wskazanego górnika</h2>
+
+  <div [formGroup]="form" fxLayout="column" fxLayoutGap="20px" style="width: 200px; margin: 20px">
+    <mat-form-field>
+      <mat-label>Ilość pieniędzy górnika:</mat-label>
+      <input type="number" formControlName="minerMoneyFC" matInput>
+      <mat-error *ngIf="minerMoneyFC.errors">Liczba musi być większa niż 1</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Moc obliczeniowa górnika:</mat-label>
+      <input type="number" formControlName="minerPowerFC" matInput>
+      <mat-error *ngIf="minerPowerFC.errors">Liczba musi być większa niż 0 i mniejsza niż10</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Kraj pochodzenia górnika:</mat-label>
+      <mat-select formControlName="minerCountryFC" >
+        <mat-option *ngFor="let country of COUNTRIES" [value]="country.enumName">{{country.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <button mat-raised-button color="primary" [disabled]="!formValidation()" (click)="minerEdited()">
+    <mat-icon>done</mat-icon>
+  </button>
+</div>
+

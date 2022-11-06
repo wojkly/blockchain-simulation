@@ -28,6 +28,8 @@ import { ParametersComponent } from './simulation/parameters/parameters.componen
 import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
 import { InitConfigDialogComponent } from './initial-configuration/init-config-dialog/init-config-dialog.component';
 import {MatSelectModule} from "@angular/material/select";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import {MatSelectModule} from "@angular/material/select";
     MinersComponent,
     ParametersComponent,
     BlockchainComponent,
-    InitConfigDialogComponent
+    InitConfigDialogComponent,
+    EditMinerComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +65,8 @@ import {MatSelectModule} from "@angular/material/select";
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

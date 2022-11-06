@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
-import {Graph} from "../simulation/model/graph";
 
 @Injectable({
   providedIn: 'root'

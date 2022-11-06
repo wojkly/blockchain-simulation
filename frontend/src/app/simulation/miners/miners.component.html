@@ -40,6 +40,15 @@
         <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Akcje</mat-header-cell>
+        <mat-cell *matCellDef="let miner">
+          <button mat-icon-button matTooltip="Edytuj" matTooltipPosition="above" (click)="edit(miner)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
@@ -90,8 +99,8 @@
         <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-header-row *matHeaderRowDef="displayedColumnsWithoutEdit"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumnsWithoutEdit;"></mat-row>
 
     </mat-table>
 

@@ -9,6 +9,9 @@ import {MatSort} from "@angular/material/sort";
 import {getCountryNameByEnumName, getPriceByEnumName} from "../model/country";
 import {ParametersService} from "../../services/parameters.service";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
+import {MatDialog} from "@angular/material/dialog";
+import {EditMinerComponent} from "./edit-miner/edit-miner.component";
+import {VisualisationService} from "../../services/visualisation.service";
 
 @Component({
   selector: 'app-miners',
@@ -24,13 +27,17 @@ export class MinersComponent implements AfterViewInit {
 
   minerList = new MatTableDataSource<Node>();
   deadMinerList = new MatTableDataSource<Node>();
-  displayedColumns = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity']
+  displayedColumns = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity', 'edit']
+  displayedColumnsWithoutEdit = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity']
+
 
   constructor(
     private simulationService: SimulationService,
     private minerService: MinerService,
     private parametersService: ParametersService,
     private minersDeletingService: MinersDeletingService,
+    private dialog: MatDialog,
+    private visualizationService: VisualisationService
   ) {
     this.minerList.data = this.simulationService.getMiners();
     this.deadMinerList.data = this.simulationService.deadMiners;
@@ -80,5 +87,20 @@ export class MinersComponent implements AfterViewInit {
           return of({});
         })
       ).subscribe();
+  }
+
+  edit(miner: Node){
+    const dialogRef = this.dialog.open(EditMinerComponent, {
+      width: '700px',
+      disableClose: true,
+      data: {
+        miner: miner
+      }
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if(res){
+        this.visualizationService.emitGraph(res);
+      }
+    })
   }
 }
