@@ -171,8 +171,6 @@ export class SimulationService {
     minerNode.blockChainLength++;
     minerNode.receiveReward(this.parametersService.getReward());
 
-    this.edgeService.clearEdges();
-
     minerNode.neighbours.forEach((neighbour) => {
       let responseEventData = new SimulationEventData();
       responseEventData.senderId = minerId;
@@ -203,6 +201,7 @@ export class SimulationService {
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
         responseEventData.receiverId = neighbour;
+        console.log(responseEventData);
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
