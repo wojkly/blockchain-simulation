@@ -8,12 +8,12 @@ import {EdgeService} from "./edge.service";
   providedIn: 'root'
 })
 export class VisualisationService {
-  private graph = new BehaviorSubject<{graph: Graph, activeEdges: string[]}>({
+  private graph = new BehaviorSubject<{graph: Graph, activeEdges: {edge: string, ttl: number}[]}>({
     graph: new Graph(new Map<number, Node>()),
-    activeEdges: ['']
+    activeEdges: [{edge: '', ttl: 0}]
   });
 
-  private activeEdges: string[] = [];
+  private activeEdges: {edge: string, ttl: number}[] = [];
 
   constructor(
     private edgeService: EdgeService
@@ -24,11 +24,14 @@ export class VisualisationService {
     })
   }
 
-  public getGraph(): Observable<{graph: Graph, activeEdges: string[]}> {
+  public getGraph(): Observable<{graph: Graph, activeEdges: {edge: string, ttl: number}[]}> {
     return this.graph.asObservable();
   }
 
   public emitGraph(graph: Graph) {
-    this.graph.next({graph: graph, activeEdges: this.activeEdges});
+    this.graph.next({
+      graph: graph,
+      activeEdges: this.activeEdges
+    });
   }
 }

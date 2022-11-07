@@ -19,7 +19,7 @@ export class NetworkComponent implements OnInit {
   id2tip:any = {};
   graph!: Graph;
   minersToDelete: string[] = [];
-  public activeEdges: string[] = [];
+  public activeEdges: {edge:string, ttl: number}[] = [];
 
 
   constructor(private visualisationService: VisualisationService,
@@ -60,6 +60,7 @@ export class NetworkComponent implements OnInit {
               if (node.data("value.type") == NodeType.Miner) {
                 return node.id();
               }
+              return '';
             }
           }
         },
@@ -86,7 +87,7 @@ export class NetworkComponent implements OnInit {
     this.visualisationService.getGraph()
       .pipe(tap(res => {
           this.updateNodes(res.graph, cy);
-          cy.remove('edges');
+          cy.remove('edge');
           cy.forceRender();
           this.createEdges(cy);
           this.makeTooltips(cy);
@@ -141,8 +142,14 @@ export class NetworkComponent implements OnInit {
   createEdges(cy: cytoscape.Core) {
     cy.nodes().forEach((item) => {
       item.data("value.neighbours").forEach((neighbour ) => {
-        if(!(cy.getElementById(`${neighbour}_${item.id}`).length > 0)){
+        let newEdge = `${neighbour}_${item.id}`;
+        if(!(cy.getElementById(newEdge).length > 0)){
           cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}})
+          this.activeEdges.forEach(el => {
+            if(el.edge === newEdge) {
+              cy.getElementById(newEdge).style({'line-color': 'red'});
+            }
+          })
         }
       })
     })

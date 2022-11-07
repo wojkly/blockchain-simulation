@@ -190,6 +190,7 @@ export class SimulationService {
       this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
+    this.edgeService.depleteTTL();
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
@@ -213,10 +214,11 @@ export class SimulationService {
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
         responseEventData.receiverId = neighbour;
-        console.log(responseEventData);
+        //console.log(responseEventData);
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
+      this.edgeService.depleteTTL();
     }
   }
 
