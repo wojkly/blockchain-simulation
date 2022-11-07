@@ -5,7 +5,7 @@ import {BehaviorSubject} from "rxjs";
   providedIn: 'root'
 })
 export class EdgeService {
-  private TIME_TO_LIVE = 5;
+  private TIME_TO_LIVE = 2;
 
   private $activeEdges = new BehaviorSubject([{edge: '', ttl: 0}]);
 

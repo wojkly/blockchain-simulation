@@ -142,13 +142,12 @@ export class NetworkComponent implements OnInit {
   createEdges(cy: cytoscape.Core) {
     cy.nodes().forEach((item) => {
       item.data("value.neighbours").forEach((neighbour ) => {
-        const reverseEdge = `${neighbour}_${item.id}`;
-        const newEdge = `${item.id}_${neighbour}`;
+        const reverseEdge = `${neighbour}_${item.id()}`;
+        const newEdge = `${item.id()}_${neighbour}`;
         if(!(cy.getElementById(reverseEdge).length > 0)){
-          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}})
+          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}});
           this.activeEdges.forEach(el => {
-            if(el.edge === newEdge) {
-              console.log(`color edge ${newEdge}`)
+            if(el.edge === newEdge && el.ttl > 0) {
               cy.getElementById(newEdge).style({'line-color': 'red'});
             }
           })
