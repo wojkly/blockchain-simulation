@@ -98,6 +98,7 @@ export class SimulationService {
           })
           this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
+          this.edgeService.depleteTTL();
         })
       ).subscribe();
 
@@ -190,7 +191,6 @@ export class SimulationService {
       this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
-    this.edgeService.depleteTTL();
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
@@ -218,7 +218,6 @@ export class SimulationService {
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
-      this.edgeService.depleteTTL();
     }
   }
 

@@ -30,10 +30,10 @@ export class NetworkComponent implements OnInit {
       this.graph = res.graph;
       this.activeEdges = res.activeEdges;
     });
+    cytoscape.use(popper);
   }
 
   ngOnInit(): void {
-    cytoscape.use(popper);
     let cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
@@ -142,11 +142,13 @@ export class NetworkComponent implements OnInit {
   createEdges(cy: cytoscape.Core) {
     cy.nodes().forEach((item) => {
       item.data("value.neighbours").forEach((neighbour ) => {
-        let newEdge = `${neighbour}_${item.id}`;
-        if(!(cy.getElementById(newEdge).length > 0)){
+        const reverseEdge = `${neighbour}_${item.id}`;
+        const newEdge = `${item.id}_${neighbour}`;
+        if(!(cy.getElementById(reverseEdge).length > 0)){
           cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}})
           this.activeEdges.forEach(el => {
             if(el.edge === newEdge) {
+              console.log(`color edge ${newEdge}`)
               cy.getElementById(newEdge).style({'line-color': 'red'});
             }
           })

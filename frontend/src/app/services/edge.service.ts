@@ -19,6 +19,7 @@ export class EdgeService {
   }
 
   public emitEdges() {
+    //console.log(this.activeEdges);
     this.$activeEdges.next(this.activeEdges);
   }
 
@@ -27,10 +28,11 @@ export class EdgeService {
   }
 
   public depleteTTL(): void {
-    this.activeEdges = this.activeEdges.filter(el => el.ttl > 1);
+    console.log('deplete')
+    this.activeEdges = this.activeEdges.filter(el => el.ttl >= 1);
     this.activeEdges.forEach(el => {
       el.ttl -= 1;
-    })
+    });
   }
 
   public getEdges() {
