@@ -16,12 +16,9 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-<<<<<<< HEAD
 import {getPriceByEnumName} from "../simulation/model/country";
 import {EdgeService} from "./edge.service";
-=======
-import {MinersDeletingService} from "./miners-deleting.service";
->>>>>>> 9082ef04629bfd0da482f5f4aa3956560138add3
+import { MinersDeletingService } from './miners-deleting.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,15 +35,11 @@ export class SimulationService {
               private minerService: MinerService,
               private blockchainService: BlockchainService,
               private addMinerService: AddMinerService,
-<<<<<<< HEAD
-              private edgeService: EdgeService
-  ) { }
-=======
+              private edgeService: EdgeService,
               private minersDeletingService: MinersDeletingService
   ) {
     this.nextMinerID = this.parametersService.getAllNodes();
   }
->>>>>>> 9082ef04629bfd0da482f5f4aa3956560138add3
 
   nextId: number = 0;
   minersToDelete: string[] = [];
