@@ -6,8 +6,9 @@ import * as cytoscape from 'cytoscape';
 import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
-import {EdgeService} from "../../services/edge.service";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
+import {EdgeService} from "../../services/edge.service";
+
 
 @Component({
   selector: 'app-network',
@@ -96,7 +97,7 @@ export class NetworkComponent implements OnInit {
             animate: false,
             randomize: false,
             refresh: 0,
-            padding: 30
+            padding: 50
             // breadthfirst
           }).run();
           cy.nodes().lock()
