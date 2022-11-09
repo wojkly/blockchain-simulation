@@ -18,6 +18,7 @@ import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
 import {getPriceByEnumName} from "../simulation/model/country";
 import { Block } from '../simulation/model/block';
+import {MinersDeletingService} from "./miners-deleting.service";
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +34,16 @@ export class SimulationService {
               private paymentService: PaymentService,
               private minerService: MinerService,
               private blockchainService: BlockchainService,
-              private addMinerService: AddMinerService
-  ) { }
+              private addMinerService: AddMinerService,
+              private minersDeletingService: MinersDeletingService
+  ) {
+    this.nextMinerID = this.parametersService.getAllNodes();
+  }
 
   nextId: number = 0;
+  minersToDelete: string[] = [];
+  deadMiners: Node[] = [];
+  nextMinerID: number;
 
   private addMinerFrequencySubscription: Subscription | undefined;
   private addMinerSubscription: Subscription | undefined;
@@ -74,6 +81,8 @@ export class SimulationService {
         tap(paymentAmount => {
           this.graph.nodes.forEach(miner => {
             if (!miner.settlePayment(paymentAmount)) {
+              this.deadMiners.push(miner);
+              this.minersToDelete.push('' + miner.id)
               miner.neighbours.forEach(neighbour => {
                 this.graph.nodes.get(neighbour)?.detachMiner(miner.id);
               })
@@ -81,6 +90,8 @@ export class SimulationService {
               this.minerService.emit();
             }
           })
+          this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
+          this.minersToDelete = [];
         })
       ).subscribe();
 
@@ -125,7 +136,8 @@ export class SimulationService {
   }
 
   private addNewMiner() {
-    let newMinerId = this.getMaxId() + 1;
+    let newMinerId = this.nextMinerID;
+    this.nextMinerID += 1;
     const immortalNode = this.getRandomNonMiner();
 
     const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, 20); //todo add moeney parameter
@@ -214,7 +226,7 @@ export class SimulationService {
   }
 
   public getMiners() {
-    return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner);
+    return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner || value.money > 0);
   }
 
   private getRandomNonMiner(): Node {

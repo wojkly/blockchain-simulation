@@ -59,7 +59,6 @@ export class InitialConfigurationComponent implements OnInit {
   }
 
   onClick(): void {
-    console.log(this.form.value)
     this.snackBar.open("Przechodzenie do symulacji",'',{ duration: 500 });
     this.setNodes();
     this.router.navigate([SIMULATION_PATH], {relativeTo: this.activatedRoute.parent});
