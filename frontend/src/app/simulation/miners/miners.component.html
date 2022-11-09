@@ -1,7 +1,13 @@
 
 
 <div class="mat-elevation-z8">
+
+  <div fxLayout="row" fxLayoutAlign="start center" >
     <h2>Aktywni górnicy</h2>
+    <button mat-raised-button color="accent" (click)="addMiner()">Dodaj górnika </button>
+  </div>
+
+
 
     <mat-table [dataSource]="minerList" matSort #activeMinersSort="matSort">
 

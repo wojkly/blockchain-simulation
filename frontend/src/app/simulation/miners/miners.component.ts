@@ -12,6 +12,8 @@ import {MinersDeletingService} from "../../services/miners-deleting.service";
 import {MatDialog} from "@angular/material/dialog";
 import {EditMinerComponent} from "./edit-miner/edit-miner.component";
 import {VisualisationService} from "../../services/visualisation.service";
+import {AddMinerComponent} from "./add-miner/add-miner.component";
+import {Graph} from "../model/graph";
 
 @Component({
   selector: 'app-miners',
@@ -19,6 +21,8 @@ import {VisualisationService} from "../../services/visualisation.service";
   styleUrls: ['./miners.component.scss']
 })
 export class MinersComponent implements AfterViewInit {
+
+  private graph = new Graph(new Map<number, Node>());
 
   @ViewChild('activeMinersPaginator', { static: false }) activeMinersPaginator!: MatPaginator;
   @ViewChild('deadMinersPaginator', { static: false }) deadMinersPaginator!: MatPaginator;
@@ -100,6 +104,22 @@ export class MinersComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe((res) => {
       if(res){
         this.visualizationService.emitGraph(res);
+      }
+    })
+  }
+
+  addMiner(){
+    const dialogRef = this.dialog.open(AddMinerComponent, {
+      width: '700px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if(res){
+        for(var i = 0; i < res.length; i++){
+          this.simulationService.addNewMinerWithParams(res[i].country, res[i].money, res[i].power)
+        }
+        this.getData();
+        this.getDeadMinersData();
       }
     })
   }

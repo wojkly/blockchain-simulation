@@ -148,6 +148,21 @@ export class SimulationService {
     this.graph.nodes.set(newMinerId, newMiner);
   }
 
+  public addNewMinerWithParams(country: string, money: number, computingPower: number){
+    let newMinerId = this.nextMinerID;
+    this.nextMinerID += 1;
+    const immortalNode = this.getRandomNonMiner();
+
+    const newMiner = new Node(newMinerId, NodeType.Miner, country, money); //todo add moeney parameter
+    newMiner.computingPower = computingPower;
+
+
+    newMiner.connect(immortalNode.id);
+    immortalNode.connect(newMiner.id);
+
+    this.graph.nodes.set(newMinerId, newMiner);
+  }
+
   private handleInitialization(): void {
     this.graph = Graph.generateGraph(this.parametersService.getFullNodes(), this.parametersService.getMinerNodes(), this.parametersService.getLightNodes(), this.parametersService.getListeningNodes(), this.parametersService.getInitialMinersData());
   }

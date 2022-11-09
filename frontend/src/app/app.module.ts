@@ -30,6 +30,7 @@ import { InitConfigDialogComponent } from './initial-configuration/init-config-d
 import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.component';
+import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.co
     ParametersComponent,
     BlockchainComponent,
     InitConfigDialogComponent,
-    EditMinerComponent
+    EditMinerComponent,
+    AddMinerComponent
   ],
   imports: [
     BrowserModule,

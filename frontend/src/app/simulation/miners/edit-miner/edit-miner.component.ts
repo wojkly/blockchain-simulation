@@ -52,7 +52,6 @@ export class EditMinerComponent implements OnInit {
     // @ts-ignore
     this.graph.nodes.get(this.minerToEdit.id).country = this.minerCountryFC.value
 
-    console.log(this.graph)
     this.dialogRef.close(this.graph)
   }
 }

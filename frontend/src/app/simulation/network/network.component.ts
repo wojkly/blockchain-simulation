@@ -33,7 +33,7 @@ export class NetworkComponent implements OnInit {
       container: document.getElementById('cy'),
       style: [
         {
-          selector: 'nodes',
+          selector: 'node',
           style: {
             'width': '20px',
             'height': '20px',
@@ -55,11 +55,12 @@ export class NetworkComponent implements OnInit {
               if (node.data("value.type") == NodeType.Miner) {
                 return node.id();
               }
+              return '';
             }
           }
         },
         {
-          selector: 'edges',
+          selector: 'edge',
           style: {
             'width': 1,
             // 'line-color': '#dsd1aa3',
@@ -81,7 +82,7 @@ export class NetworkComponent implements OnInit {
     this.visualisationService.getGraph()
       .pipe(tap((graph) => {
           this.updateNodes(graph, cy);
-          cy.remove('edges');
+          cy.remove('edge');
           cy.forceRender();
           this.createEdges(cy);
           this.makeTooltips(cy);
@@ -90,7 +91,7 @@ export class NetworkComponent implements OnInit {
             animate: false,
             randomize: false,
             refresh: 0,
-            padding: 30
+            padding: 50
             // breadthfirst
           }).run();
           cy.nodes().lock()
