@@ -70,7 +70,7 @@ export class SimulationService {
               break;
           }
 
-          this.edgeService.emitEdges();
+          //this.edgeService.emitEdges();
           this.visualisationService.emitGraph(this.graph);
           this.minerService.emit();
         }
@@ -78,9 +78,9 @@ export class SimulationService {
       })
     ).subscribe();
 
-    this.edgeService.getEdges().subscribe(() => {
-      this.visualisationService.emitGraph(this.graph);
-    })
+    // this.edgeService.getEdges().subscribe(() => {
+    //   this.visualisationService.emitGraph(this.graph);
+    // })
 
     this.paymentService.getPayment()
       .pipe(
@@ -98,7 +98,7 @@ export class SimulationService {
           })
           this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
-          this.edgeService.depleteTTL();
+          //this.edgeService.depleteTTL();
         })
       ).subscribe();
 
@@ -114,6 +114,7 @@ export class SimulationService {
           } else {
             this.stopAddingMiners();
           }
+          this.edgeService.depleteTTL();
         })
       )
       .subscribe();
@@ -191,6 +192,7 @@ export class SimulationService {
       this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
+    this.edgeService.depleteTTL();
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
@@ -214,16 +216,12 @@ export class SimulationService {
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
         responseEventData.receiverId = neighbour;
-        //console.log(responseEventData);
+
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
+      this.edgeService.depleteTTL();
     }
-  }
-
-  private getRandomNodeKey() {
-    let keys = Array.from(this.graph.nodes.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
   }
 
   public getMiners() {
@@ -237,9 +235,5 @@ export class SimulationService {
 
   private getNonMiners(): Node[] {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType != NodeType.Miner);
-  }
-
-  private getMaxId(): number {
-    return Math.max(...Array.from(this.graph.nodes.keys()));
   }
 }

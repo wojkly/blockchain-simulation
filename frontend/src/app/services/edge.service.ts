@@ -5,21 +5,31 @@ import {BehaviorSubject} from "rxjs";
   providedIn: 'root'
 })
 export class EdgeService {
-  private TIME_TO_LIVE = 2;
+  private TIME_TO_LIVE = 7;
 
   private $activeEdges = new BehaviorSubject([{edge: '', ttl: 0}]);
 
   private activeEdges: {edge: string, ttl: number}[] = [];
 
+  //private $semaphore = new BehaviorSubject(false);
+
   constructor() { }
 
   public addEdge(source: number, target: number): void {
+    // let subscription = this.$semaphore.asObservable().subscribe(sem => {
+    //   if(sem) {
+    //     this.activeEdges.push({edge: `${source}_${target}`,ttl: this.TIME_TO_LIVE});
+    //     this.emitEdges();
+    //     subscription.unsubscribe();
+    //   }
+    // });
     this.activeEdges.push({edge: `${source}_${target}`,ttl: this.TIME_TO_LIVE});
     this.emitEdges();
   }
 
   public emitEdges() {
     //console.log(this.activeEdges);
+    //this.depleteTTL()
     this.$activeEdges.next(this.activeEdges);
   }
 
@@ -28,7 +38,6 @@ export class EdgeService {
   }
 
   public depleteTTL(): void {
-    console.log('deplete')
     this.activeEdges = this.activeEdges.filter(el => el.ttl >= 1);
     this.activeEdges.forEach(el => {
       el.ttl -= 1;

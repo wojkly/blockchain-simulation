@@ -20,7 +20,7 @@ export class VisualisationService {
   ) {
     this.edgeService.getEdges().subscribe(res => {
       this.activeEdges = res;
-      //this.emitGraph(this.graph.getValue().graph);
+      this.emitGraph(this.graph.getValue().graph);
     })
   }
 
