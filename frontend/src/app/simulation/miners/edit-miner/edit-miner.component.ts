@@ -36,7 +36,7 @@ export class EditMinerComponent implements OnInit {
 
   ngOnInit(): void {
     this.visualizationService.getGraph().subscribe((res) => {
-      this.graph = res;
+      this.graph = res.graph;
     })
   }
 

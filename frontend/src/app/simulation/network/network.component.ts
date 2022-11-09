@@ -7,6 +7,7 @@ import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
+import {EdgeService} from "../../services/edge.service";
 
 
 @Component({
