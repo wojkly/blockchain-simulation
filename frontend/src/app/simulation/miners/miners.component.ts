@@ -70,7 +70,7 @@ export class MinersComponent implements AfterViewInit {
         tap( () => {
           this.minerList.data = this.simulationService.getMiners();
           this.deadMinerList.data = this.simulationService.deadMiners;
-          console.log(this.deadMinerList.data)
+          //console.log(this.deadMinerList.data)
         }),
         catchError(err => {
           console.log(err.error.error);
@@ -84,7 +84,7 @@ export class MinersComponent implements AfterViewInit {
       .pipe(
         tap( () => {
           this.deadMinerList.data = this.simulationService.deadMiners;
-          console.log(this.deadMinerList.data)
+          //console.log(this.deadMinerList.data)
         }),
         catchError(err => {
           console.log(err.error.error);

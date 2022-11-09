@@ -7,10 +7,7 @@
     [thumbLabel]="true"
     [(ngModel)]="value">
   </mat-slider>
-  <button mat-fab color="primary" (click)="startSimulation()">
-    Start
-  </button>
-  <button mat-fab color="accent" (click)="stopSimulation()">
-    Stop
+  <button mat-fab [color]="disabled? 'accent' : 'primary'" (click)="disabled? stopSimulation() : startSimulation()">
+    {{getButtonTitle()}}
   </button>
 </div>

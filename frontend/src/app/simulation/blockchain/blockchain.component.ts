@@ -67,7 +67,7 @@ export class BlockchainComponent implements OnInit {
       ]
     });
 
-    
+
     this.createBlockchain();
 
     this.cy.nodes().on('click', (event) => {
@@ -75,7 +75,7 @@ export class BlockchainComponent implements OnInit {
     });
     this.cy.layout({name: 'breadthfirst', directed: true}).run();
 
-    
+
     this.blockchainService.get()
       .pipe(
         tap((g) => {
@@ -83,7 +83,7 @@ export class BlockchainComponent implements OnInit {
           // tutaj docelowo blockchainService powinien zwracać zaktualizowany graf (albo nowe bloki)
         })
       ).subscribe()
-    
+
   }
 
   private changeProtocol() {
@@ -110,11 +110,11 @@ export class BlockchainComponent implements OnInit {
             lastBlockId = '#' + leaves[i].id();
           }
         }
-  
+
         var pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
         this.highlightPath(pathToLastBlock);
 
-      } else { 
+      } else {
         var max = this.cy.nodes().max( function(node: any) {
           return node.data('block').weight;
         });
@@ -186,7 +186,7 @@ export class BlockchainComponent implements OnInit {
       data: {id: 'n10', block: new Block(10, 10, 6)}
     });
 
-    // edges 
+    // edges
     this.cy.add({
       group: 'edges',
       data: {id: 'e0', source: 'root', target: 'n1'}

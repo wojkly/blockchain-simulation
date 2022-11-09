@@ -16,7 +16,9 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-import {MinersDeletingService} from "./miners-deleting.service";
+import {getPriceByEnumName} from "../simulation/model/country";
+import {EdgeService} from "./edge.service";
+import { MinersDeletingService } from './miners-deleting.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +35,7 @@ export class SimulationService {
               private minerService: MinerService,
               private blockchainService: BlockchainService,
               private addMinerService: AddMinerService,
+              private edgeService: EdgeService,
               private minersDeletingService: MinersDeletingService
   ) {
     this.nextMinerID = this.parametersService.getAllNodes();
@@ -67,12 +70,17 @@ export class SimulationService {
               break;
           }
 
+          //this.edgeService.emitEdges();
           this.visualisationService.emitGraph(this.graph);
           this.minerService.emit();
         }
         this.stepService.unblockSemaphore();
       })
     ).subscribe();
+
+    // this.edgeService.getEdges().subscribe(() => {
+    //   this.visualisationService.emitGraph(this.graph);
+    // })
 
     this.paymentService.getPayment()
       .pipe(
@@ -90,6 +98,7 @@ export class SimulationService {
           })
           this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
+          //this.edgeService.depleteTTL();
         })
       ).subscribe();
 
@@ -105,6 +114,7 @@ export class SimulationService {
           } else {
             this.stopAddingMiners();
           }
+          this.edgeService.depleteTTL();
         })
       )
       .subscribe();
@@ -138,7 +148,7 @@ export class SimulationService {
     this.nextMinerID += 1;
     const immortalNode = this.getRandomNonMiner();
 
-    const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, 20); //todo add moeney parameter
+    const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, 20); //todo add money parameter
     newMiner.computingPower = randomIntFromInterval(1, 10);
 
 
@@ -194,8 +204,10 @@ export class SimulationService {
       let responseEventData = new SimulationEventData();
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
+      this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
+    this.edgeService.depleteTTL();
   }
 
   private handleBlockReceived(eventData: SimulationEventData): void {
@@ -219,14 +231,12 @@ export class SimulationService {
         let responseEventData = new SimulationEventData();
         responseEventData.senderId = eventData.receiverId;
         responseEventData.receiverId = neighbour;
+
+        this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
+      this.edgeService.depleteTTL();
     }
-  }
-
-  private getRandomNodeKey() {
-    let keys = Array.from(this.graph.nodes.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
   }
 
   public getMiners() {
@@ -240,9 +250,5 @@ export class SimulationService {
 
   private getNonMiners(): Node[] {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType != NodeType.Miner);
-  }
-
-  private getMaxId(): number {
-    return Math.max(...Array.from(this.graph.nodes.keys()));
   }
 }
