@@ -76,7 +76,8 @@ export class BlockchainComponent implements OnInit {
 
     this.visualisationService.getGraph()
       .pipe(
-        tap((g: Graph) => {
+        tap((res) => {
+          let g = res.graph;
           this.cy.remove('nodes');
           this.cy.remove('edges');
           console.log(g)
@@ -92,7 +93,7 @@ export class BlockchainComponent implements OnInit {
       ).subscribe();
     // this.createBlockchain();
 
-    
+
     // this.blockchainService.get()
     //   .pipe(
     //     tap((g) => {
@@ -126,11 +127,11 @@ export class BlockchainComponent implements OnInit {
             lastBlockId = '#' + leaves[i].id();
           }
         }
-  
+
         var pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
         this.highlightPath(pathToLastBlock);
 
-      } else { 
+      } else {
         var max = this.cy.nodes().max( function(node: any) {
           return node.data('block').weight;
         });
@@ -180,12 +181,12 @@ export class BlockchainComponent implements OnInit {
           visited.add(child.id);
           queue.push(child.id);
           console.log(this.cy.nodes())
-          
+
           this.cy.add({
             group: 'nodes',
             data: {id: child.id.toString(), block: child}
           });
-          
+
           this.cy.add({
             group: 'edges',
             data: {id: 'edge_' + edgeId.toString(), source: b.id.toString(), target: child.id.toString()}
@@ -245,7 +246,7 @@ export class BlockchainComponent implements OnInit {
   //     data: {id: 'n10', block: new Block(10, 10, 6)}
   //   });
 
-  //   // edges 
+  //   // edges
   //   this.cy.add({
   //     group: 'edges',
   //     data: {id: 'e0', source: 'root', target: 'n1'}
@@ -286,7 +287,4 @@ export class BlockchainComponent implements OnInit {
   //     group: 'edges',
   //     data: {id: 'e9', source: 'n6', target: 'n10'}
   //   });
-
-  // }
-
 }

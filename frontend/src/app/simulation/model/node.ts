@@ -23,7 +23,7 @@ export class Node {
 
   constructor(public readonly id: number,
               public readonly nodeType: NodeType,
-              public readonly country: string,
+              public country: string,
               public money: number) {
 
     if (this.nodeType == NodeType.Full) {

@@ -1,5 +1,4 @@
 import {Node} from "./node";
-import {randomIntFromInterval} from "../../utils/numbers";
 import {NodeType} from "../nodeType";
 import {getRandomCountryEnumName} from "./country";
 
