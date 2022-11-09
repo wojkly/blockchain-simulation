@@ -35,7 +35,6 @@ export class BlockchainComponent implements OnInit {
   public onValChange(val: string) {
     this.toggleButtonValue = val;
     this.cleanHighlighting();
-    console.log(this.cy.nodes().classes())
     this.changeProtocol();
   }
 
@@ -79,6 +78,7 @@ export class BlockchainComponent implements OnInit {
       .pipe(
         tap((g: Graph) => {
           this.cy.remove('nodes');
+          this.cy.remove('edges');
           console.log(g)
           this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
 
@@ -174,16 +174,21 @@ export class BlockchainComponent implements OnInit {
       if (!b) break;
 
       for (let child of b.children) {
+        console.log('iter: ' + child.id)
         if (!visited.has(child.id)) {
+          console.log('visiting: ' + child.id )
           visited.add(child.id);
           queue.push(child.id);
+          console.log(this.cy.nodes())
+          
           this.cy.add({
             group: 'nodes',
             data: {id: child.id.toString(), block: child}
           });
+          
           this.cy.add({
             group: 'edges',
-            data: {id: edgeId.toString(), source: b.id.toString(), target: child.id.toString()}
+            data: {id: 'edge_' + edgeId.toString(), source: b.id.toString(), target: child.id.toString()}
           });
           edgeId++;
         }

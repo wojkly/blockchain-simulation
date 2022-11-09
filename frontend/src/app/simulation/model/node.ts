@@ -74,32 +74,15 @@ export class Node {
   }
 
   public getLast(): Block | undefined {
-    // if(this.blockChain) {
-    //   let temp = this.blockChain;
-    //   while(temp?.next !== null) {
-    //     temp = temp?.next;
-    //   }
-    //   return temp;
-    // }
-    // return undefined;
-    return this.lastBlock;
-  }
 
-  // public attachBlock(id: number, minedBy: number): void {
-  //   // if(this.blockChain) {
-  //   //   let temp = this.blockChain;
-  //   //   while(temp?.next !== null) {
-  //   //     temp = temp?.next;
-  //   //   }
-  //   //   temp.next = new Block(id, minedBy);
-  //   //   temp.next.previous = temp;
-  //   //   return;
-  //   // }
-  //   // this.blockChain = new Block(id, minedBy);
-  //   if (this.nodeType == NodeType.Miner) {
-  //     if (this.parentBlock) this
-  //   }
-  // }
+    if (this.nodeType == NodeType.Miner)
+      return this.lastBlock;
+    else if (this.nodeType == NodeType.Full) {
+      // global variable for protocol
+      this.findLastBlock(Protocol.LongestChain);
+    }
+
+  }
 
   // for miner nodes - switches parent block
   // for full nodes - adds the block to the blockchain
@@ -156,7 +139,7 @@ export class Node {
 
   private longestPath(root: Block): number[] {
     if (!root) return [];
-    let paths = [];
+    let paths: any[] = [];
     for (let child of root.children) {
       paths.push(this.longestPath(child));
     }

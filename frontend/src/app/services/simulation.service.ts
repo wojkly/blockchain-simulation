@@ -67,6 +67,9 @@ export class SimulationService {
             case SimulationEventType.BLOCK_RECEIVED:
               this.handleBlockReceived(b.eventData);
               break;
+            case SimulationEventType.UPDATE_LAST_BLOCK:
+              this.handleBlockchainUpdate(b.eventData);
+              break;
           }
 
           this.visualisationService.emitGraph(this.graph);
@@ -171,7 +174,7 @@ export class SimulationService {
     if (minerNode === undefined) return;
 
     let newBlock = new Block(this.nextId, minerNode.id, minerNode.getLast());
-    minerNode.getLast()?.children.push(newBlock);
+    // minerNode.getLast()?.children.push(newBlock);
     minerNode.addBlock(newBlock);
     // minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
@@ -216,8 +219,19 @@ export class SimulationService {
   }
 
   // step to update miner's last block - block to attach new blocks to
-  private updateBlockchain(eventData: SimulationEventData) {
+  private handleBlockchainUpdate(eventData: SimulationEventData) {
+    let maxFullNode = Array.from(this.graph.nodes.values())
+      .filter((node) => node.nodeType == NodeType.Full)
+      .reduce((p, v) => {
+        return (p.blockChainSize > v.blockChainSize ? p : v);
+      });
 
+    maxFullNode.neighbours.forEach((neighbour) => {
+      let updateEventData = new SimulationEventData();
+      updateEventData.senderId = maxFullNode.id;
+      updateEventData.receiverId = neighbour;
+      this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, updateEventData));
+    })
   }
 
   private getRandomNodeKey() {
