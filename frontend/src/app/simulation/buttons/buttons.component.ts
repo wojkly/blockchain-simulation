@@ -25,4 +25,8 @@ export class ButtonsComponent implements OnInit {
     this.disabled = false;
   }
 
+  getButtonTitle() {
+    return this.disabled? 'Stop' : 'Start';
+  }
+
 }

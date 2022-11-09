@@ -6,8 +6,8 @@ import * as cytoscape from 'cytoscape';
 import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
+import {EdgeService} from "../../services/edge.service";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
-
 
 @Component({
   selector: 'app-network',
@@ -19,21 +19,26 @@ export class NetworkComponent implements OnInit {
   id2tip:any = {};
   graph!: Graph;
   minersToDelete: string[] = [];
+  public activeEdges: {edge:string, ttl: number}[] = [];
+
 
   constructor(private visualisationService: VisualisationService,
-              private minersToDeleteService: MinersDeletingService) {
+              private minersToDeleteService: MinersDeletingService,
+              private edgeService: EdgeService
+    ) {
     this.visualisationService.getGraph().subscribe((res) => {
-      this.graph = res;
-    })
+      this.graph = res.graph;
+      this.activeEdges = res.activeEdges;
+    });
+    cytoscape.use(popper);
   }
 
   ngOnInit(): void {
-    cytoscape.use(popper);
-    var cy = cytoscape({
+    let cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
-          selector: 'nodes',
+          selector: 'node',
           style: {
             'width': '20px',
             'height': '20px',
@@ -55,11 +60,12 @@ export class NetworkComponent implements OnInit {
               if (node.data("value.type") == NodeType.Miner) {
                 return node.id();
               }
+              return '';
             }
           }
         },
         {
-          selector: 'edges',
+          selector: 'edge',
           style: {
             'width': 1,
             // 'line-color': '#dsd1aa3',
@@ -79,9 +85,9 @@ export class NetworkComponent implements OnInit {
     this.createNodes(this.graph, cy);
     this.createEdges(cy);
     this.visualisationService.getGraph()
-      .pipe(tap((graph) => {
-          this.updateNodes(graph, cy);
-          cy.remove('edges');
+      .pipe(tap(res => {
+          this.updateNodes(res.graph, cy);
+          cy.remove('edge');
           cy.forceRender();
           this.createEdges(cy);
           this.makeTooltips(cy);
@@ -132,11 +138,19 @@ export class NetworkComponent implements OnInit {
     })
   }
 
+
   createEdges(cy: cytoscape.Core) {
     cy.nodes().forEach((item) => {
       item.data("value.neighbours").forEach((neighbour ) => {
-        if(!(cy.getElementById(`${neighbour}_${item.id}`).length > 0)){
-          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}})
+        const reverseEdge = `${neighbour}_${item.id()}`;
+        const newEdge = `${item.id()}_${neighbour}`;
+        if(!(cy.getElementById(reverseEdge).length > 0)){
+          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}});
+          this.activeEdges.forEach(el => {
+            if(el.edge === newEdge && el.ttl > 0) {
+              cy.getElementById(newEdge).style({'line-color': 'red'});
+            }
+          })
         }
       })
     })

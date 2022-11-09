@@ -24,7 +24,7 @@ export class EventService {
 
   public emitBlockMined() {
     let data = new SimulationEventData();
-    let  event = new SimulationEvent(SimulationEventType.BLOCK_MINED, data);
+    let event = new SimulationEvent(SimulationEventType.BLOCK_MINED, data);
     this.emitSimulationEvent(event);
   }
 }

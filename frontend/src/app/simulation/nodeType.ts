@@ -3,5 +3,4 @@ export enum NodeType{
   Full,
   Spv,
   Listening,
-
 }
