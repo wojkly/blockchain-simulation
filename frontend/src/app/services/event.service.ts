@@ -21,10 +21,15 @@ export class EventService {
     this.event.next(simulationEvent);
   }
 
-
   public emitBlockMined() {
     let data = new SimulationEventData();
     let event = new SimulationEvent(SimulationEventType.BLOCK_MINED, data);
+    this.emitSimulationEvent(event);
+  }
+
+  public emitBlockchainUpdate() {
+    let data = new SimulationEventData();
+    let event = new SimulationEvent(SimulationEventType.UPDATE_LAST_BLOCK, data);
     this.emitSimulationEvent(event);
   }
 }

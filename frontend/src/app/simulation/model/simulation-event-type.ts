@@ -1,6 +1,7 @@
 export enum SimulationEventType {
   INITIALIZATION,
   BLOCK_MINED,
-  BLOCK_RECEIVED
+  BLOCK_RECEIVED,
+  UPDATE_LAST_BLOCK
 
 }

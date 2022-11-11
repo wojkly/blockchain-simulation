@@ -6,7 +6,7 @@ import {BehaviorSubject} from "rxjs";
 })
 export class BlockchainService {
 
-  private $idEmitter: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private $idEmitter: BehaviorSubject<number> = new BehaviorSubject<number>(1);
 
   constructor() { }
 

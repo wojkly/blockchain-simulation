@@ -14,6 +14,7 @@ export class ButtonsService {
   interval: Subscription | undefined;
   interval2: Subscription | undefined;
   interval3: Subscription | undefined;
+  interval4: Subscription | undefined;
 
   constructor(private eventService: EventService,
               private stepService: StepService,
@@ -45,6 +46,15 @@ export class ButtonsService {
       .pipe(
         tap(() => {
           this.paymentService.emitPayment();
+        })
+      ).subscribe();
+
+    // emit blockchain update  
+    this.interval4?.unsubscribe();
+    this.interval4 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 200)
+      .pipe(
+        tap(() => {
+          this.eventService.emitBlockchainUpdate();
         })
       ).subscribe();
 
