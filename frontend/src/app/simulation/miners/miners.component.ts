@@ -31,7 +31,7 @@ export class MinersComponent implements AfterViewInit {
 
   minerList = new MatTableDataSource<Node>();
   deadMinerList = new MatTableDataSource<Node>();
-  displayedColumns = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity', 'edit']
+  displayedColumns = ['id', 'money', 'power', 'mined', 'country', 'electricity', 'edit']
   displayedColumnsWithoutEdit = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity']
 
 
@@ -96,7 +96,6 @@ export class MinersComponent implements AfterViewInit {
   edit(miner: Node){
     const dialogRef = this.dialog.open(EditMinerComponent, {
       width: '700px',
-      disableClose: true,
       data: {
         miner: miner
       }
@@ -111,7 +110,6 @@ export class MinersComponent implements AfterViewInit {
   addMiner(){
     const dialogRef = this.dialog.open(AddMinerComponent, {
       width: '700px',
-      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((res) => {
       if(res){

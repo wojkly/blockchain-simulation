@@ -8,6 +8,7 @@ import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
 import {EdgeService} from "../../services/edge.service";
+import {getCountryNameByEnumName} from "../model/country";
 
 
 @Component({
@@ -116,7 +117,6 @@ export class NetworkComponent implements OnInit {
           data: {
             id: '' + item.id,
             value: {
-              'blockChainLength': item.blockChainLength,
               'mined': item.mined,
               'money': item.money,
               'type': item.nodeType,
@@ -131,7 +131,6 @@ export class NetworkComponent implements OnInit {
           data: {
             id: '' + item.id,
             value: {
-              'blockChainLength': item.blockChainLength,
               'type': item.nodeType,
               'neighbours': item.neighbours}}
         })
@@ -168,7 +167,6 @@ export class NetworkComponent implements OnInit {
       if (item.nodeType === NodeType.Miner) {
         if (cy.getElementById('' + item.id).id() == '' + item.id){
           cy.getElementById('' + item.id).data('value', {
-            'blockChainLength': item.blockChainLength,
             'computingPower': item.computingPower,
             'country': item.country,
             'mined': item.mined,
@@ -183,7 +181,6 @@ export class NetworkComponent implements OnInit {
             data: {
               id: '' + item.id,
               value: {
-                'blockChainLength': item.blockChainLength,
                 'mined': item.mined,
                 'money': item.money,
                 'type': item.nodeType,
@@ -196,7 +193,6 @@ export class NetworkComponent implements OnInit {
       } else {
         cy.getElementById('' + item.id).data(
             'value', {
-              'blockChainLength': item.blockChainLength,
               'type': item.nodeType,
               'neighbours': item.neighbours
         })
@@ -215,9 +211,7 @@ export class NetworkComponent implements OnInit {
           let content = document.createElement("div");
           content.setAttribute("style", "font-size:1em; padding-top: 2vh")
           if(node.data("value.type") === NodeType.Miner) {
-            content.innerHTML = `Mined: ${node._private.data.value.mined}, Len: ${node._private.data.value.blockChainLength}, Money: ${node._private.data.value.money}, Power: ${node._private.data.value.computingPower}`;
-          } else {
-            content.innerHTML = `Len: ${node._private.data.value.blockChainLength}`;
+            content.innerHTML = `Mined: ${node._private.data.value.mined}, Money: ${node._private.data.value.money}, Power: ${node._private.data.value.computingPower}, Country: ${getCountryNameByEnumName(node._private.data.value.country)}`;
           }
           return content;
         }

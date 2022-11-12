@@ -29,11 +29,6 @@
         <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="length">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Blockchain length</mat-header-cell>
-        <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
-      </ng-container>
-
       <ng-container matColumnDef="country">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Country</mat-header-cell>
         <mat-cell *matCellDef="let miner">{{getCountryName(miner.country)}}</mat-cell>
@@ -47,7 +42,7 @@
       <ng-container matColumnDef="edit">
         <mat-header-cell *matHeaderCellDef>Akcje</mat-header-cell>
         <mat-cell *matCellDef="let miner">
-          <button mat-icon-button matTooltip="Edytuj" matTooltipPosition="above" (click)="edit(miner)">
+          <button mat-icon-button matTooltip="Edytuj" matTooltipPosition="right" (click)="edit(miner)">
             <mat-icon>edit</mat-icon>
           </button>
         </mat-cell>
