@@ -1,9 +1,8 @@
 import {Block} from "./block";
 import {NodeType} from "../nodeType";
-import * as cytoscape from 'cytoscape';
 
 import {getPriceByEnumName} from "./country";
-import { Protocol } from "src/app/utils/constants";
+import {Protocol} from "src/app/utils/constants";
 
 export class Node {
   public blockChainLength: number = 1;
@@ -133,7 +132,7 @@ export class Node {
         var blockId = -1;
         this.ghostPath(this.blockChain, 0, 0, maxWeight, maxLen, blockId);
 
-      } 
+      }
     }
   }
 
