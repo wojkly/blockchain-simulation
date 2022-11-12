@@ -3,8 +3,8 @@
 <div class="mat-elevation-z8">
 
   <div fxLayout="row" fxLayoutAlign="start center" >
-    <h2>Aktywni górnicy</h2>
-    <button mat-raised-button color="accent" (click)="addMiner()">Dodaj górnika </button>
+    <h2>Active miners</h2>
+    <button mat-raised-button color="accent" (click)="addMiner()">Add miner </button>
   </div>
 
     <mat-table [dataSource]="minerList" matSort #activeMinersSort="matSort">
@@ -40,7 +40,7 @@
       </ng-container>
 
       <ng-container matColumnDef="edit">
-        <mat-header-cell *matHeaderCellDef>Akcje</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
         <mat-cell *matCellDef="let miner">
           <button mat-icon-button matTooltip="Edytuj" matTooltipPosition="right" (click)="edit(miner)">
             <mat-icon>edit</mat-icon>
@@ -58,7 +58,7 @@
                    #activeMinersPaginator>
     </mat-paginator>
 
-  <h2>Usunięci górnicy</h2>
+  <h2>Removed miners</h2>
 
   <br> <br>
     <mat-table [dataSource]="deadMinerList" matSort #deadMinersSort="matSort">
@@ -81,11 +81,6 @@
       <ng-container matColumnDef="mined">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Blocks mined</mat-header-cell>
         <mat-cell *matCellDef="let miner">{{miner.mined}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="length">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Blockchain length</mat-header-cell>
-        <mat-cell *matCellDef="let miner">{{miner.blockChainLength}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="country">

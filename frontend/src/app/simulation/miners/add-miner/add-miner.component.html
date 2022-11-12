@@ -1,22 +1,22 @@
 <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px" >
 <div [formGroup]="form" fxLayout="column" fxLayoutGap="20px" style="width: 200px; margin: 20px">
   <mat-form-field>
-    <mat-label>Liczba węzłów górniczych</mat-label>
+    <mat-label>Number of miner nodes:</mat-label>
     <input type="number" formControlName="numberOfMinersFC" (change)="setMinersNumber()" matInput>
-    <mat-error *ngIf="numberOfMinersFC.errors">Liczba musi być większa niż 0</mat-error>
+    <mat-error *ngIf="numberOfMinersFC.errors">Number must be greater than 0</mat-error>
   </mat-form-field>
   <ng-container formArrayName="miners">
     <ng-container *ngFor="let minerForm of miners.controls; let i = index">
       <div [formGroupName]="i" fxLayout="row" fxLayoutGap="10px">
         <mat-form-field>
-          <input matInput type="number" formControlName="power" placeholder="Moc obliczeniowa (od 1 do 10)">
+          <input matInput type="number" formControlName="power" placeholder="Computing power (from 1 to 10)">
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="number" formControlName="money" placeholder="Początkowy stan portfela">
+          <input matInput type="number" formControlName="money" placeholder="Initial budget">
         </mat-form-field>
         <mat-form-field>
-          <mat-select formControlName="country" placeholder="Kraj">
-            <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - cena prądu: {{c.electricityPrice}}</mat-option>
+          <mat-select formControlName="country" placeholder="Country">
+            <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - price multiplier: {{c.electricityPrice}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -25,7 +25,7 @@
 </div>
   <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10px">
     <button mat-raised-button color="primary" [disabled]="!formValidation()" (click)="onClick()">
-      <span>Dodaj {{numberOfMinersFC.value}} nowych górników </span>
+      <span>Add {{numberOfMinersFC.value}} new miner/s </span>
       <mat-icon>add</mat-icon>
     </button>
     <button mat-raised-button mat-dialog-close>

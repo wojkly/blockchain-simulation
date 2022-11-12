@@ -1,9 +1,9 @@
 <div class="container">
   <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
     <mat-card>
-      <mat-card-title>Ustal Cenę prądu</mat-card-title>
+      <mat-card-title>Set electricity price</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <mat-card-subtitle>Aktualna cena prądu:
+            <mat-card-subtitle>Current electricity price:
             <mat-label>{{ electricitySlider.value}}</mat-label>
             </mat-card-subtitle>
           <mat-slider #electricitySlider [value]="electricityPrice" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
@@ -11,9 +11,9 @@
     </mat-card>
 
     <mat-card>
-      <mat-card-title>Częstotliwość dodawanie nowego górnika</mat-card-title>
+      <mat-card-title>Set frequency of adding a new miner</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <mat-card-subtitle>Aktualna częstotliwość dodawania nowego górnika do sieci:
+            <mat-card-subtitle>Current frequency of adding a new miner to the network:
               <mat-label>{{ frequencySlider.value}}</mat-label>
             </mat-card-subtitle>
           <mat-slider #frequencySlider [value]="frequency" [min]="0" [max]="10"  (change)="onFrequencyChange($event)" thumbLabel></mat-slider>
@@ -21,9 +21,9 @@
     </mat-card>
 
     <mat-card>
-      <mat-card-title>Ustal wartość nagrody</mat-card-title>
+      <mat-card-title>Frequency of adding a new miner</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <mat-card-subtitle>Aktualna nagroda za wykopanie bloku:
+            <mat-card-subtitle>Current reward for mining a block:
               <mat-label>{{ rewardSlider.value}}</mat-label>
             </mat-card-subtitle>
           <mat-slider #rewardSlider [value]="reward" (change)="onRewardChange($event)" thumbLabel></mat-slider>
