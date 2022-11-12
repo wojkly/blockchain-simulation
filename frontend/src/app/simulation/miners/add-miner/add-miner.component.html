@@ -23,8 +23,14 @@
     </ng-container>
   </ng-container>
 </div>
-<button mat-raised-button color="primary" [disabled]="!formValidation()" (click)="onClick()">
-  <span>Add {{numberOfMinersFC.value}} new miner/s </span>
-  <mat-icon>done</mat-icon>
-</button>
+  <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10px">
+    <button mat-raised-button color="primary" [disabled]="!formValidation()" (click)="onClick()">
+      <span>Add {{numberOfMinersFC.value}} new miner/s </span>
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-raised-button mat-dialog-close>
+      Cancel
+      <mat-icon>close</mat-icon></button>
+  </div>
+
 </div>
