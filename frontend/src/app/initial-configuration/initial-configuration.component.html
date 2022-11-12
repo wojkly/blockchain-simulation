@@ -1,39 +1,39 @@
 <div fxLayout="column" fxLayoutAlign="space-evenly center" fxLayoutGap="20px" >
-  <h2>Ustal początkową ilości węzłów w symulacji</h2>
+  <h2>Set the initial number of nodes in the simulation</h2>
 
   <div [formGroup]="form" fxLayout="column" fxLayoutGap="20px" style="width: 200px; margin: 20px">
     <mat-form-field>
-      <mat-label>Liczba węzłów pełnych</mat-label>
+      <mat-label>Number of full nodes:</mat-label>
       <input type="number" formControlName="nodesType1FC" (change)="setNumberOfNodes()" matInput>
-      <mat-error *ngIf="nodesType1FC.errors">Liczba musi być większa niż 0</mat-error>
+      <mat-error *ngIf="nodesType1FC.errors">Number must be greater than 0</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Liczba węzłów lekkich</mat-label>
+      <mat-label>Number of light nodes:</mat-label>
       <input type="number" formControlName="nodesType2FC" (change)="setNumberOfNodes()" matInput>
-      <mat-error *ngIf="nodesType2FC.errors">Liczba musi być większa niż 0</mat-error>
+      <mat-error *ngIf="nodesType2FC.errors">Number must be greater than 0</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Liczba węzłów nasłuchujących</mat-label>
+      <mat-label>Number of listening nodes:</mat-label>
       <input type="number" formControlName="nodesType4FC" (change)="setNumberOfNodes()" matInput>
-      <mat-error *ngIf="nodesType4FC.errors">Liczba musi być większa niż 0</mat-error>
+      <mat-error *ngIf="nodesType4FC.errors">Number must be greater than 0</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Liczba węzłów górniczych</mat-label>
+      <mat-label>Number of miner nodes:</mat-label>
       <input type="number" formControlName="nodesType3FC" (change)="setMinersNumber()" matInput>
-      <mat-error *ngIf="nodesType3FC.errors">Liczba musi być większa niż 0</mat-error>
+      <mat-error *ngIf="nodesType3FC.errors">Number must be greater than 0</mat-error>
     </mat-form-field>
     <ng-container formArrayName="miners">
       <ng-container *ngFor="let minerForm of miners.controls; let i = index">
         <div [formGroupName]="i" fxLayout="row" fxLayoutGap="10px">
           <mat-form-field>
-            <input matInput type="number" formControlName="power" placeholder="Moc obliczeniowa (od 1 do 10)">
+            <input matInput type="number" formControlName="power" placeholder="Computing power (from 1 to 10)">
           </mat-form-field>
           <mat-form-field>
-            <input matInput type="number" formControlName="money" placeholder="Początkowy stan portfela">
+            <input matInput type="number" formControlName="money" placeholder="Initial budget">
           </mat-form-field>
           <mat-form-field>
-            <mat-select formControlName="country" placeholder="Kraj">
-              <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - cena prądu: {{c.electricityPrice}}</mat-option>
+            <mat-select formControlName="country" placeholder="Country">
+              <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - price multiplier : {{c.electricityPrice}}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -42,7 +42,7 @@
   </div>
 
   <button mat-raised-button color="primary" [disabled]="!formValidation()" (click)="onClick()">
-    <span>Przejdź do symulacji z {{numberOfNodes}} węzłami </span>
+    <span>Start the simulation with {{numberOfNodes}} nodes </span>
     <mat-icon>done</mat-icon>
   </button>
 </div>

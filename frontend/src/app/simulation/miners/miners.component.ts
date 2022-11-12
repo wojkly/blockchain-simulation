@@ -32,7 +32,7 @@ export class MinersComponent implements AfterViewInit {
   minerList = new MatTableDataSource<Node>();
   deadMinerList = new MatTableDataSource<Node>();
   displayedColumns = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity', 'edit']
-  displayedColumnsWithoutEdit = ['id', 'money', 'power', 'mined', 'length', 'country', 'electricity']
+  displayedColumnsWithoutEdit = ['id', 'money', 'power', 'mined', 'country', 'electricity']
 
 
   constructor(
