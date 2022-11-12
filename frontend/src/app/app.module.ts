@@ -31,6 +31,8 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.component';
 import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.component';
+import { SimulationTimerComponent } from './simulation/simulation-timer/simulation-timer.component';
+import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.compo
     BlockchainComponent,
     InitConfigDialogComponent,
     EditMinerComponent,
-    AddMinerComponent
+    AddMinerComponent,
+    SimulationTimerComponent,
+    SimulationTimerPipe
   ],
   imports: [
     BrowserModule,

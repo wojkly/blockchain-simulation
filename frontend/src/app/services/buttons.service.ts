@@ -4,6 +4,7 @@ import {StepService} from "./step.service";
 import {EventService} from "./event.service";
 import {PaymentService} from "./payment.service";
 import {AddMinerService} from "./add-miner.service";
+import {TimerService} from "./timer.service";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,9 @@ export class ButtonsService {
   constructor(private eventService: EventService,
               private stepService: StepService,
               private paymentService: PaymentService,
-              private addMinerService: AddMinerService,) { }
+              private addMinerService: AddMinerService,
+              private timerService: TimerService,
+              ) { }
 
   public startSimulation(speed: number) {
     //emit step
@@ -28,6 +31,7 @@ export class ButtonsService {
       .pipe(
         tap(() => {
           this.stepService.emitStep();
+          this.timerService.emitUpdateTime();
         })
       ).subscribe();
 
@@ -49,7 +53,7 @@ export class ButtonsService {
         })
       ).subscribe();
 
-    // emit blockchain update  
+    // emit blockchain update
     this.interval4?.unsubscribe();
     this.interval4 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 200)
       .pipe(
