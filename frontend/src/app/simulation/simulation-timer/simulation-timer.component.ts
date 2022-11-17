@@ -9,7 +9,7 @@ import {tap} from "rxjs";
 })
 export class SimulationTimerComponent implements OnInit {
 
-  simulationTimer: number = 0;
+  sterpCounter: number = 0;
 
   constructor(
     private timerService: TimerService,
@@ -22,6 +22,6 @@ export class SimulationTimerComponent implements OnInit {
   }
 
   private updateSimulationTimer() {
-    this.simulationTimer ++;
+    this.sterpCounter ++;
   }
 }

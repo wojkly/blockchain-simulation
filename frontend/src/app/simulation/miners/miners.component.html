@@ -35,7 +35,7 @@
       </ng-container>
 
       <ng-container matColumnDef="electricity">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price (per month)</mat-header-cell>
         <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
       </ng-container>
 

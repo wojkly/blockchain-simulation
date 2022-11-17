@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
   BLOCKCHAIN_PATH,
-  INITIAL_CONFIGURIATION_PATH,
+  INITIAL_CONFIGURATION_PATH,
   MINERS_PATH,
   NETWORK_PATH, PARAMETERS_PATH,
   SIMULATION_PATH
@@ -17,11 +17,11 @@ import { BlockchainComponent } from './simulation/blockchain/blockchain.componen
 const routes: Routes = [
   {
     path: '',
-    redirectTo: INITIAL_CONFIGURIATION_PATH,
+    redirectTo: INITIAL_CONFIGURATION_PATH,
     pathMatch: 'full',
   },
   {
-    path: INITIAL_CONFIGURIATION_PATH,
+    path: INITIAL_CONFIGURATION_PATH,
     component: InitialConfigurationComponent
   },
   {
