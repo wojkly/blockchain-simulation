@@ -33,6 +33,7 @@ import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.co
 import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.component';
 import { SimulationTimerComponent } from './simulation/simulation-timer/simulation-timer.component';
 import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
+import { ChartsComponent } from './simulation/charts/charts.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
     EditMinerComponent,
     AddMinerComponent,
     SimulationTimerComponent,
-    SimulationTimerPipe
+    SimulationTimerPipe,
+    ChartsComponent
   ],
   imports: [
     BrowserModule,
