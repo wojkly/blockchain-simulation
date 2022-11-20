@@ -1,10 +1,13 @@
 
 
-<div class="mat-elevation-z8">
+<div class="container">
 
-  <div fxLayout="row" fxLayoutAlign="start center" >
-    <h2>Active miners</h2>
-    <button mat-raised-button color="accent" (click)="addMiner()">Add miner </button>
+  <div class="activeHeader">
+    <span>Active miners</span>
+    <button mat-raised-button color="accent" style="margin-left: 30px" (click)="addMiner()">
+      <span>Add miner</span>
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
 
     <mat-table [dataSource]="minerList" matSort #activeMinersSort="matSort">
@@ -58,7 +61,7 @@
                    #activeMinersPaginator>
     </mat-paginator>
 
-  <h2>Removed miners</h2>
+  <span>Removed miners</span>
 
   <br> <br>
     <mat-table [dataSource]="deadMinerList" matSort #deadMinersSort="matSort">
