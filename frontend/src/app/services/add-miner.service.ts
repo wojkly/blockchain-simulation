@@ -5,7 +5,7 @@ import {BehaviorSubject} from "rxjs";
   providedIn: 'root'
 })
 export class AddMinerService {
-  private addMiner$ = new BehaviorSubject<boolean>(false);
+  private addMiner$ = new BehaviorSubject<number>(-1);
 
   constructor() {
   }
@@ -14,10 +14,10 @@ export class AddMinerService {
     return this.addMiner$.asObservable();
   }
 
-  public emitStart() {
-    this.addMiner$.next(true);
+  public emitStart(simulationSpeed: number) {
+    this.addMiner$.next(simulationSpeed);
   }
   public emitStop() {
-    this.addMiner$.next(false);
+    this.addMiner$.next(-1);
   }
 }

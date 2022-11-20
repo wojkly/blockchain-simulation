@@ -20,6 +20,7 @@ import {getPriceByEnumName} from "../simulation/model/country";
 import { Block } from '../simulation/model/block';
 import {EdgeService} from "./edge.service";
 import {MinersDeletingService} from "./miners-deleting.service";
+import {TimePeriod} from "../utils/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -107,9 +108,9 @@ export class SimulationService {
 
     this.addMinerService.getAddMiner()
       .pipe(
-        tap((isAdd: boolean) => {
-          if(isAdd) {
-            this.startAddingMiners();
+        tap((simulationSpeed: number) => {
+          if(simulationSpeed > 0) {
+            this.startAddingMiners(simulationSpeed);
           } else {
             this.stopAddingMiners();
           }
@@ -119,12 +120,12 @@ export class SimulationService {
       .subscribe();
   }
 
-  private startAddingMiners() {
+  private startAddingMiners(simulationSpeed: number) {
     this.addMinerFrequencySubscription = this.parametersService.getAddNewMinerFrequency()
       .pipe(
-        tap((timeInterval: number) => {
-          if (timeInterval > 0) {
-            this.addMinerSubscription = interval(ButtonsService.DEFAULT_INTERVAL / timeInterval * 10).pipe(
+        tap((timePeriod: number) => {
+          if (timePeriod > 0) {
+            this.addMinerSubscription = interval(TimePeriod.MONTH_INTERVAL / (timePeriod * simulationSpeed)).pipe(
               tap(() => {
                 this.addNewMiner();
                 this.visualisationService.emitGraph(this.graph);

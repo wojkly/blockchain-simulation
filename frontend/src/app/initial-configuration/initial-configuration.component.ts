@@ -12,10 +12,10 @@ import {COUNTRIES} from "../simulation/model/country";
   styleUrls: ['./initial-configuration.component.scss']
 })
 export class InitialConfigurationComponent implements OnInit {
-  nodesType1FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
-  nodesType2FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
-  nodesType3FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
-  nodesType4FC: FormControl = new FormControl(1, [Validators.required, Validators.min(1)]);
+  nodesType1FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
+  nodesType2FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
+  nodesType3FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
+  nodesType4FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
 
   minersFormArray: FormArray = this.formBuilder.array([]);
 
@@ -33,7 +33,7 @@ export class InitialConfigurationComponent implements OnInit {
     return this.form.controls["miners"] as FormArray;
   }
   minerNodesBeforeChange: number = this.parametersService.getMinerNodes();
-  numberOfNodes: number = 4;
+  numberOfNodes: number = 20;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -45,11 +45,13 @@ export class InitialConfigurationComponent implements OnInit {
   ngOnInit(): void {
     this.numberOfNodes = this.parametersService.getAllNodes();
 
-    this.miners.push(this.formBuilder.group({
-      power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
-      country: new FormControl('', [Validators.required]),
-      money: new FormControl(1, [Validators.required, Validators.min(0), Validators.max(10000)]),
-    }))
+    for (let i = 0; i < 5; i++) {
+      this.miners.push(this.formBuilder.group({
+        power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
+        country: new FormControl('', [Validators.required]),
+        money: new FormControl(1000, [Validators.required, Validators.min(0), Validators.max(10000)]),
+      }))
+    }
 
     this.form.markAllAsTouched();
   }
@@ -87,7 +89,7 @@ export class InitialConfigurationComponent implements OnInit {
         this.miners.push(this.formBuilder.group({
           power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
           country: new FormControl('', [Validators.required]),
-          money: new FormControl(1, [Validators.required, Validators.min(0), Validators.max(10000)]),
+          money: new FormControl(1000, [Validators.required, Validators.min(0), Validators.max(10000)]),
         }))
       }
     } else {

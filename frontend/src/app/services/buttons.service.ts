@@ -5,12 +5,12 @@ import {EventService} from "./event.service";
 import {PaymentService} from "./payment.service";
 import {AddMinerService} from "./add-miner.service";
 import {TimerService} from "./timer.service";
+import {TimePeriod} from "../utils/constants";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ButtonsService {
-  static readonly DEFAULT_INTERVAL = 1000;
 
   interval: Subscription | undefined;
   interval2: Subscription | undefined;
@@ -24,10 +24,10 @@ export class ButtonsService {
               private timerService: TimerService,
               ) { }
 
-  public startSimulation(speed: number) {
+  public startSimulation(simulationSpeed: number) {
     //emit step
     this.interval?.unsubscribe();
-    this.interval = interval(ButtonsService.DEFAULT_INTERVAL / speed)
+    this.interval = interval(TimePeriod.STEP_INTERVAL / simulationSpeed)
       .pipe(
         tap(() => {
           this.stepService.emitStep();
@@ -37,7 +37,7 @@ export class ButtonsService {
 
     //emit block mined
     this.interval2?.unsubscribe();
-    this.interval2 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 20)
+    this.interval2 = interval(TimePeriod.DAY_INTERVAL / simulationSpeed)
       .pipe(
         tap(() => {
           this.eventService.emitBlockMined();
@@ -46,7 +46,7 @@ export class ButtonsService {
 
     //emit money removal
     this.interval3?.unsubscribe();
-    this.interval3 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 10)
+    this.interval3 = interval(TimePeriod.MONTH_INTERVAL / simulationSpeed)
       .pipe(
         tap(() => {
           this.paymentService.emitPayment();
@@ -55,7 +55,7 @@ export class ButtonsService {
 
     // emit blockchain update
     this.interval4?.unsubscribe();
-    this.interval4 = interval(ButtonsService.DEFAULT_INTERVAL / speed * 200)
+    this.interval4 = interval(TimePeriod.DAY_INTERVAL / simulationSpeed)
       .pipe(
         tap(() => {
           this.eventService.emitBlockchainUpdate();
@@ -64,7 +64,7 @@ export class ButtonsService {
 
 
     //emit create new miner
-    this.addMinerService.emitStart();
+    this.addMinerService.emitStart(simulationSpeed);
   }
 
   public stopSimulation() {
