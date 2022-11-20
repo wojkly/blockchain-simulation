@@ -43,6 +43,7 @@ export class InitialConfigurationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setNodes();
     this.numberOfNodes = this.parametersService.getAllNodes();
 
     for (let i = 0; i < 5; i++) {
