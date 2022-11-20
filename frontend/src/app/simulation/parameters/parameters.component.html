@@ -6,7 +6,7 @@
             <mat-card-subtitle>Current electricity price:
             <mat-label>{{ electricityPrice}} / month</mat-label>
             </mat-card-subtitle>
-          <mat-slider [value]="electricityPrice" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
+          <mat-slider [value]="electricityPrice" [max]="10" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
       </div>
     </mat-card>
 

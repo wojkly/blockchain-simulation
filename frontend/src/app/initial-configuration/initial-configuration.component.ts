@@ -50,7 +50,7 @@ export class InitialConfigurationComponent implements OnInit {
       this.miners.push(this.formBuilder.group({
         power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
         country: new FormControl('', [Validators.required]),
-        money: new FormControl(1000, [Validators.required, Validators.min(0), Validators.max(10000)]),
+        money: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(10000)]),
       }))
     }
 
@@ -90,7 +90,7 @@ export class InitialConfigurationComponent implements OnInit {
         this.miners.push(this.formBuilder.group({
           power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
           country: new FormControl('', [Validators.required]),
-          money: new FormControl(1000, [Validators.required, Validators.min(0), Validators.max(10000)]),
+          money: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(10000)]),
         }))
       }
     } else {
