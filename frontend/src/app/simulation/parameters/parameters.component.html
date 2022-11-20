@@ -4,9 +4,9 @@
       <mat-card-title>Set electricity price</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
             <mat-card-subtitle>Current electricity price:
-            <mat-label>{{ electricitySlider.value}} / month</mat-label>
+            <mat-label>{{ electricityPrice}} / month</mat-label>
             </mat-card-subtitle>
-          <mat-slider #electricitySlider [value]="electricityPrice" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
+          <mat-slider [value]="electricityPrice" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
       </div>
     </mat-card>
 
@@ -14,9 +14,9 @@
       <mat-card-title>Set frequency of adding a new miner</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
             <mat-card-subtitle>Current frequency of adding a new miner to the network:
-              <mat-label>{{ frequencySlider.value}} / month</mat-label>
+              <mat-label>{{ frequency}} / month</mat-label>
             </mat-card-subtitle>
-          <mat-slider #frequencySlider [value]="frequency" [min]="0" [max]="10"  (change)="onFrequencyChange($event)" thumbLabel></mat-slider>
+          <mat-slider [value]="frequency" [min]="0" [max]="10"  (change)="onFrequencyChange($event)" thumbLabel></mat-slider>
       </div>
     </mat-card>
 
@@ -24,9 +24,9 @@
       <mat-card-title>Set reward for mining a block</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
             <mat-card-subtitle>Current reward:
-              <mat-label>{{ rewardSlider.value}}</mat-label>
+              <mat-label>{{ reward}}</mat-label>
             </mat-card-subtitle>
-          <mat-slider #rewardSlider [value]="reward" (change)="onRewardChange($event)" thumbLabel></mat-slider>
+          <mat-slider [value]="reward" (change)="onRewardChange($event)" thumbLabel></mat-slider>
       </div>
     </mat-card>
   </div>

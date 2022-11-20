@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="1vh">
   <div fxLayout="row" fxLayoutAlign="space-between">
     <button mat-raised-button color="primary" (click)="goBackToInitConfig()">
       <span>Initial nodes configuration </span>
@@ -7,7 +7,7 @@
     <app-simulation-timer></app-simulation-timer>
     <app-buttons></app-buttons>
   </div>
-  <div class="container">
+  <div>
     <nav mat-tab-nav-bar>
       <a #rla="routerLinkActive" *ngFor="let tab of tabs" [active]="rla.isActive" [routerLink]="tab.path" fxFlex
          mat-tab-link routerLinkActive>
