@@ -66,12 +66,10 @@ export class Node {
 
   public getLast(): Block | undefined {
 
-    if (this.nodeType == NodeType.Miner)
-      return this.lastBlock;
-    else if (this.nodeType == NodeType.Full) {
+    if (this.nodeType == NodeType.Full) {
       // global variable for protocol
-      this.findLastBlock(Protocol.LongestChain);
-    }
+      return this.findLastBlock(Protocol.LongestChain);
+    } else return this.lastBlock;
 
   }
 
@@ -85,26 +83,28 @@ export class Node {
           if (this.blockChainMap.has(block.parent.id)) {
             this.blockChainMap.get(block.parent.id)?.children?.push(block);
           } else {
-            // block without parent is treated as a root child
+            
             this.blockChain.children?.push(block);
           }
         } else {
+          // block without parent is treated as a root child
           this.blockChain.children?.push(block);
         }
         this.blockChainMap.set(block.id, block);
         this.blockChainSize++;
       }
-    } else if (this.nodeType == NodeType.Miner) {
+    } else {
       this.lastBlock = block;
     }
+
   }
 
   // find the "tail" of the blockchain
   public findLastBlock(protocol: Protocol) {
     if (this.nodeType == NodeType.Full && this.blockChain) {
       if (protocol == Protocol.LongestChain) {
-        let lastBlock = this.longestPath(this.blockChain).pop();
-        if (!lastBlock) return;
+        let lastBlock = this.longestPath(this.blockChain)[0];
+        if (lastBlock == undefined || lastBlock == null) return;
         return this.blockChainMap.get(lastBlock);
       } else if (protocol == Protocol.GHOST) {
         this.updateWeights();

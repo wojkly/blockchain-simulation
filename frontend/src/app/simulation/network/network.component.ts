@@ -68,10 +68,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
               }
             },
             'label': function (node: any) {
-              if (node.data("value.type") == NodeType.Miner) {
-                return node.id();
-              }
-              return '';
+              return node.id();
             }
           }
         },

@@ -225,14 +225,11 @@ export class SimulationService {
     if (!senderNode) return;
     if (!receiverNode) return;
 
-    if (receiverNode.blockChainLength < senderNode.blockChainLength) {
-      receiverNode.blockChainLength = senderNode.blockChainLength;
+    const receivedBlock = senderNode.getLast();
+    const currLastBlock = receiverNode.getLast();
 
-      const receivedBlock = senderNode.getLast();
-
-      if(receiverNode) {
-        receiverNode.addBlock(receivedBlock)
-      }
+    if (currLastBlock?.id != receivedBlock?.id) {
+      receiverNode.addBlock(receivedBlock)
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
@@ -246,7 +243,7 @@ export class SimulationService {
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
       this.edgeService.depleteTTL();
-    }
+  }
   }
 
   // step to update miner's last block - block to attach new blocks to
