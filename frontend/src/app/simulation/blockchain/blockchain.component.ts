@@ -28,7 +28,10 @@ export class BlockchainComponent implements OnInit, OnDestroy {
 
   constructor(
     private visualisationService: VisualisationService
-  ) { }
+  ) {
+    if(!this.cy.destroyed())
+      this.cy.destroy();
+  }
 
   public onValChange(val: string) {
     this.toggleButtonValue = val;
@@ -163,8 +166,6 @@ export class BlockchainComponent implements OnInit, OnDestroy {
     queue.push(-1);
     let edgeId = 0;
 
-    console.log(this.node);
-
     this.cy.add({
       group: 'nodes',
       data: {id: '-1', block: this.node?.blockChain}
@@ -219,6 +220,6 @@ export class BlockchainComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.visualisationSub.unsubscribe();
 
-    //this.cy.stop();
+    this.cy.stop();
   }
 }

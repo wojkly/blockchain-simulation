@@ -38,6 +38,9 @@ export class NetworkComponent implements OnInit, OnDestroy {
         this.activeEdges = res.activeEdges;
       })
     ).subscribe();
+
+    if(!this.cy.destroyed())
+      this.cy.destroy();
   }
 
   ngOnInit(): void {
@@ -227,6 +230,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.visualisationSub.unsubscribe();
 
-    //this.cy.stop();
+    this.cy.stop();
   }
 }
