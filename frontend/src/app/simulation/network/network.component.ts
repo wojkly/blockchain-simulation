@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {tap} from "rxjs";
 import {VisualisationService} from "../../services/visualisation.service";
 import {Graph} from "../model/graph";
@@ -16,26 +16,32 @@ import {getCountryNameByEnumName} from "../model/country";
   templateUrl: './network.component.html',
   styleUrls: ['./network.component.scss']
 })
-export class NetworkComponent implements OnInit {
+export class NetworkComponent implements OnInit, OnDestroy {
   @ViewChild("cy") el: ElementRef | undefined;
   id2tip:any = {};
   graph!: Graph;
   minersToDelete: string[] = [];
   public activeEdges: {edge:string, ttl: number}[] = [];
 
+  private cy = cytoscape({});
+
+  private visualisationSub: any;
 
   constructor(private visualisationService: VisualisationService,
               private minersToDeleteService: MinersDeletingService,
     ) {
-    this.visualisationService.getGraph().subscribe((res) => {
-      this.graph = res.graph;
-      this.activeEdges = res.activeEdges;
-    });
+    this.visualisationSub = this.visualisationService.getGraph().pipe(
+      tap((res) => {
+        this.graph = res.graph;
+        this.activeEdges = res.activeEdges;
+      })
+    ).subscribe();
+
     cytoscape.use(popper);
   }
 
   ngOnInit(): void {
-    let cy = cytoscape({
+    this.cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
@@ -83,16 +89,16 @@ export class NetworkComponent implements OnInit {
         },
       ]
     });
-    this.createNodes(this.graph, cy);
-    this.createEdges(cy);
+    this.createNodes(this.graph, this.cy);
+    this.createEdges(this.cy);
     this.visualisationService.getGraph()
       .pipe(tap(res => {
-          this.updateNodes(res.graph, cy);
-          cy.remove('edge');
-          cy.forceRender();
-          this.createEdges(cy);
-          this.makeTooltips(cy);
-          cy.layout({
+          this.updateNodes(res.graph, this.cy);
+          this.cy.remove('edge');
+          this.cy.forceRender();
+          this.createEdges(this.cy);
+          this.makeTooltips(this.cy);
+          this.cy.layout({
             name: 'cose',
             animate: false,
             randomize: false,
@@ -100,8 +106,8 @@ export class NetworkComponent implements OnInit {
             padding: 50
             // breadthfirst
           }).run();
-          cy.nodes().lock()
-          cy.nodes().on('click ', (e) => {
+          this.cy.nodes().lock()
+          this.cy.nodes().on('click ', (e) => {
             this.id2tip[e.target.id()].show()
           })
         })
@@ -216,5 +222,12 @@ export class NetworkComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    // this.cy.remove('node');
+    // this.cy.remove('edge');
+    this.visualisationSub.unsubscribe();
+    //this.cy.destroy();
   }
 }

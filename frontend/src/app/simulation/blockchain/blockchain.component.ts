@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as cytoscape from 'cytoscape';
 import { tap } from 'rxjs';
 import { BlockchainService } from 'src/app/services/blockchain.service';
@@ -19,13 +19,17 @@ export const DEFAULT = "default";
   templateUrl: './blockchain.component.html',
   styleUrls: ['./blockchain.component.scss']
 })
-export class BlockchainComponent implements OnInit {
+export class BlockchainComponent implements OnInit, OnDestroy {
+  @ViewChild("cy2") el: ElementRef | undefined;
 
-  cy = cytoscape({});
+  private cy = cytoscape({});
 
   public toggleButtonValue: string = "default";
 
   private node?: Node;
+
+  private visualisationSub: any;
+  private blockchainSub: any;
 
   constructor(
     private blockchainService: BlockchainService,
@@ -40,7 +44,7 @@ export class BlockchainComponent implements OnInit {
 
   ngOnInit(): void {
     this.cy = cytoscape({
-      container: document.getElementById('cy'),
+      container: document.getElementById('cy2'),
       style: [
         {
           selector: 'node',
@@ -74,40 +78,27 @@ export class BlockchainComponent implements OnInit {
       ]
     });
 
-    this.visualisationService.getGraph()
+    this.visualisationSub = this.visualisationService.getGraph()
       .pipe(
         tap((res) => {
           let g = res.graph;
           this.cy.remove('node');
           this.cy.remove('edge');
-          // console.log(g)
+
           this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
 
-          // console.log(this.node)
           this.createBlockchainGraph();
           this.cy.nodes().on('click', (event) => {
-            // console.log(event);
           });
           this.cy.layout({name: 'breadthfirst', directed: true}).run();
         })
       ).subscribe();
-    // this.createBlockchain();
-
-
-    // this.blockchainService.get()
-    //   .pipe(
-    //     tap((g) => {
-    //       console.log(g);
-    //       // tutaj docelowo blockchainService powinien zwracać zaktualizowany graf (albo nowe bloki)
-    //     })
-    //   ).subscribe()
   }
 
   private changeProtocol() {
 
     let pathToLastBlock;
     this.cleanHighlighting();
-    // console.log(this.cy.nodes().classes())
 
     if (this.toggleButtonValue != DEFAULT) {
       var dijkstra = this.cy.elements().dijkstra({
@@ -196,5 +187,12 @@ export class BlockchainComponent implements OnInit {
         }
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    // this.cy.remove('node');
+    // this.cy.remove('edge');
+    this.visualisationSub.unsubscribe();
+    //this.cy.destroy();
   }
 }
