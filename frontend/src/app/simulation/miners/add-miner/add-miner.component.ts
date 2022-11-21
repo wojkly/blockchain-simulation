@@ -50,8 +50,8 @@ export class AddMinerComponent implements OnInit {
   setMinersNumber(): void {
     const minersBefore = this.minerNodesBeforeChange;
     const minersNow = this.numberOfMinersFC.value;
-    console.log(minersBefore)
-    console.log(minersNow)
+    // console.log(minersBefore)
+    // console.log(minersNow)
     if (minersBefore < minersNow) {
       for (let i=minersBefore; i<minersNow; i++) {
         this.miners.push(this.formBuilder.group({

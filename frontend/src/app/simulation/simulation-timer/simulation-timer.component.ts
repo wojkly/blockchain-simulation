@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {TimerService} from "../../services/timer.service";
 import {tap} from "rxjs";
+import {ChartDataService} from "../../services/chart-data.service";
+import {DAY_STEPS} from "../../utils/constants";
 
 @Component({
   selector: 'app-simulation-timer',
@@ -9,10 +11,12 @@ import {tap} from "rxjs";
 })
 export class SimulationTimerComponent implements OnInit {
 
-  sterpCounter: number = 0;
+  stepCounter: number = 0;
+  monthCounter: number = 0;
 
   constructor(
     private timerService: TimerService,
+    private chartDataService: ChartDataService,
   ) { }
 
   ngOnInit(): void {
@@ -22,6 +26,11 @@ export class SimulationTimerComponent implements OnInit {
   }
 
   private updateSimulationTimer() {
-    this.sterpCounter ++;
+    this.stepCounter ++;
+    const newMonthCounter = Math.floor(Math.floor(this.stepCounter / DAY_STEPS) / 30);
+    if (this.monthCounter !== newMonthCounter) {
+      this.monthCounter = newMonthCounter;
+      this.chartDataService.emitRequest();
+    }
   }
 }

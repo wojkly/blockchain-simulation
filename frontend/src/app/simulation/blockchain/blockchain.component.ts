@@ -50,17 +50,18 @@ export class BlockchainComponent implements OnInit {
   }
 
   refresh(): void {
+    this.cy.destroy();
     this.cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
-          selector: 'nodes',
+          selector: 'node',
           style: {
             'width': '100px',
             'height': '100px',
             'shape': 'round-rectangle',
             'background-color': '#7fcdcd',
-            
+
             'label': (node: any) => {
                 if (node.data("block").id == -1) return "root";
                 else return "block " + node.data("block").id;
@@ -68,7 +69,7 @@ export class BlockchainComponent implements OnInit {
           },
         },
         {
-          selector: 'edges',
+          selector: 'edge',
           style: {
             'width': 3,
             'curve-style': 'bezier',
@@ -89,8 +90,8 @@ export class BlockchainComponent implements OnInit {
       .pipe(
         tap((res) => {
           let g = res.graph;
-          this.cy.remove('nodes');
-          this.cy.remove('edges');
+          this.cy.remove('node');
+          this.cy.remove('edge');
 
           this.fullNodes = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full);
           if (this.selectedNodeId === "default") this.node = this.fullNodes[0];
@@ -104,13 +105,13 @@ export class BlockchainComponent implements OnInit {
           this.cy.layout({name: 'breadthfirst', directed: true}).run();
         })
       ).subscribe();
-
   }
 
   private changeProtocol() {
 
+    let pathToLastBlock;
     this.cleanHighlighting();
-    console.log(this.cy.nodes().classes())
+    // console.log(this.cy.nodes().classes())
 
     if (this.toggleButtonValue != DEFAULT) {
       var dijkstra = this.cy.elements().dijkstra({
@@ -131,14 +132,14 @@ export class BlockchainComponent implements OnInit {
           }
         }
 
-        var pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
+        pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
         this.highlightPath(pathToLastBlock);
 
       } else {
-        var max = this.cy.nodes().max( function(node: any) {
+        const max = this.cy.nodes().max( function(node: any) {
           return node.data('block').weight;
         });
-        var pathToLastBlock = dijkstra.pathTo(max.ele);
+        pathToLastBlock = dijkstra.pathTo(max.ele);
         this.highlightPath(pathToLastBlock);
       }
 
@@ -174,7 +175,6 @@ export class BlockchainComponent implements OnInit {
 
     while (queue.length > 0) {
       const v = queue.shift();
-      console.log(v)
       if (!v) break;
 
       let b = this.node?.blockChainMap.get(v);

@@ -26,7 +26,6 @@ export class NetworkComponent implements OnInit {
 
   constructor(private visualisationService: VisualisationService,
               private minersToDeleteService: MinersDeletingService,
-              private edgeService: EdgeService
     ) {
     this.visualisationService.getGraph().subscribe((res) => {
       this.graph = res.graph;
