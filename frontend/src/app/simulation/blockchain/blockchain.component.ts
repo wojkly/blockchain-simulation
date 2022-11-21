@@ -105,6 +105,7 @@ export class BlockchainComponent implements OnInit {
 
   private changeProtocol() {
 
+    let pathToLastBlock;
     this.cleanHighlighting();
     console.log(this.cy.nodes().classes())
 
@@ -128,14 +129,14 @@ export class BlockchainComponent implements OnInit {
           }
         }
 
-        var pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
+        pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
         this.highlightPath(pathToLastBlock);
 
       } else {
-        var max = this.cy.nodes().max( function(node: any) {
+        const max = this.cy.nodes().max( function(node: any) {
           return node.data('block').weight;
         });
-        var pathToLastBlock = dijkstra.pathTo(max.ele);
+        pathToLastBlock = dijkstra.pathTo(max.ele);
         this.highlightPath(pathToLastBlock);
       }
 
@@ -196,95 +197,4 @@ export class BlockchainComponent implements OnInit {
       }
     }
   }
-
-  // do testowania i początkowej wizualizacji
-  // potem zamienić na blockchainService
-  // private createBlockchain() {
-  //   // nodes
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'root', block: new Block(0, 0)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n1', block: new Block(1, 1, 1)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n2', block: new Block(2, 2, 2)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n3', block: new Block(3, 3, 2)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n4', block: new Block(4, 4, 3)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n5', block: new Block(5, 5, 4)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n6', block: new Block(6, 6, 4)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n7', block: new Block(7, 7, 4)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n8', block: new Block(8, 8, 6)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n9', block: new Block(9, 9, 5)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n10', block: new Block(10, 10, 6)}
-  //   });
-
-  //   // edges
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e0', source: 'root', target: 'n1'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e1', source: 'n1', target: 'n2'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e2', source: 'n1', target: 'n3'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e3', source: 'n2', target: 'n4'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e4', source: 'n4', target: 'n5'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e5', source: 'n3', target: 'n6'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e6', source: 'n3', target: 'n7'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e7', source: 'n6', target: 'n8'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e8', source: 'n5', target: 'n9'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e9', source: 'n6', target: 'n10'}
-  //   });
 }
