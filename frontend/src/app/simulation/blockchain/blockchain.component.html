@@ -1,8 +1,19 @@
-<div>
+<div fxLayout="row" fxLayoutAlign="start center" style="padding-left: 1vw">
+
     <mat-button-toggle-group #group="matButtonToggleGroup" [value]="toggleButtonValue" (change)="onValChange(group.value)" class="toggle-group">
         <mat-button-toggle value="default">Default</mat-button-toggle>
         <mat-button-toggle value="longestChain">Longest Chain</mat-button-toggle>
         <mat-button-toggle value="GHOST">GHOST</mat-button-toggle>
     </mat-button-toggle-group>
+
+    <mat-form-field class="node-select">
+        <mat-select [value]="selectedNodeId" (selectionChange)="onNodeChange($event.value)">
+            <mat-option value="default">Default</mat-option>
+            <mat-option *ngFor="let fullNode of fullNodes" [value]="fullNode.id">
+                {{fullNode.id}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
 </div>
 <div id="cy"></div>

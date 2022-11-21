@@ -33,6 +33,7 @@ import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.co
 import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.component';
 import { SimulationTimerComponent } from './simulation/simulation-timer/simulation-timer.component';
 import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
     MatSortModule,
     MatDialogModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

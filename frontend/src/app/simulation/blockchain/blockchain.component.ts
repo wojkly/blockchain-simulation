@@ -24,6 +24,8 @@ export class BlockchainComponent implements OnInit {
   id2tip: any = {};
 
   public toggleButtonValue: string = "default";
+  public fullNodes: Node[] = [];
+  public selectedNodeId: string = "default";
 
   private node?: Node;
 
@@ -37,7 +39,17 @@ export class BlockchainComponent implements OnInit {
     this.changeProtocol();
   }
 
+  public onNodeChange(val: string) {
+    this.selectedNodeId = val;
+    this.cleanHighlighting();
+    this.refresh();
+  }
+
   ngOnInit(): void {
+    this.refresh()
+  }
+
+  refresh(): void {
     this.cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
@@ -79,14 +91,13 @@ export class BlockchainComponent implements OnInit {
           let g = res.graph;
           this.cy.remove('nodes');
           this.cy.remove('edges');
-          console.log(g)
-          this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
 
-          console.log(this.node)
+          this.fullNodes = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full);
+          if (this.selectedNodeId === "default") this.node = this.fullNodes[0];
+          else this.node = this.fullNodes.find(x => x.id.toString() == this.selectedNodeId);
+
           this.createBlockchainGraph();
-
           this.makeTooltips();
-
           this.cy.nodes().on('click', (event) => {
             this.id2tip[event.target.id()].show()
           });
