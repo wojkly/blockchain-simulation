@@ -83,6 +83,9 @@ export class BlockchainComponent implements OnInit, OnDestroy {
       ]
     });
 
+    if(this.visualisationSub)
+      this.visualisationSub.unsubscribe();
+
     this.visualisationSub = this.visualisationService.getGraph()
       .pipe(
         tap((res) => {
