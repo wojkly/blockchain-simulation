@@ -82,8 +82,6 @@ export class InitialConfigurationComponent implements OnInit {
   setMinersNumber(): void {
     const minersBefore = this.minerNodesBeforeChange;
     const minersNow = this.nodesType3FC.value;
-    // console.log(minersBefore)
-    // console.log(minersNow)
     this.setNumberOfNodes();
     if (minersBefore < minersNow) {
       for (let i=minersBefore; i<minersNow; i++) {

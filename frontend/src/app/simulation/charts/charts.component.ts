@@ -41,9 +41,9 @@ export class ChartsComponent implements OnInit, OnDestroy {
   createCharts(data: {total: string[], country: CountryData | null}){
 
     this.chartByCountry = new Chart("chartByCountry", {
-      type: 'bar', //this denotes tha type of chart
+      type: 'bar',
 
-      data: {// values on X-Axis
+      data: {
         labels: this.generateLabels(),
         datasets: [
           {

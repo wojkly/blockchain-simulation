@@ -11,30 +11,15 @@ export class EdgeService {
 
   private activeEdges: {edge: string, ttl: number}[] = [];
 
-  //private $semaphore = new BehaviorSubject(false);
-
   constructor() { }
 
   public addEdge(source: number, target: number): void {
-    // let subscription = this.$semaphore.asObservable().subscribe(sem => {
-    //   if(sem) {
-    //     this.activeEdges.push({edge: `${source}_${target}`,ttl: this.TIME_TO_LIVE});
-    //     this.emitEdges();
-    //     subscription.unsubscribe();
-    //   }
-    // });
     this.activeEdges.push({edge: `${source}_${target}`,ttl: this.TIME_TO_LIVE});
     this.emitEdges();
   }
 
   public emitEdges() {
-    //console.log(this.activeEdges);
-    //this.depleteTTL()
     this.$activeEdges.next(this.activeEdges);
-  }
-
-  public clearEdges(): void {
-    this.activeEdges = [];
   }
 
   public depleteTTL(): void {

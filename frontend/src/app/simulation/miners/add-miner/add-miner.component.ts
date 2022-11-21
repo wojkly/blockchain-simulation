@@ -2,9 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, Validators} from "@angular/forms";
 import {COUNTRIES} from "../../model/country";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {VisualisationService} from "../../../services/visualisation.service";
-import {Graph} from "../../model/graph";
-import {Node} from "../../model/node";
 
 @Component({
   selector: 'app-add-miner',
@@ -29,7 +26,6 @@ export class AddMinerComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private dialogRef: MatDialogRef<any>,
-              private visualizationService: VisualisationService,
               @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
@@ -50,8 +46,6 @@ export class AddMinerComponent implements OnInit {
   setMinersNumber(): void {
     const minersBefore = this.minerNodesBeforeChange;
     const minersNow = this.numberOfMinersFC.value;
-    // console.log(minersBefore)
-    // console.log(minersNow)
     if (minersBefore < minersNow) {
       for (let i=minersBefore; i<minersNow; i++) {
         this.miners.push(this.formBuilder.group({

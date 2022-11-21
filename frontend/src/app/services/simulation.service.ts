@@ -16,7 +16,7 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-import {COUNTRIES, getPriceByEnumName} from "../simulation/model/country";
+import {COUNTRIES} from "../simulation/model/country";
 import { Block } from '../simulation/model/block';
 import {EdgeService} from "./edge.service";
 import {MinersDeletingService} from "./miners-deleting.service";
@@ -58,10 +58,8 @@ export class SimulationService {
       this.stepService.getStep(),
       this.eventService.getSimulationEvent()])
     .pipe(
-      //tap(() => console.log('zipped')),
       tap(([a, b]) => {
         if (b instanceof SimulationEvent){
-          //console.log('handling event ' + b.eventType);
           switch (b.eventType) {
             case SimulationEventType.INITIALIZATION:
               this.handleInitialization();
@@ -100,7 +98,6 @@ export class SimulationService {
           })
           this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
-          //this.edgeService.depleteTTL();
         })
       ).subscribe();
 
@@ -204,9 +201,7 @@ export class SimulationService {
     if (minerNode === undefined) return;
 
     let newBlock = new Block(this.nextId, minerNode.id, minerNode.getLast());
-    // minerNode.getLast()?.children.push(newBlock);
     minerNode.addBlock(newBlock);
-    // minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
 
     minerNode.mined++;
@@ -218,6 +213,7 @@ export class SimulationService {
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
       this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
+      this.edgeService.addEdge(responseEventData.receiverId, responseEventData.senderId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
     this.edgeService.depleteTTL();
@@ -229,15 +225,11 @@ export class SimulationService {
     if (!senderNode) return;
     if (!receiverNode) return;
 
-    if (receiverNode.blockChainLength < senderNode.blockChainLength) {
-      receiverNode.blockChainLength = senderNode.blockChainLength;
+    const receivedBlock = senderNode.getLast();
+    const currLastBlock = receiverNode.getLast();
 
-      const receivedBlock = senderNode.getLast();
-
-      if(receiverNode) {
-        receiverNode.addBlock(receivedBlock)
-        // receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
-      }
+    if (currLastBlock?.id != receivedBlock?.id) {
+      receiverNode.addBlock(receivedBlock)
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
@@ -247,10 +239,11 @@ export class SimulationService {
         responseEventData.receiverId = neighbour;
 
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
+        this.edgeService.addEdge(responseEventData.receiverId, responseEventData.senderId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
       this.edgeService.depleteTTL();
-    }
+  }
   }
 
   // step to update miner's last block - block to attach new blocks to
@@ -269,10 +262,6 @@ export class SimulationService {
     })
   }
 
-  private getRandomNodeKey() {
-    let keys = Array.from(this.graph.nodes.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
-  }
 
   public getMiners() {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner || value.money > 0);
