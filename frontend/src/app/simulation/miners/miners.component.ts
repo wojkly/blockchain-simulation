@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, ViewChild} from '@angular/core';
 import {SimulationService} from "../../services/simulation.service";
 import {Node} from "../model/node";
 import {catchError, of, tap} from "rxjs";
@@ -20,7 +20,7 @@ import {Graph} from "../model/graph";
   templateUrl: './miners.component.html',
   styleUrls: ['./miners.component.scss']
 })
-export class MinersComponent implements AfterViewInit {
+export class MinersComponent implements AfterViewInit, OnDestroy {
 
   private graph = new Graph(new Map<number, Node>());
 
@@ -31,8 +31,11 @@ export class MinersComponent implements AfterViewInit {
 
   minerList = new MatTableDataSource<Node>();
   deadMinerList = new MatTableDataSource<Node>();
-  displayedColumns = ['id', 'money', 'power', 'mined', 'country', 'electricity', 'edit']
-  displayedColumnsWithoutEdit = ['id', 'money', 'power', 'mined', 'country', 'electricity']
+  displayedColumns = ['id', 'money', 'power', 'mined', 'country', 'electricity', 'edit'];
+  displayedColumnsWithoutEdit = ['id', 'money', 'power', 'mined', 'country', 'electricity'];
+
+  private minerDataSub: any;
+  private deadMinerDataSub: any;
 
 
   constructor(
@@ -45,6 +48,11 @@ export class MinersComponent implements AfterViewInit {
   ) {
     this.minerList.data = this.simulationService.getMiners();
     this.deadMinerList.data = this.simulationService.deadMiners;
+  }
+
+  ngOnDestroy(): void {
+    this.minerDataSub.unsubscribe();
+    this.deadMinerDataSub.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -65,12 +73,14 @@ export class MinersComponent implements AfterViewInit {
   }
 
   getData(): void {
-    this.minerService.get()
+    if(this.minerDataSub)
+      this.minerDataSub.unsubscribe();
+
+    this.minerDataSub = this.minerService.get()
       .pipe(
         tap( () => {
           this.minerList.data = this.simulationService.getMiners();
           this.deadMinerList.data = this.simulationService.deadMiners;
-          //console.log(this.deadMinerList.data)
         }),
         catchError(err => {
           console.log(err.error.error);
@@ -80,11 +90,13 @@ export class MinersComponent implements AfterViewInit {
   }
 
   getDeadMinersData(): void {
-    this.minersDeletingService.getMinersToDelete()
+    if(this.deadMinerDataSub)
+      this.deadMinerDataSub.unsubscribe();
+
+    this.deadMinerDataSub = this.minersDeletingService.getMinersToDelete()
       .pipe(
         tap( () => {
           this.deadMinerList.data = this.simulationService.deadMiners;
-          //console.log(this.deadMinerList.data)
         }),
         catchError(err => {
           console.log(err.error.error);
