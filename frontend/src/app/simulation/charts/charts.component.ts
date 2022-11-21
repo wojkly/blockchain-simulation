@@ -2,8 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
 import {ChartDataService, CountryData} from "../../services/chart-data.service";
 import {tap} from "rxjs";
-
-export const MONTH_NUMBER = 24;
+import {MONTH_NUMBER} from "../../utils/constants";
 
 
 @Component({

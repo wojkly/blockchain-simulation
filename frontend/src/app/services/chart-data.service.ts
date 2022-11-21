@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {MONTH_NUMBER} from "../simulation/charts/charts.component";
+import {MONTH_NUMBER} from "../utils/constants";
 
 export class CountryData {
   constructor(
