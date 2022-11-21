@@ -48,13 +48,13 @@ export class ChartsComponent implements OnInit, OnDestroy {
         labels: this.generateLabels(),
         datasets: [
           {
-            label: "Poland",
-            data: data.country?.poland,
+            label: "Romania",
+            data: data.country?.romania,
             backgroundColor: '#302474'
           },
           {
-            label: "Romania",
-            data: data.country?.romania,
+            label: "Poland",
+            data: data.country?.poland,
             backgroundColor: '#603494'
           },
           {
