@@ -27,12 +27,14 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   private cy = cytoscape({});
 
-  private visualisationSub: any;
+  private visualisationSub1: any;
+  private visualisationSub2: any;
+  private minersToDeleteSub: any;
 
   constructor(private visualisationService: VisualisationService,
               private minersToDeleteService: MinersDeletingService,
     ) {
-    this.visualisationSub = this.visualisationService.getGraph().pipe(
+    this.visualisationSub1 = this.visualisationService.getGraph().pipe(
       tap((res) => {
         this.graph = res.graph;
         this.activeEdges = res.activeEdges;
@@ -94,7 +96,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
     });
     this.createNodes(this.graph);
     this.createEdges();
-    this.visualisationService.getGraph()
+    this.visualisationSub2 = this.visualisationService.getGraph()
       .pipe(tap(res => {
           this.updateNodes(res.graph);
           this.cy.remove('edge');
@@ -165,7 +167,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   updateNodes(graph: Graph) {
-    this.minersToDeleteService.getMinersToDelete().subscribe((res) => {
+    this.minersToDeleteSub = this.minersToDeleteService.getMinersToDelete().subscribe((res) => {
       this.minersToDelete = res;
     })
     this.minersToDelete.forEach((miner) => {
@@ -228,8 +230,14 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.visualisationSub.unsubscribe();
+    this.visualisationSub1.unsubscribe();
+    this.visualisationSub2.unsubscribe();
+    this.minersToDeleteSub.unsubscribe();
 
-    this.cy.stop();
+    if (document.getElementById('cy') !== null) {
+      // @ts-ignore
+      document.getElementById('cy').remove();
+    }
+    this.cy.destroy();
   }
 }

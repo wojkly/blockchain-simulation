@@ -13,7 +13,7 @@ import {DEFAULT, LONGEST_CHAIN} from "../../utils/constants";
   styleUrls: ['./blockchain.component.scss']
 })
 export class BlockchainComponent implements OnInit, OnDestroy {
-  @ViewChild("cy2") el: ElementRef | undefined;
+  @ViewChild("cy") el: ElementRef | undefined;
 
   private cy = cytoscape({});
   id2tip: any = {};
@@ -29,8 +29,6 @@ export class BlockchainComponent implements OnInit, OnDestroy {
   constructor(
     private visualisationService: VisualisationService
   ) {
-    if(!this.cy.destroyed())
-      this.cy.destroy();
   }
 
   public onValChange(val: string) {
@@ -51,7 +49,7 @@ export class BlockchainComponent implements OnInit, OnDestroy {
 
   refresh(): void {
     this.cy = cytoscape({
-      container: document.getElementById('cy2'),
+      container: document.getElementById('cy'),
       style: [
         {
           selector: 'node',
@@ -220,6 +218,10 @@ export class BlockchainComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.visualisationSub.unsubscribe();
 
-    this.cy.stop();
+    if (document.getElementById('cy') !== null) {
+      // @ts-ignore
+      document.getElementById('cy').remove();
+    }
+    this.cy.destroy();
   }
 }

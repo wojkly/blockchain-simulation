@@ -218,6 +218,7 @@ export class SimulationService {
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
       this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
+      this.edgeService.addEdge(responseEventData.receiverId, responseEventData.senderId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
     this.edgeService.depleteTTL();
@@ -247,6 +248,7 @@ export class SimulationService {
         responseEventData.receiverId = neighbour;
 
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
+        this.edgeService.addEdge(responseEventData.receiverId, responseEventData.senderId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
       this.edgeService.depleteTTL();
