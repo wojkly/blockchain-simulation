@@ -43,7 +43,7 @@ export class BlockchainComponent implements OnInit {
       container: document.getElementById('cy'),
       style: [
         {
-          selector: 'nodes',
+          selector: 'node',
           style: {
             'width': '100px',
             'height': '100px',
@@ -56,7 +56,7 @@ export class BlockchainComponent implements OnInit {
           },
         },
         {
-          selector: 'edges',
+          selector: 'edge',
           style: {
             'width': 3,
             'line-color': 'red',
@@ -78,8 +78,8 @@ export class BlockchainComponent implements OnInit {
       .pipe(
         tap((res) => {
           let g = res.graph;
-          this.cy.remove('nodes');
-          this.cy.remove('edges');
+          this.cy.remove('node');
+          this.cy.remove('edge');
           // console.log(g)
           this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
 

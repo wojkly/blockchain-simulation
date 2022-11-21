@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
 import {ChartDataService, CountryData} from "../../services/chart-data.service";
 import {tap} from "rxjs";
 
-export const MONTH_NUMBER = 12;
+export const MONTH_NUMBER = 24;
 
 
 @Component({
@@ -11,22 +11,32 @@ export const MONTH_NUMBER = 12;
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.scss']
 })
-export class ChartsComponent implements OnInit {
+export class ChartsComponent implements OnInit, OnDestroy {
 
   public chartByCountry: any;
   public chartTotal: any;
+
+  private subscriber: any;
 
   constructor(
     private chartDataService: ChartDataService,
   ) { }
 
   ngOnInit(): void {
-    this.chartDataService.getData().pipe(
+    this.subscriber = this.chartDataService.getData().pipe(
       tap(data => {
+        if (this.chartByCountry)
+          this.chartByCountry.destroy();
+        if(this.chartTotal)
+          this.chartTotal.destroy();
+
         this.createCharts(data);
-        console.log(data);
       })
     ).subscribe();
+  }
+
+  ngOnDestroy() {
+    this.subscriber.unsubscribe();
   }
 
   createCharts(data: {total: string[], country: CountryData | null}){
@@ -66,6 +76,7 @@ export class ChartsComponent implements OnInit {
       },
       options: {
         aspectRatio:2.5,
+        responsive: true,
         scales: {
           y: {
             title:{
@@ -98,6 +109,7 @@ export class ChartsComponent implements OnInit {
       },
       options: {
         aspectRatio:2.5,
+        responsive: true,
         scales: {
           y: {
             title:{

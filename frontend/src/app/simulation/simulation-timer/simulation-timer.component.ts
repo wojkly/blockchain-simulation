@@ -12,7 +12,7 @@ import {DAY_STEPS} from "../../utils/constants";
 export class SimulationTimerComponent implements OnInit {
 
   stepCounter: number = 0;
-  monthCounter: number = -1;
+  monthCounter: number = 0;
 
   constructor(
     private timerService: TimerService,
@@ -29,7 +29,6 @@ export class SimulationTimerComponent implements OnInit {
     this.stepCounter ++;
     const newMonthCounter = Math.floor(Math.floor(this.stepCounter / DAY_STEPS) / 30);
     if (this.monthCounter !== newMonthCounter) {
-      console.log(newMonthCounter);
       this.monthCounter = newMonthCounter;
       this.chartDataService.emitRequest();
     }
