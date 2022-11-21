@@ -125,8 +125,9 @@ export class SimulationService {
       tap(() => {
         const data = this.collectMinerData();
         this.chartDataService.addData(data.total, data.country);
+        this.chartDataService.emitData();
       })
-    )
+    ).subscribe();
   }
 
   private startAddingMiners(simulationSpeed: number) {

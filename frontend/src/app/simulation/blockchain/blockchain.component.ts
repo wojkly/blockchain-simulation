@@ -80,13 +80,13 @@ export class BlockchainComponent implements OnInit {
           let g = res.graph;
           this.cy.remove('nodes');
           this.cy.remove('edges');
-          console.log(g)
+          // console.log(g)
           this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
 
-          console.log(this.node)
+          // console.log(this.node)
           this.createBlockchainGraph();
           this.cy.nodes().on('click', (event) => {
-            console.log(event);
+            // console.log(event);
           });
           this.cy.layout({name: 'breadthfirst', directed: true}).run();
         })
@@ -107,7 +107,7 @@ export class BlockchainComponent implements OnInit {
 
     let pathToLastBlock;
     this.cleanHighlighting();
-    console.log(this.cy.nodes().classes())
+    // console.log(this.cy.nodes().classes())
 
     if (this.toggleButtonValue != DEFAULT) {
       var dijkstra = this.cy.elements().dijkstra({
@@ -169,19 +169,19 @@ export class BlockchainComponent implements OnInit {
 
     while (queue.length > 0) {
       const v = queue.shift();
-      console.log(v)
+      // console.log(v)
       if (!v) break;
 
       let b = this.node?.blockChainMap.get(v);
       if (!b) break;
 
       for (let child of b.children) {
-        console.log('iter: ' + child.id)
+        // console.log('iter: ' + child.id)
         if (!visited.has(child.id)) {
-          console.log('visiting: ' + child.id )
+          // console.log('visiting: ' + child.id )
           visited.add(child.id);
           queue.push(child.id);
-          console.log(this.cy.nodes())
+          // console.log(this.cy.nodes())
 
           this.cy.add({
             group: 'nodes',

@@ -95,7 +95,7 @@ export class Graph {
 
     //create miner nodes
     for (let i = 0; i < minerNodes; i++) {
-      console.log(minersData[i])
+      // console.log(minersData[i])
       neighbour = Graph.genrateRandomNumber(maxImmortalNodeId);
       let node = new Node(id, NodeType.Miner, minersData[i].country, minersData[i].money);
       node.computingPower = minersData[i].power;

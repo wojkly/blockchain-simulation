@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js/auto';
+import {ChartDataService, CountryData} from "../../services/chart-data.service";
+import {tap} from "rxjs";
 
-export const MONTH_NUMBER = 7;
+export const MONTH_NUMBER = 12;
 
 
 @Component({
@@ -11,52 +13,53 @@ export const MONTH_NUMBER = 7;
 })
 export class ChartsComponent implements OnInit {
 
-  public chart: any;
-  public chart2: any;
+  public chartByCountry: any;
+  public chartTotal: any;
 
-  constructor() { }
+  constructor(
+    private chartDataService: ChartDataService,
+  ) { }
 
   ngOnInit(): void {
-    this.createCharts();
+    this.chartDataService.getData().pipe(
+      tap(data => {
+        this.createCharts(data);
+        console.log(data);
+      })
+    ).subscribe();
   }
 
-  createCharts(){
+  createCharts(data: {total: string[], country: CountryData | null}){
 
-    this.chart = new Chart("MyChart", {
+    this.chartByCountry = new Chart("chartByCountry", {
       type: 'bar', //this denotes tha type of chart
 
       data: {// values on X-Axis
-        labels: ['0', '1', '2','3',
-          '4', '5', '6','7' ],
+        labels: this.generateLabels(),
         datasets: [
           {
             label: "Poland",
-            data: ['5','8', '9', '12', '16',
-              '10', '12', '8'],
+            data: data.country?.poland,
             backgroundColor: '#302474'
           },
           {
             label: "Romania",
-            data: ['5', '6', '8', '10', '17',
-              '15', '18', '20'],
+            data: data.country?.romania,
             backgroundColor: '#603494'
           },
           {
             label: "Spain",
-            data: ['2','6', '5', '7', '9',
-              '7', '11', '12'],
+            data: data.country?.spain,
             backgroundColor: '#6864bc'
           },
           {
             label: "Germany",
-            data: ['1','6', '4', '3', '2',
-              '4', '5', '4'],
+            data: data.country?.germany,
             backgroundColor: '#a094cc'
           },
           {
             label: "Great Britain",
-            data: ['1','7', '5', '17', '7',
-              '4', '8', '3'],
+            data: data.country?.greatBritain,
             backgroundColor: '#b8bcf4'
           },
         ]
@@ -81,17 +84,17 @@ export class ChartsComponent implements OnInit {
 
     });
 
-    this.chart2 = new Chart("MyChart2", {
+    this.chartTotal = new Chart("chartTotal", {
       type: 'line',
       data: {
         datasets: [{
           label: 'Miners Amount',
-          data: [17, 20, 31, 50, 46, 35, 29, 49],
+          data: data.total,
           backgroundColor: "#6864bc",
           borderColor: "#302474",
           fill: true,
         }],
-        labels: ['0', '1', '2','3', '4', '5', '6','7' ]
+        labels: this.generateLabels()
       },
       options: {
         aspectRatio:2.5,
@@ -111,5 +114,13 @@ export class ChartsComponent implements OnInit {
         }
       }
     });
+  }
+
+  private generateLabels(): string[] {
+    let res: string[] = [];
+    for(let i = 1; i <= MONTH_NUMBER; i++) {
+      res.push(i.toString());
+    }
+    return res;
   }
 }
