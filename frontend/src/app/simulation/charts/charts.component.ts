@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js/auto';
 
+export const MONTH_NUMBER = 7;
+
 
 @Component({
   selector: 'app-charts',
