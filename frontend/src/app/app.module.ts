@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InitialConfigurationComponent } from './initial-configuration/initial-configuration.component';
@@ -33,6 +32,7 @@ import { EditMinerComponent } from './simulation/miners/edit-miner/edit-miner.co
 import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.component';
 import { SimulationTimerComponent } from './simulation/simulation-timer/simulation-timer.component';
 import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
+import { CommonModule } from '@angular/common';
 import { ChartsComponent } from './simulation/charts/charts.component';
 
 @NgModule({
@@ -74,7 +74,8 @@ import { ChartsComponent } from './simulation/charts/charts.component';
     MatSortModule,
     MatDialogModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
