@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InitialConfigurationComponent } from './initial-configuration/initial-configuration.component';
@@ -34,6 +33,7 @@ import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.compo
 import { SimulationTimerComponent } from './simulation/simulation-timer/simulation-timer.component';
 import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
 import { CommonModule } from '@angular/common';
+import { ChartsComponent } from './simulation/charts/charts.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +49,8 @@ import { CommonModule } from '@angular/common';
     EditMinerComponent,
     AddMinerComponent,
     SimulationTimerComponent,
-    SimulationTimerPipe
+    SimulationTimerPipe,
+    ChartsComponent
   ],
   imports: [
     BrowserModule,

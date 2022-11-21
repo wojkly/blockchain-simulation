@@ -27,9 +27,9 @@ export function getCountryNameByEnumName(enumName: string): any {
 export const COUNTRY_ENUM_NAMES = ['ROMANIA','POLAND','SPAIN','GERMANY','GREAT_BRITAIN'];
 
 export const COUNTRIES = [
-  new Country('Rumunia', 1, 'ROMANIA'),
-  new Country('Polska', 2, 'POLAND'),
-  new Country('Hiszpania', 3, 'SPAIN'),
-  new Country('Niemcy', 4, 'GERMANY'),
-  new Country('Wielka Brytania', 5, 'GREAT_BRITAIN'),
+  new Country('Romania', 1, 'ROMANIA'),
+  new Country('Poland', 2, 'POLAND'),
+  new Country('Spain', 3, 'SPAIN'),
+  new Country('Germany', 4, 'GERMANY'),
+  new Country('Great Britain', 5, 'GREAT_BRITAIN'),
 ];
