@@ -1,17 +1,11 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as cytoscape from 'cytoscape';
-import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
-import { tap } from 'rxjs';
-import { VisualisationService } from 'src/app/services/visualisation.service';
-import { Node } from '../model/node';
-import { NodeType } from '../nodeType';
-
-
-export const LONGEST_CHAIN = "longestChain"
-export const GHOST = "GHOST";
-export const DEFAULT = "default";
-
+import {tap} from 'rxjs';
+import {VisualisationService} from 'src/app/services/visualisation.service';
+import {Node} from '../model/node';
+import {NodeType} from '../nodeType';
+import {DEFAULT, LONGEST_CHAIN} from "../../utils/constants";
 
 @Component({
   selector: 'app-blockchain',
@@ -115,20 +109,20 @@ export class BlockchainComponent implements OnInit, OnDestroy {
     this.cleanHighlighting();
 
     if (this.toggleButtonValue != DEFAULT) {
-      var dijkstra = this.cy.elements().dijkstra({
+      const dijkstra = this.cy.elements().dijkstra({
         root: '#-1'
       });
 
       if (this.toggleButtonValue == LONGEST_CHAIN) {
 
-        var leaves = this.cy.nodes().leaves();
+        const leaves = this.cy.nodes().leaves();
         let maxChainLength = 0;
-        var lastBlockId = '';
+        let lastBlockId = '';
 
         for(let i = 0; i < leaves.length; i++) {
-          let chainLenght = dijkstra.distanceTo(this.cy.$('#' + leaves[i].id()))
-          if (chainLenght > maxChainLength) {
-            maxChainLength = chainLenght;
+          let chainLength = dijkstra.distanceTo(this.cy.$('#' + leaves[i].id()))
+          if (chainLength > maxChainLength) {
+            maxChainLength = chainLength;
             lastBlockId = '#' + leaves[i].id();
           }
         }
@@ -169,6 +163,8 @@ export class BlockchainComponent implements OnInit, OnDestroy {
     queue.push(-1);
     let edgeId = 0;
 
+    console.log(this.node);
+
     this.cy.add({
       group: 'nodes',
       data: {id: '-1', block: this.node?.blockChain}
@@ -176,19 +172,16 @@ export class BlockchainComponent implements OnInit, OnDestroy {
 
     while (queue.length > 0) {
       const v = queue.shift();
-      // console.log(v)
+
       if (!v) break;
 
       let b = this.node?.blockChainMap.get(v);
       if (!b) break;
 
       for (let child of b.children) {
-        // console.log('iter: ' + child.id)
         if (!visited.has(child.id)) {
-          // console.log('visiting: ' + child.id )
           visited.add(child.id);
           queue.push(child.id);
-          // console.log(this.cy.nodes())
 
           this.cy.add({
             group: 'nodes',
@@ -226,10 +219,6 @@ export class BlockchainComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.visualisationSub.unsubscribe();
 
-    this.cy.stop();
-
-    // this.cy.remove('node');
-    // this.cy.remove('edge');
-    // this.cy.destroy();
+    //this.cy.stop();
   }
 }

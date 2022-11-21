@@ -13,3 +13,7 @@ export class TimePeriod {
   public static readonly HOUR_INTERVAL = TimePeriod.DAY_INTERVAL / 24;
   public static readonly MONTH_INTERVAL = TimePeriod.STEP_INTERVAL * MONTH_STEPS;
 }
+
+export const LONGEST_CHAIN = "longestChain"
+export const GHOST = "GHOST";
+export const DEFAULT = "default";

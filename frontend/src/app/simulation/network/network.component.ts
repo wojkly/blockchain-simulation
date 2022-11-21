@@ -227,10 +227,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.visualisationSub.unsubscribe();
 
-    this.cy.stop();
-
-    // this.cy.remove('node');
-    // this.cy.remove('edge');
-    // this.cy.destroy();
+    //this.cy.stop();
   }
 }
