@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {TimerService} from "../../services/timer.service";
 import {tap} from "rxjs";
+import {ChartDataService} from "../../services/chart-data.service";
 
 @Component({
   selector: 'app-simulation-timer',
@@ -13,6 +14,7 @@ export class SimulationTimerComponent implements OnInit {
 
   constructor(
     private timerService: TimerService,
+    private chartDataService: ChartDataService,
   ) { }
 
   ngOnInit(): void {
@@ -23,5 +25,8 @@ export class SimulationTimerComponent implements OnInit {
 
   private updateSimulationTimer() {
     this.stepCounter ++;
+    if (this.stepCounter % 30 === 1) {
+      this.chartDataService.emitRequest();
+    }
   }
 }

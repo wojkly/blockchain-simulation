@@ -4,8 +4,8 @@ import {MONTH_NUMBER} from "../simulation/charts/charts.component";
 
 export class CountryData {
   constructor(
-    public readonly poland: string[],
     public readonly romania: string[],
+    public readonly poland: string[],
     public readonly spain: string[],
     public readonly germany: string[],
     public readonly greatBritain: string[],
@@ -13,15 +13,15 @@ export class CountryData {
   }
 
   pushData(data: CountryDataSingleMonth): void {
-    this.poland.push(data.poland);
     this.romania.push(data.romania);
+    this.poland.push(data.poland);
     this.spain.push(data.spain);
     this.germany.push(data.germany);
     this.greatBritain.push(data.greatBritain);
 
-    if(this.poland.length > MONTH_NUMBER) {
-      this.poland.shift();
+    if(this.romania.length > MONTH_NUMBER) {
       this.romania.shift();
+      this.poland.shift();
       this.spain.shift();
       this.germany.shift();
       this.greatBritain.shift();
@@ -31,8 +31,8 @@ export class CountryData {
 
 export class CountryDataSingleMonth {
   constructor(
-    public readonly poland: string,
     public readonly romania: string,
+    public readonly poland: string,
     public readonly spain: string,
     public readonly germany: string,
     public readonly greatBritain: string,
@@ -41,8 +41,8 @@ export class CountryDataSingleMonth {
 
   getInitialData(): [string][] {
     return [
-      [this.poland],
       [this.romania],
+      [this.poland],
       [this.spain],
       [this.germany],
       [this.greatBritain]
@@ -55,13 +55,33 @@ export class CountryDataSingleMonth {
 })
 export class ChartDataService {
 
-  private totalDataEmitter$ = new BehaviorSubject<string[]>([]);
-  private countryDataEmitter$ = new BehaviorSubject<CountryData>([]);
+  private dataEmitter$ = new BehaviorSubject<{total: string[], country: CountryData | null}>({total: [], country: null});
+
+  private requestEmitter$ = new BehaviorSubject<null>(null);
 
   private totalData: string[] = [];
   private countryData: CountryData | null = null;
 
   constructor() { }
+
+  public emitData() {
+    this.dataEmitter$.next({
+      total: this.totalData,
+      country: this.countryData
+    });
+  }
+
+  public getData() {
+    return this.dataEmitter$.asObservable();
+  }
+
+  public emitRequest() {
+    this.requestEmitter$.next(null);
+  }
+
+  public getRequest() {
+    return this.requestEmitter$.asObservable();
+  }
 
   public addData(total: string, byCountry: CountryDataSingleMonth) {
     this.totalData.push(total);
