@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
-  BLOCKCHAIN_PATH,
-  INITIAL_CONFIGURIATION_PATH,
+  BLOCKCHAIN_PATH, CHARTS_PATH,
+  INITIAL_CONFIGURATION_PATH,
   MINERS_PATH,
   NETWORK_PATH, PARAMETERS_PATH,
   SIMULATION_PATH
@@ -13,15 +13,16 @@ import {NetworkComponent} from "./simulation/network/network.component";
 import {MinersComponent} from "./simulation/miners/miners.component";
 import {ParametersComponent} from "./simulation/parameters/parameters.component";
 import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
+import {ChartsComponent} from "./simulation/charts/charts.component";
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: INITIAL_CONFIGURIATION_PATH,
+    redirectTo: INITIAL_CONFIGURATION_PATH,
     pathMatch: 'full',
   },
   {
-    path: INITIAL_CONFIGURIATION_PATH,
+    path: INITIAL_CONFIGURATION_PATH,
     component: InitialConfigurationComponent
   },
   {
@@ -48,6 +49,10 @@ const routes: Routes = [
       {
         path: BLOCKCHAIN_PATH,
         component: BlockchainComponent
+      },
+      {
+        path: CHARTS_PATH,
+        component: ChartsComponent
       }
     ]
   }
