@@ -7,7 +7,6 @@ import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
-import {EdgeService} from "../../services/edge.service";
 import {getCountryNameByEnumName} from "../model/country";
 
 cytoscape.use(popper);
@@ -80,10 +79,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
           selector: 'edge',
           style: {
             'width': 1,
-            // 'line-color': '#dsd1aa3',
-            // 'target-arrow-color': '#ccc',
-            // 'target-arrow-shape': 'triangle',
-            // 'curve-style': 'bezier',
           }
         },
         {
@@ -96,6 +91,10 @@ export class NetworkComponent implements OnInit, OnDestroy {
     });
     this.createNodes(this.graph);
     this.createEdges();
+
+    if(this.visualisationSub2)
+      this.visualisationSub2.unsubscribe();
+
     this.visualisationSub2 = this.visualisationService.getGraph()
       .pipe(tap(res => {
           this.updateNodes(res.graph);
@@ -109,7 +108,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
             randomize: false,
             refresh: 0,
             padding: 50
-            // breadthfirst
           }).run();
           this.cy.nodes().lock()
           this.cy.nodes().on('click ', (e) => {
@@ -167,6 +165,9 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   updateNodes(graph: Graph) {
+    if(this.minersToDeleteSub)
+      this.minersToDeleteSub.unsubscribe();
+
     this.minersToDeleteSub = this.minersToDeleteService.getMinersToDelete().subscribe((res) => {
       this.minersToDelete = res;
     })

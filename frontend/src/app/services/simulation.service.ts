@@ -16,7 +16,7 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-import {COUNTRIES, getPriceByEnumName} from "../simulation/model/country";
+import {COUNTRIES} from "../simulation/model/country";
 import { Block } from '../simulation/model/block';
 import {EdgeService} from "./edge.service";
 import {MinersDeletingService} from "./miners-deleting.service";
@@ -58,10 +58,8 @@ export class SimulationService {
       this.stepService.getStep(),
       this.eventService.getSimulationEvent()])
     .pipe(
-      //tap(() => console.log('zipped')),
       tap(([a, b]) => {
         if (b instanceof SimulationEvent){
-          //console.log('handling event ' + b.eventType);
           switch (b.eventType) {
             case SimulationEventType.INITIALIZATION:
               this.handleInitialization();
@@ -100,7 +98,6 @@ export class SimulationService {
           })
           this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
-          //this.edgeService.depleteTTL();
         })
       ).subscribe();
 
@@ -204,9 +201,7 @@ export class SimulationService {
     if (minerNode === undefined) return;
 
     let newBlock = new Block(this.nextId, minerNode.id, minerNode.getLast());
-    // minerNode.getLast()?.children.push(newBlock);
     minerNode.addBlock(newBlock);
-    // minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
 
     minerNode.mined++;
@@ -237,7 +232,6 @@ export class SimulationService {
 
       if(receiverNode) {
         receiverNode.addBlock(receivedBlock)
-        // receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
       }
 
       receiverNode.neighbours.forEach((neighbour) => {
@@ -271,10 +265,6 @@ export class SimulationService {
     })
   }
 
-  private getRandomNodeKey() {
-    let keys = Array.from(this.graph.nodes.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
-  }
 
   public getMiners() {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner || value.money > 0);

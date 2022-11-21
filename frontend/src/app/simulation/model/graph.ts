@@ -2,17 +2,8 @@ import {Node} from "./node";
 import {NodeType} from "../nodeType";
 import {getRandomCountryEnumName} from "./country";
 
-type Edge = {
-  x: number,
-  y: number
-}
-
 export class Graph {
   constructor(public nodes: Map<number, Node>) {
-  }
-
-  private randomInteger(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   public static generateGraph(fullNodes: number, minerNodes: number, lightNodes: number, listeningNodes: number, minersData: any[], immortalNodesConnectionRatio: number = 1 / 10): Graph {
@@ -95,7 +86,6 @@ export class Graph {
 
     //create miner nodes
     for (let i = 0; i < minerNodes; i++) {
-      // console.log(minersData[i])
       neighbour = Graph.genrateRandomNumber(maxImmortalNodeId);
       let node = new Node(id, NodeType.Miner, minersData[i].country, minersData[i].money);
       node.computingPower = minersData[i].power;
@@ -108,7 +98,6 @@ export class Graph {
       id += 1;
     }
 
-    //todo optional add more connections between miners and immortal ndoes
     return new Graph(nodesMap);
   }
 

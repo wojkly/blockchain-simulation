@@ -13,7 +13,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {EditMinerComponent} from "./edit-miner/edit-miner.component";
 import {VisualisationService} from "../../services/visualisation.service";
 import {AddMinerComponent} from "./add-miner/add-miner.component";
-import {Graph} from "../model/graph";
 
 @Component({
   selector: 'app-miners',
@@ -21,9 +20,6 @@ import {Graph} from "../model/graph";
   styleUrls: ['./miners.component.scss']
 })
 export class MinersComponent implements AfterViewInit, OnDestroy {
-
-  private graph = new Graph(new Map<number, Node>());
-
   @ViewChild('activeMinersPaginator', { static: false }) activeMinersPaginator!: MatPaginator;
   @ViewChild('deadMinersPaginator', { static: false }) deadMinersPaginator!: MatPaginator;
   @ViewChild('activeMinersSort', { static: false }) activeMinersSort!: MatSort;
@@ -116,7 +112,7 @@ export class MinersComponent implements AfterViewInit, OnDestroy {
       if(res){
         this.visualizationService.emitGraph(res);
       }
-    })
+    });
   }
 
   addMiner(){
@@ -131,6 +127,6 @@ export class MinersComponent implements AfterViewInit, OnDestroy {
         this.getData();
         this.getDeadMinersData();
       }
-    })
+    });
   }
 }

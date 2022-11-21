@@ -64,14 +64,6 @@ export class Node {
     this.money += reward;
   }
 
-  public isAlive() {
-    return this.alive;
-  }
-
-  public getFirst() {
-    return this.blockChain;
-  }
-
   public getLast(): Block | undefined {
 
     if (this.nodeType == NodeType.Miner)
@@ -87,33 +79,22 @@ export class Node {
   // for full nodes - adds the block to the blockchain
   public addBlock(block: Block | undefined): void {
     if (!block) return;
-    // console.log(block)
     if (this.nodeType == NodeType.Full && this.blockChain) {
-      // console.log("Full node")
       if (!this.blockChainMap.has(block.id)) {
-        // console.log("  Blok nie jest w mapie: " + block.id)
         if (block.parent) {
-          // console.log("    Blok ma parenta: " + block.parent.id)
           if (this.blockChainMap.has(block.parent.id)) {
-            // console.log("      Parent jest w mapie")
             this.blockChainMap.get(block.parent.id)?.children?.push(block);
           } else {
-            // console.log("      Parent nie jest w mapie")
             // block without parent is treated as a root child
             this.blockChain.children?.push(block);
           }
         } else {
-          // console.log("    Blok nie ma parenta")
           this.blockChain.children?.push(block);
         }
-        // console.log("Aktualizacja mapy")
         this.blockChainMap.set(block.id, block);
         this.blockChainSize++;
-        // console.log(this.blockChainMap)
-        // console.log(this.blockChain)
       }
     } else if (this.nodeType == NodeType.Miner) {
-      // console.log("miner")
       this.lastBlock = block;
     }
   }
@@ -127,9 +108,9 @@ export class Node {
         return this.blockChainMap.get(lastBlock);
       } else if (protocol == Protocol.GHOST) {
         this.updateWeights();
-        var maxLen = 0;
-        var maxWeight = 0;
-        var blockId = -1;
+        const maxLen = 0;
+        const maxWeight = 0;
+        const blockId = -1;
         this.ghostPath(this.blockChain, 0, 0, maxWeight, maxLen, blockId);
 
       }
