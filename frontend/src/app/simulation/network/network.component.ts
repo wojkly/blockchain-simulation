@@ -10,6 +10,8 @@ import {MinersDeletingService} from "../../services/miners-deleting.service";
 import {EdgeService} from "../../services/edge.service";
 import {getCountryNameByEnumName} from "../model/country";
 
+cytoscape.use(popper);
+
 
 @Component({
   selector: 'app-network',
@@ -36,8 +38,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
         this.activeEdges = res.activeEdges;
       })
     ).subscribe();
-
-    cytoscape.use(popper);
   }
 
   ngOnInit(): void {
@@ -89,15 +89,15 @@ export class NetworkComponent implements OnInit, OnDestroy {
         },
       ]
     });
-    this.createNodes(this.graph, this.cy);
-    this.createEdges(this.cy);
+    this.createNodes(this.graph);
+    this.createEdges();
     this.visualisationService.getGraph()
       .pipe(tap(res => {
-          this.updateNodes(res.graph, this.cy);
+          this.updateNodes(res.graph);
           this.cy.remove('edge');
           this.cy.forceRender();
-          this.createEdges(this.cy);
-          this.makeTooltips(this.cy);
+          this.createEdges();
+          this.makeTooltips();
           this.cy.layout({
             name: 'cose',
             animate: false,
@@ -115,10 +115,10 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
 
-  createNodes(graph: Graph, cy: cytoscape.Core) {
+  createNodes(graph: Graph) {
     graph.nodes.forEach((item) => {
       if (item.nodeType === NodeType.Miner) {
-        cy.add({
+        this.cy.add({
           data: {
             id: '' + item.id,
             value: {
@@ -132,7 +132,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
         })
 
       } else {
-        cy.add({
+        this.cy.add({
           data: {
             id: '' + item.id,
             value: {
@@ -144,16 +144,16 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
 
-  createEdges(cy: cytoscape.Core) {
-    cy.nodes().forEach((item) => {
+  createEdges() {
+    this.cy.nodes().forEach((item) => {
       item.data("value.neighbours").forEach((neighbour ) => {
         const reverseEdge = `${neighbour}_${item.id()}`;
         const newEdge = `${item.id()}_${neighbour}`;
-        if(!(cy.getElementById(reverseEdge).length > 0)){
-          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}});
+        if(!(this.cy.getElementById(reverseEdge).length > 0)){
+          this.cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}});
           this.activeEdges.forEach(el => {
             if(el.edge === newEdge && el.ttl > 0) {
-              cy.getElementById(newEdge).style({'line-color': 'red'});
+              this.cy.getElementById(newEdge).style({'line-color': 'red'});
             }
           })
         }
@@ -161,17 +161,17 @@ export class NetworkComponent implements OnInit, OnDestroy {
     })
   }
 
-  updateNodes(graph: Graph, cy: cytoscape.Core) {
+  updateNodes(graph: Graph) {
     this.minersToDeleteService.getMinersToDelete().subscribe((res) => {
       this.minersToDelete = res;
     })
     this.minersToDelete.forEach((miner) => {
-      cy.getElementById(miner).remove();
+      this.cy.getElementById(miner).remove();
     })
     graph.nodes.forEach((item) => {
       if (item.nodeType === NodeType.Miner) {
-        if (cy.getElementById('' + item.id).id() == '' + item.id){
-          cy.getElementById('' + item.id).data('value', {
+        if (this.cy.getElementById('' + item.id).id() == '' + item.id){
+          this.cy.getElementById('' + item.id).data('value', {
             'computingPower': item.computingPower,
             'country': item.country,
             'mined': item.mined,
@@ -181,8 +181,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
           })
         }
         else{
-          cy.getElementById('' + item.id).removeData();
-          cy.add({
+          this.cy.getElementById('' + item.id).removeData();
+          this.cy.add({
             data: {
               id: '' + item.id,
               value: {
@@ -196,7 +196,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
         }
 
       } else {
-        cy.getElementById('' + item.id).data(
+        this.cy.getElementById('' + item.id).data(
             'value', {
               'type': item.nodeType,
               'neighbours': item.neighbours
@@ -205,8 +205,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
     })
   }
 
-  makeTooltips(cy: cytoscape.Core){
-    cy.nodes().forEach((node: any) => {
+  makeTooltips(){
+    this.cy.nodes().forEach((node: any) => {
       let ref = node.popperRef();
       this.id2tip[node.id()] = tippy(document.createElement("div"), {
         getReferenceClientRect: ref.getBoundingClientRect,
@@ -225,9 +225,12 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.visualisationSub.unsubscribe();
+
+    this.cy.stop();
+
     // this.cy.remove('node');
     // this.cy.remove('edge');
-    this.visualisationSub.unsubscribe();
-    //this.cy.destroy();
+    // this.cy.destroy();
   }
 }
