@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as cytoscape from 'cytoscape';
+import * as popper from 'cytoscape-popper';
+import tippy from 'tippy.js';
 import { tap } from 'rxjs';
-import { BlockchainService } from 'src/app/services/blockchain.service';
 import { VisualisationService } from 'src/app/services/visualisation.service';
-import { Block } from '../model/block';
-import { Graph } from '../model/graph';
 import { Node } from '../model/node';
 import { NodeType } from '../nodeType';
 
@@ -22,13 +21,15 @@ export const DEFAULT = "default";
 export class BlockchainComponent implements OnInit {
 
   cy = cytoscape({});
+  id2tip: any = {};
 
   public toggleButtonValue: string = "default";
+  public fullNodes: Node[] = [];
+  public selectedNodeId: string = "default";
 
   private node?: Node;
 
   constructor(
-    private blockchainService: BlockchainService,
     private visualisationService: VisualisationService
   ) { }
 
@@ -38,7 +39,18 @@ export class BlockchainComponent implements OnInit {
     this.changeProtocol();
   }
 
+  public onNodeChange(val: string) {
+    this.selectedNodeId = val;
+    this.cleanHighlighting();
+    this.refresh();
+  }
+
   ngOnInit(): void {
+    this.refresh()
+  }
+
+  refresh(): void {
+    this.cy.destroy();
     this.cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
@@ -47,8 +59,9 @@ export class BlockchainComponent implements OnInit {
           style: {
             'width': '100px',
             'height': '100px',
-            'shape': 'rectangle',
-            'background-color': 'blue',
+            'shape': 'round-rectangle',
+            'background-color': '#7fcdcd',
+
             'label': (node: any) => {
                 if (node.data("block").id == -1) return "root";
                 else return "block " + node.data("block").id;
@@ -59,16 +72,15 @@ export class BlockchainComponent implements OnInit {
           selector: 'edge',
           style: {
             'width': 3,
-            'line-color': 'red',
-            'target-arrow-color': '#ccc',
-            'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
           }
         },
         {
           selector: '.highlighted',
           style: {
-            'background-color': 'black'
+            'line-color': '#ff80df',
+            'border-width': '3px',
+            'border-color': '#ff80df'
           }
         }
       ]
@@ -80,27 +92,19 @@ export class BlockchainComponent implements OnInit {
           let g = res.graph;
           this.cy.remove('node');
           this.cy.remove('edge');
-          // console.log(g)
-          this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
 
-          // console.log(this.node)
+          this.fullNodes = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full);
+          if (this.selectedNodeId === "default") this.node = this.fullNodes[0];
+          else this.node = this.fullNodes.find(x => x.id.toString() == this.selectedNodeId);
+
           this.createBlockchainGraph();
+          this.makeTooltips();
           this.cy.nodes().on('click', (event) => {
-            // console.log(event);
+            this.id2tip[event.target.id()].show()
           });
           this.cy.layout({name: 'breadthfirst', directed: true}).run();
         })
       ).subscribe();
-    // this.createBlockchain();
-
-
-    // this.blockchainService.get()
-    //   .pipe(
-    //     tap((g) => {
-    //       console.log(g);
-    //       // tutaj docelowo blockchainService powinien zwracać zaktualizowany graf (albo nowe bloki)
-    //     })
-    //   ).subscribe()
   }
 
   private changeProtocol() {
@@ -115,7 +119,6 @@ export class BlockchainComponent implements OnInit {
       });
 
       if (this.toggleButtonValue == LONGEST_CHAIN) {
-        // teoretycznie to można zrobić tak jak GHOST czyli max po distance (ale nie zapisujemy distance)
 
         var leaves = this.cy.nodes().leaves();
         let maxChainLength = 0;
@@ -153,9 +156,12 @@ export class BlockchainComponent implements OnInit {
     this.cy.nodes().forEach(n => {
       n.removeClass('highlighted')
     });
+    this.cy.edges().forEach(n => {
+      n.removeClass('highlighted')
+    });
   }
 
-  createBlockchainGraph() {
+  private createBlockchainGraph() {
     let visited = new Set();
     let queue: number[] = new Array<number>();
     visited.add(-1);
@@ -169,19 +175,15 @@ export class BlockchainComponent implements OnInit {
 
     while (queue.length > 0) {
       const v = queue.shift();
-      // console.log(v)
       if (!v) break;
 
       let b = this.node?.blockChainMap.get(v);
       if (!b) break;
 
       for (let child of b.children) {
-        // console.log('iter: ' + child.id)
         if (!visited.has(child.id)) {
-          // console.log('visiting: ' + child.id )
           visited.add(child.id);
           queue.push(child.id);
-          // console.log(this.cy.nodes())
 
           this.cy.add({
             group: 'nodes',
@@ -197,4 +199,23 @@ export class BlockchainComponent implements OnInit {
       }
     }
   }
+
+  private makeTooltips() {
+    this.cy.nodes().forEach((block: any) => {
+      let ref = block.popperRef();
+      this.id2tip[block.id()] = tippy(document.createElement('div'), {
+        getReferenceClientRect: ref.getBoundingClientRect,
+        trigger: 'manual',
+        placement: 'bottom',
+        content: () => {
+          let content = document.createElement('div');
+          content.setAttribute('style', 'font-size:1em; padding-top: 2vh');
+          if (block._private.data.id === '-1') content.innerHTML = `Root`;
+          else content.innerHTML = `Mined by: ${block._private.data.block._minedBy}`;
+          return content;
+        }
+      });
+    });
+  }
+
 }
