@@ -7,6 +7,7 @@ export class Block {
   private _children: Block[] = [];
 
   private _weight: number = 1;
+  private _fullNodeLastBlock: boolean = false;
 
   get id(): number {
     return this._id;
@@ -40,11 +41,20 @@ export class Block {
     this._children = value;
   }
 
-  constructor(id: number, minedBy: number, parent: Block | null = null, children: Block[] = [], weight: number = 0) {
+  get fullNodeLastBlock(): boolean {
+    return this._fullNodeLastBlock;
+  }
+
+  set fullNodeLastBlock(value: boolean) {
+    this._fullNodeLastBlock = value;
+  }
+
+  constructor(id: number, minedBy: number, parent: Block | null = null, children: Block[] = [], weight: number = 0, fullNodeLastBlock: boolean = false) {
     this._id = id;
     this._minedBy = minedBy;
     this._parent = parent;
     this._children = children;
     this._weight = this._parent ? this._parent.weight + 1 : weight;
+    this._fullNodeLastBlock = fullNodeLastBlock;
   }
 }
