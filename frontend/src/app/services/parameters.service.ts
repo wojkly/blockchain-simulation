@@ -5,11 +5,11 @@ import {BehaviorSubject, Observable} from "rxjs";
   providedIn: 'root'
 })
 export class ParametersService {
-  fullNodes: number = 1;
-  lightNodes: number = 1;
-  minerNodes: number = 1;
+  fullNodes: number = 5;
+  lightNodes: number = 5;
+  minerNodes: number = 5;
+  listeningNodes: number = 5;
   initialMinersData = [];
-  listeningNodes: number = 1;
   price: number = 1;
   reward: number = 5;
   frequency: number = 1;
