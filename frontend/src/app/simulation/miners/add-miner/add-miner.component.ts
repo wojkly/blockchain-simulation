@@ -1,7 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {COUNTRIES} from "../../model/country";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {VisualisationService} from "../../../services/visualisation.service";
+import {Graph} from "../../model/graph";
+import {Node} from "../../model/node";
+import {tap} from "rxjs";
 
 @Component({
   selector: 'app-add-miner',
@@ -30,11 +34,18 @@ export class AddMinerComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.miners.push(this.formBuilder.group({
-      power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
-      country: new FormControl('', [Validators.required]),
-      money: new FormControl(1, [Validators.required, Validators.min(0), Validators.max(10000)]),
-    }))
+    this.miners.push(this.getDefaultMinerFormGroup())
+
+    this.numberOfMinersFC.valueChanges
+      .pipe(
+        tap((value: number) => {
+          if (this.numberOfMinersFC.invalid) {
+            this.miners.clear();
+            this.minerNodesBeforeChange = 0;
+          }
+        })
+      )
+      .subscribe();
 
     this.form.markAllAsTouched();
   }
@@ -48,11 +59,7 @@ export class AddMinerComponent implements OnInit {
     const minersNow = this.numberOfMinersFC.value;
     if (minersBefore < minersNow) {
       for (let i=minersBefore; i<minersNow; i++) {
-        this.miners.push(this.formBuilder.group({
-          power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
-          country: new FormControl('', [Validators.required]),
-          money: new FormControl(1, [Validators.required, Validators.min(0), Validators.max(10000)]),
-        }))
+        this.miners.push(this.getDefaultMinerFormGroup())
       }
     } else {
       for (let i=minersBefore; i>minersNow; i--) {
@@ -62,6 +69,14 @@ export class AddMinerComponent implements OnInit {
 
     this.minerNodesBeforeChange = minersNow;
     this.form.markAllAsTouched();
+  }
+
+  private getDefaultMinerFormGroup(): FormGroup {
+    return this.formBuilder.group({
+      power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
+      country: new FormControl('POLAND', [Validators.required]),
+      money: new FormControl(500, [Validators.required, Validators.min(0), Validators.max(100000)]),
+    })
   }
 
   onClick(): void {

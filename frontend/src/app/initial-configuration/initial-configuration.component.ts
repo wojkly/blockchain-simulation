@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {SIMULATION_PATH} from "../app-routing-paths";
-import {FormArray, FormBuilder, FormControl, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ParametersService} from "../services/parameters.service";
 import {COUNTRIES} from "../simulation/model/country";
+import {tap} from "rxjs";
 
 @Component({
   selector: 'app-initial-configuration',
@@ -12,10 +13,12 @@ import {COUNTRIES} from "../simulation/model/country";
   styleUrls: ['./initial-configuration.component.scss']
 })
 export class InitialConfigurationComponent implements OnInit {
-  nodesType1FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
-  nodesType2FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
-  nodesType3FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
-  nodesType4FC: FormControl = new FormControl(5, [Validators.required, Validators.min(1)]);
+  private static readonly INIT_NODES_COUNT = 5;
+
+  nodesType1FC: FormControl = new FormControl(InitialConfigurationComponent.INIT_NODES_COUNT, [Validators.required, Validators.min(1)]);
+  nodesType2FC: FormControl = new FormControl(InitialConfigurationComponent.INIT_NODES_COUNT, [Validators.required, Validators.min(1)]);
+  nodesType3FC: FormControl = new FormControl(InitialConfigurationComponent.INIT_NODES_COUNT, [Validators.required, Validators.min(1)]);
+  nodesType4FC: FormControl = new FormControl(InitialConfigurationComponent.INIT_NODES_COUNT, [Validators.required, Validators.min(1)]);
 
   minersFormArray: FormArray = this.formBuilder.array([]);
 
@@ -33,7 +36,7 @@ export class InitialConfigurationComponent implements OnInit {
     return this.form.controls["miners"] as FormArray;
   }
   minerNodesBeforeChange: number = this.parametersService.getMinerNodes();
-  numberOfNodes: number = 20;
+  numberOfNodes: number = InitialConfigurationComponent.INIT_NODES_COUNT * 4;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -43,16 +46,22 @@ export class InitialConfigurationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setNodes();
     this.numberOfNodes = this.parametersService.getAllNodes();
 
     for (let i = 0; i < 5; i++) {
-      this.miners.push(this.formBuilder.group({
-        power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
-        country: new FormControl('POLAND', [Validators.required]),
-        money: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(10000)]),
-      }))
+      this.miners.push((this.getDefaultMinerFormGroup()))
     }
+
+    this.nodesType3FC.valueChanges
+      .pipe(
+        tap((value: number) => {
+          if (this.nodesType3FC.invalid) {
+            this.miners.clear();
+            this.minerNodesBeforeChange = 0;
+          }
+        })
+      )
+      .subscribe();
 
     this.form.markAllAsTouched();
   }
@@ -85,11 +94,7 @@ export class InitialConfigurationComponent implements OnInit {
     this.setNumberOfNodes();
     if (minersBefore < minersNow) {
       for (let i=minersBefore; i<minersNow; i++) {
-        this.miners.push(this.formBuilder.group({
-          power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
-          country: new FormControl('', [Validators.required]),
-          money: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(10000)]),
-        }))
+        this.miners.push(this.getDefaultMinerFormGroup())
       }
     } else {
       for (let i=minersBefore; i>minersNow; i--) {
@@ -99,6 +104,14 @@ export class InitialConfigurationComponent implements OnInit {
 
     this.minerNodesBeforeChange = minersNow;
     this.form.markAllAsTouched();
+  }
+
+  private getDefaultMinerFormGroup(): FormGroup {
+    return this.formBuilder.group({
+      power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
+      country: new FormControl('POLAND', [Validators.required]),
+      money: new FormControl(500, [Validators.required, Validators.min(0), Validators.max(100000)]),
+    })
   }
 
 }
