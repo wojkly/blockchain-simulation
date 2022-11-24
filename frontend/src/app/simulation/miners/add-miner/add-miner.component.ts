@@ -30,7 +30,6 @@ export class AddMinerComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private dialogRef: MatDialogRef<any>,
-              private visualizationService: VisualisationService,
               @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {tap} from "rxjs";
 import {VisualisationService} from "../../services/visualisation.service";
 import {Graph} from "../model/graph";
@@ -7,8 +7,9 @@ import * as popper from 'cytoscape-popper';
 import tippy from 'tippy.js';
 import {NodeType} from "../nodeType";
 import {MinersDeletingService} from "../../services/miners-deleting.service";
-import {EdgeService} from "../../services/edge.service";
 import {getCountryNameByEnumName} from "../model/country";
+
+cytoscape.use(popper);
 
 
 @Component({
@@ -16,27 +17,35 @@ import {getCountryNameByEnumName} from "../model/country";
   templateUrl: './network.component.html',
   styleUrls: ['./network.component.scss']
 })
-export class NetworkComponent implements OnInit {
+export class NetworkComponent implements OnInit, OnDestroy {
   @ViewChild("cy") el: ElementRef | undefined;
   id2tip:any = {};
   graph!: Graph;
   minersToDelete: string[] = [];
   public activeEdges: {edge:string, ttl: number}[] = [];
 
+  private cy = cytoscape({});
+
+  private visualisationSub1: any;
+  private visualisationSub2: any;
+  private minersToDeleteSub: any;
 
   constructor(private visualisationService: VisualisationService,
               private minersToDeleteService: MinersDeletingService,
-              private edgeService: EdgeService
     ) {
-    this.visualisationService.getGraph().subscribe((res) => {
-      this.graph = res.graph;
-      this.activeEdges = res.activeEdges;
-    });
-    cytoscape.use(popper);
+    this.visualisationSub1 = this.visualisationService.getGraph().pipe(
+      tap((res) => {
+        this.graph = res.graph;
+        this.activeEdges = res.activeEdges;
+      })
+    ).subscribe();
+
+    if(!this.cy.destroyed())
+      this.cy.destroy();
   }
 
   ngOnInit(): void {
-    let cy = cytoscape({
+    this.cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
@@ -59,10 +68,7 @@ export class NetworkComponent implements OnInit {
               }
             },
             'label': function (node: any) {
-              if (node.data("value.type") == NodeType.Miner) {
-                return node.id();
-              }
-              return '';
+              return node.id();
             }
           }
         },
@@ -70,10 +76,6 @@ export class NetworkComponent implements OnInit {
           selector: 'edge',
           style: {
             'width': 1,
-            // 'line-color': '#dsd1aa3',
-            // 'target-arrow-color': '#ccc',
-            // 'target-arrow-shape': 'triangle',
-            // 'curve-style': 'bezier',
           }
         },
         {
@@ -84,25 +86,28 @@ export class NetworkComponent implements OnInit {
         },
       ]
     });
-    this.createNodes(this.graph, cy);
-    this.createEdges(cy);
-    this.visualisationService.getGraph()
+    this.createNodes(this.graph);
+    this.createEdges();
+
+    if(this.visualisationSub2)
+      this.visualisationSub2.unsubscribe();
+
+    this.visualisationSub2 = this.visualisationService.getGraph()
       .pipe(tap(res => {
-          this.updateNodes(res.graph, cy);
-          cy.remove('edge');
-          cy.forceRender();
-          this.createEdges(cy);
-          this.makeTooltips(cy);
-          cy.layout({
+          this.updateNodes(res.graph);
+          this.cy.remove('edge');
+          this.cy.forceRender();
+          this.createEdges();
+          this.makeTooltips();
+          this.cy.layout({
             name: 'cose',
             animate: false,
             randomize: false,
             refresh: 0,
             padding: 50
-            // breadthfirst
           }).run();
-          cy.nodes().lock()
-          cy.nodes().on('click ', (e) => {
+          this.cy.nodes().lock()
+          this.cy.nodes().on('click ', (e) => {
             this.id2tip[e.target.id()].show()
           })
         })
@@ -110,10 +115,10 @@ export class NetworkComponent implements OnInit {
   }
 
 
-  createNodes(graph: Graph, cy: cytoscape.Core) {
+  createNodes(graph: Graph) {
     graph.nodes.forEach((item) => {
       if (item.nodeType === NodeType.Miner) {
-        cy.add({
+        this.cy.add({
           data: {
             id: '' + item.id,
             value: {
@@ -127,7 +132,7 @@ export class NetworkComponent implements OnInit {
         })
 
       } else {
-        cy.add({
+        this.cy.add({
           data: {
             id: '' + item.id,
             value: {
@@ -139,16 +144,16 @@ export class NetworkComponent implements OnInit {
   }
 
 
-  createEdges(cy: cytoscape.Core) {
-    cy.nodes().forEach((item) => {
+  createEdges() {
+    this.cy.nodes().forEach((item) => {
       item.data("value.neighbours").forEach((neighbour ) => {
         const reverseEdge = `${neighbour}_${item.id()}`;
         const newEdge = `${item.id()}_${neighbour}`;
-        if(!(cy.getElementById(reverseEdge).length > 0)){
-          cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}});
+        if(!(this.cy.getElementById(reverseEdge).length > 0)){
+          this.cy.add({data: {id: '' + item.id() + '_' + neighbour, source: '' + item.id(), target: '' + neighbour}});
           this.activeEdges.forEach(el => {
             if(el.edge === newEdge && el.ttl > 0) {
-              cy.getElementById(newEdge).style({'line-color': 'red'});
+              this.cy.getElementById(newEdge).style({'line-color': 'red'});
             }
           })
         }
@@ -156,17 +161,20 @@ export class NetworkComponent implements OnInit {
     })
   }
 
-  updateNodes(graph: Graph, cy: cytoscape.Core) {
-    this.minersToDeleteService.getMinersToDelete().subscribe((res) => {
+  updateNodes(graph: Graph) {
+    if(this.minersToDeleteSub)
+      this.minersToDeleteSub.unsubscribe();
+
+    this.minersToDeleteSub = this.minersToDeleteService.getMinersToDelete().subscribe((res) => {
       this.minersToDelete = res;
     })
     this.minersToDelete.forEach((miner) => {
-      cy.getElementById(miner).remove();
+      this.cy.getElementById(miner).remove();
     })
     graph.nodes.forEach((item) => {
       if (item.nodeType === NodeType.Miner) {
-        if (cy.getElementById('' + item.id).id() == '' + item.id){
-          cy.getElementById('' + item.id).data('value', {
+        if (this.cy.getElementById('' + item.id).id() == '' + item.id){
+          this.cy.getElementById('' + item.id).data('value', {
             'computingPower': item.computingPower,
             'country': item.country,
             'mined': item.mined,
@@ -176,8 +184,8 @@ export class NetworkComponent implements OnInit {
           })
         }
         else{
-          cy.getElementById('' + item.id).removeData();
-          cy.add({
+          this.cy.getElementById('' + item.id).removeData();
+          this.cy.add({
             data: {
               id: '' + item.id,
               value: {
@@ -191,7 +199,7 @@ export class NetworkComponent implements OnInit {
         }
 
       } else {
-        cy.getElementById('' + item.id).data(
+        this.cy.getElementById('' + item.id).data(
             'value', {
               'type': item.nodeType,
               'neighbours': item.neighbours
@@ -200,8 +208,8 @@ export class NetworkComponent implements OnInit {
     })
   }
 
-  makeTooltips(cy: cytoscape.Core){
-    cy.nodes().forEach((node: any) => {
+  makeTooltips(){
+    this.cy.nodes().forEach((node: any) => {
       let ref = node.popperRef();
       this.id2tip[node.id()] = tippy(document.createElement("div"), {
         getReferenceClientRect: ref.getBoundingClientRect,
@@ -217,5 +225,17 @@ export class NetworkComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.visualisationSub1.unsubscribe();
+    this.visualisationSub2.unsubscribe();
+    this.minersToDeleteSub.unsubscribe();
+
+    if (document.getElementById('cy') !== null) {
+      // @ts-ignore
+      document.getElementById('cy').remove();
+    }
+    this.cy.destroy();
   }
 }

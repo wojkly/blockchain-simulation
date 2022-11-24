@@ -16,11 +16,12 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-import {getPriceByEnumName} from "../simulation/model/country";
+import {COUNTRIES} from "../simulation/model/country";
 import { Block } from '../simulation/model/block';
 import {EdgeService} from "./edge.service";
 import {MinersDeletingService} from "./miners-deleting.service";
 import {TimePeriod} from "../utils/constants";
+import {ChartDataService, CountryDataSingleMonth} from "./chart-data.service";
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,8 @@ export class SimulationService {
               private blockchainService: BlockchainService,
               private addMinerService: AddMinerService,
               private edgeService: EdgeService,
-              private minersDeletingService: MinersDeletingService
+              private minersDeletingService: MinersDeletingService,
+              private chartDataService: ChartDataService,
   ) {
     this.nextMinerID = this.parametersService.getAllNodes();
   }
@@ -56,10 +58,8 @@ export class SimulationService {
       this.stepService.getStep(),
       this.eventService.getSimulationEvent()])
     .pipe(
-      //tap(() => console.log('zipped')),
       tap(([a, b]) => {
         if (b instanceof SimulationEvent){
-          //console.log('handling event ' + b.eventType);
           switch (b.eventType) {
             case SimulationEventType.INITIALIZATION:
               this.handleInitialization();
@@ -98,7 +98,6 @@ export class SimulationService {
           })
           this.minersDeletingService.emitMinersToDelete(this.minersToDelete);
           this.minersToDelete = [];
-          //this.edgeService.depleteTTL();
         })
       ).subscribe();
 
@@ -118,6 +117,14 @@ export class SimulationService {
         })
       )
       .subscribe();
+
+    this.chartDataService.getRequest().pipe(
+      tap(() => {
+        const data = this.collectMinerData();
+        this.chartDataService.addData(data.total, data.country);
+        this.chartDataService.emitData();
+      })
+    ).subscribe();
   }
 
   private startAddingMiners(simulationSpeed: number) {
@@ -194,9 +201,7 @@ export class SimulationService {
     if (minerNode === undefined) return;
 
     let newBlock = new Block(this.nextId, minerNode.id, minerNode.getLast());
-    // minerNode.getLast()?.children.push(newBlock);
     minerNode.addBlock(newBlock);
-    // minerNode.attachBlock(this.nextId, minerNode.id);
     this.blockchainService.emit();
 
     minerNode.mined++;
@@ -208,6 +213,7 @@ export class SimulationService {
       responseEventData.senderId = minerId;
       responseEventData.receiverId = neighbour;
       this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
+      this.edgeService.addEdge(responseEventData.receiverId, responseEventData.senderId);
       this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
     })
     this.edgeService.depleteTTL();
@@ -219,15 +225,11 @@ export class SimulationService {
     if (!senderNode) return;
     if (!receiverNode) return;
 
-    if (receiverNode.blockChainLength < senderNode.blockChainLength) {
-      receiverNode.blockChainLength = senderNode.blockChainLength;
+    const receivedBlock = senderNode.getLast();
+    const currLastBlock = receiverNode.getLast();
 
-      const receivedBlock = senderNode.getLast();
-
-      if(receiverNode) {
-        receiverNode.addBlock(receivedBlock)
-        // receiverNode.attachBlock(receivedBlock!.id, receivedBlock!.minedBy);
-      }
+    if (currLastBlock?.id != receivedBlock?.id) {
+      receiverNode.addBlock(receivedBlock)
 
       receiverNode.neighbours.forEach((neighbour) => {
         if(neighbour === eventData.senderId) return;
@@ -237,10 +239,11 @@ export class SimulationService {
         responseEventData.receiverId = neighbour;
 
         this.edgeService.addEdge(responseEventData.senderId, responseEventData.receiverId);
+        this.edgeService.addEdge(responseEventData.receiverId, responseEventData.senderId);
         this.eventService.emitSimulationEvent(new SimulationEvent(SimulationEventType.BLOCK_RECEIVED, responseEventData));
       })
       this.edgeService.depleteTTL();
-    }
+  }
   }
 
   // step to update miner's last block - block to attach new blocks to
@@ -259,10 +262,6 @@ export class SimulationService {
     })
   }
 
-  private getRandomNodeKey() {
-    let keys = Array.from(this.graph.nodes.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
-  }
 
   public getMiners() {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType == NodeType.Miner || value.money > 0);
@@ -275,5 +274,55 @@ export class SimulationService {
 
   private getNonMiners(): Node[] {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType != NodeType.Miner);
+  }
+
+  private collectMinerData() {
+    const miners = this.getMiners();
+
+    const totalCount = miners.length;
+
+    let counter = {
+      romania: 0,
+      poland: 0,
+      spain: 0,
+      germany: 0,
+      greatBritain: 0
+    };
+
+    miners.forEach(miner => {
+      switch (miner.country) {
+        case COUNTRIES[0].enumName:
+          counter.romania++;
+          break;
+        case COUNTRIES[1].enumName:
+          counter.poland++;
+          break;
+        case COUNTRIES[2].enumName:
+          counter.spain++;
+          break;
+        case COUNTRIES[3].enumName:
+          counter.germany++;
+          break;
+        case COUNTRIES[4].enumName:
+          counter.greatBritain++;
+          break;
+        default:
+          console.log("NO SUCH COUNTRY");
+          break;
+      }
+    })
+
+    const byCountry = new CountryDataSingleMonth(
+      counter.romania.toString(),
+      counter.poland.toString(),
+      counter.spain.toString(),
+      counter.germany.toString(),
+      counter.greatBritain.toString()
+    );
+
+    return {
+      total: totalCount.toString(),
+      country: byCountry
+    }
   }
 }

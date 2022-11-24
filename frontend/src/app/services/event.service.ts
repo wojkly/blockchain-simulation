@@ -17,7 +17,6 @@ export class EventService {
   }
 
   public emitSimulationEvent(simulationEvent: SimulationEvent) {
-    // console.log('event.next')
     this.event.next(simulationEvent);
   }
 

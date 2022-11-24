@@ -1,36 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as cytoscape from 'cytoscape';
-import { tap } from 'rxjs';
-import { BlockchainService } from 'src/app/services/blockchain.service';
-import { VisualisationService } from 'src/app/services/visualisation.service';
-import { Block } from '../model/block';
-import { Graph } from '../model/graph';
-import { Node } from '../model/node';
-import { NodeType } from '../nodeType';
-
-
-export const LONGEST_CHAIN = "longestChain"
-export const GHOST = "GHOST";
-export const DEFAULT = "default";
-
+import tippy from 'tippy.js';
+import {tap} from 'rxjs';
+import {VisualisationService} from 'src/app/services/visualisation.service';
+import {Node} from '../model/node';
+import {NodeType} from '../nodeType';
+import {DEFAULT, LONGEST_CHAIN} from "../../utils/constants";
 
 @Component({
   selector: 'app-blockchain',
   templateUrl: './blockchain.component.html',
   styleUrls: ['./blockchain.component.scss']
 })
-export class BlockchainComponent implements OnInit {
+export class BlockchainComponent implements OnInit, OnDestroy {
+  @ViewChild("cy") el: ElementRef | undefined;
 
-  cy = cytoscape({});
+  private cy = cytoscape({});
+  id2tip: any = {};
 
   public toggleButtonValue: string = "default";
+  public fullNodes: Node[] = [];
+  public selectedNodeId: string = "default";
 
   private node?: Node;
 
+  private visualisationSub: any;
+
   constructor(
-    private blockchainService: BlockchainService,
     private visualisationService: VisualisationService
-  ) { }
+  ) {
+  }
 
   public onValChange(val: string) {
     this.toggleButtonValue = val;
@@ -38,17 +37,28 @@ export class BlockchainComponent implements OnInit {
     this.changeProtocol();
   }
 
+  public onNodeChange(val: string) {
+    this.selectedNodeId = val;
+    this.cleanHighlighting();
+    this.refresh();
+  }
+
   ngOnInit(): void {
+    this.refresh()
+  }
+
+  refresh(): void {
     this.cy = cytoscape({
       container: document.getElementById('cy'),
       style: [
         {
-          selector: 'nodes',
+          selector: 'node',
           style: {
             'width': '100px',
             'height': '100px',
-            'shape': 'rectangle',
-            'background-color': 'blue',
+            'shape': 'round-rectangle',
+            'background-color': '#7fcdcd',
+
             'label': (node: any) => {
                 if (node.data("block").id == -1) return "root";
                 else return "block " + node.data("block").id;
@@ -56,86 +66,79 @@ export class BlockchainComponent implements OnInit {
           },
         },
         {
-          selector: 'edges',
+          selector: 'edge',
           style: {
             'width': 3,
-            'line-color': 'red',
-            'target-arrow-color': '#ccc',
-            'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
           }
         },
         {
           selector: '.highlighted',
           style: {
-            'background-color': 'black'
+            'line-color': '#ff80df',
+            'border-width': '3px',
+            'border-color': '#ff80df'
           }
         }
       ]
     });
 
-    this.visualisationService.getGraph()
+    if(this.visualisationSub)
+      this.visualisationSub.unsubscribe();
+
+    this.visualisationSub = this.visualisationService.getGraph()
       .pipe(
         tap((res) => {
           let g = res.graph;
-          this.cy.remove('nodes');
-          this.cy.remove('edges');
-          console.log(g)
-          this.node = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full)[0];
+          this.cy.remove('node');
+          this.cy.remove('edge');
 
-          console.log(this.node)
+          this.fullNodes = Array.from(g.nodes.values()).filter((value, index) => value.nodeType == NodeType.Full);
+          if (this.selectedNodeId === "default") this.node = this.fullNodes[0];
+          else this.node = this.fullNodes.find(x => x.id.toString() == this.selectedNodeId);
+
           this.createBlockchainGraph();
+          this.makeTooltips();
           this.cy.nodes().on('click', (event) => {
-            console.log(event);
+            this.id2tip[event.target.id()].show()
           });
           this.cy.layout({name: 'breadthfirst', directed: true}).run();
         })
       ).subscribe();
-    // this.createBlockchain();
-
-
-    // this.blockchainService.get()
-    //   .pipe(
-    //     tap((g) => {
-    //       console.log(g);
-    //       // tutaj docelowo blockchainService powinien zwracać zaktualizowany graf (albo nowe bloki)
-    //     })
-    //   ).subscribe()
   }
 
   private changeProtocol() {
 
+    let pathToLastBlock;
     this.cleanHighlighting();
-    console.log(this.cy.nodes().classes())
 
     if (this.toggleButtonValue != DEFAULT) {
-      var dijkstra = this.cy.elements().dijkstra({
+      const dijkstra = this.cy.elements().dijkstra({
         root: '#-1'
       });
 
       if (this.toggleButtonValue == LONGEST_CHAIN) {
-        // teoretycznie to można zrobić tak jak GHOST czyli max po distance (ale nie zapisujemy distance)
 
-        var leaves = this.cy.nodes().leaves();
+        const leaves = this.cy.nodes().leaves();
         let maxChainLength = 0;
-        var lastBlockId = '';
+        let lastBlockId = '';
 
         for(let i = 0; i < leaves.length; i++) {
-          let chainLenght = dijkstra.distanceTo(this.cy.$('#' + leaves[i].id()))
-          if (chainLenght > maxChainLength) {
-            maxChainLength = chainLenght;
+          let chainLength = dijkstra.distanceTo(this.cy.$('#' + leaves[i].id()))
+          if (chainLength > maxChainLength) {
+            maxChainLength = chainLength;
             lastBlockId = '#' + leaves[i].id();
           }
         }
 
-        var pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
+        pathToLastBlock = dijkstra.pathTo( this.cy.$(lastBlockId) );
         this.highlightPath(pathToLastBlock);
 
       } else {
-        var max = this.cy.nodes().max( function(node: any) {
+        const max = this.cy.nodes().max( function(node: any) {
           return node.data('block').weight;
         });
-        var pathToLastBlock = dijkstra.pathTo(max.ele);
+        pathToLastBlock = dijkstra.pathTo(max.ele);
         this.highlightPath(pathToLastBlock);
       }
 
@@ -152,9 +155,12 @@ export class BlockchainComponent implements OnInit {
     this.cy.nodes().forEach(n => {
       n.removeClass('highlighted')
     });
+    this.cy.edges().forEach(n => {
+      n.removeClass('highlighted')
+    });
   }
 
-  createBlockchainGraph() {
+  private createBlockchainGraph() {
     let visited = new Set();
     let queue: number[] = new Array<number>();
     visited.add(-1);
@@ -168,19 +174,16 @@ export class BlockchainComponent implements OnInit {
 
     while (queue.length > 0) {
       const v = queue.shift();
-      console.log(v)
+
       if (!v) break;
 
       let b = this.node?.blockChainMap.get(v);
       if (!b) break;
 
       for (let child of b.children) {
-        console.log('iter: ' + child.id)
         if (!visited.has(child.id)) {
-          console.log('visiting: ' + child.id )
           visited.add(child.id);
           queue.push(child.id);
-          console.log(this.cy.nodes())
 
           this.cy.add({
             group: 'nodes',
@@ -197,94 +200,31 @@ export class BlockchainComponent implements OnInit {
     }
   }
 
-  // do testowania i początkowej wizualizacji
-  // potem zamienić na blockchainService
-  // private createBlockchain() {
-  //   // nodes
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'root', block: new Block(0, 0)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n1', block: new Block(1, 1, 1)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n2', block: new Block(2, 2, 2)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n3', block: new Block(3, 3, 2)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n4', block: new Block(4, 4, 3)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n5', block: new Block(5, 5, 4)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n6', block: new Block(6, 6, 4)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n7', block: new Block(7, 7, 4)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n8', block: new Block(8, 8, 6)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n9', block: new Block(9, 9, 5)}
-  //   });
-  //   this.cy.add({
-  //     group: 'nodes',
-  //     data: {id: 'n10', block: new Block(10, 10, 6)}
-  //   });
+  private makeTooltips() {
+    this.cy.nodes().forEach((block: any) => {
+      let ref = block.popperRef();
+      this.id2tip[block.id()] = tippy(document.createElement('div'), {
+        getReferenceClientRect: ref.getBoundingClientRect,
+        trigger: 'manual',
+        placement: 'bottom',
+        content: () => {
+          let content = document.createElement('div');
+          content.setAttribute('style', 'font-size:1em; padding-top: 2vh');
+          if (block._private.data.id === '-1') content.innerHTML = `Root`;
+          else content.innerHTML = `Mined by: ${block._private.data.block._minedBy}`;
+          return content;
+        }
+      });
+    });
+  }
 
-  //   // edges
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e0', source: 'root', target: 'n1'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e1', source: 'n1', target: 'n2'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e2', source: 'n1', target: 'n3'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e3', source: 'n2', target: 'n4'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e4', source: 'n4', target: 'n5'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e5', source: 'n3', target: 'n6'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e6', source: 'n3', target: 'n7'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e7', source: 'n6', target: 'n8'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e8', source: 'n5', target: 'n9'}
-  //   });
-  //   this.cy.add({
-  //     group: 'edges',
-  //     data: {id: 'e9', source: 'n6', target: 'n10'}
-  //   });
+  ngOnDestroy(): void {
+    this.visualisationSub.unsubscribe();
+
+    if (document.getElementById('cy') !== null) {
+      // @ts-ignore
+      document.getElementById('cy').remove();
+    }
+    this.cy.destroy();
+  }
 }
