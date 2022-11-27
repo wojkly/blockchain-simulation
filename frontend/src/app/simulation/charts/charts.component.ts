@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
 import {ChartDataService, CountryData} from "../../services/chart-data.service";
 import {tap} from "rxjs";
-import {MONTH_NUMBER} from "../../utils/constants";
+import {FormControl} from "@angular/forms";
 
 
 @Component({
@@ -16,9 +16,20 @@ export class ChartsComponent implements OnInit, OnDestroy {
   public chartTotal: any;
 
   private subscriber: any;
+  public numOfMonths: number = 1;
+
+  selectedNumOfMonthsForCountryChart: FormControl = new FormControl(6);
+  selectedNumOfMonthsForTotalChart: FormControl = new FormControl(6);
+
+  chartsData: { total: string[]; country: CountryData | null, monthNumber: number } = {
+    total: [],
+    country: null,
+    monthNumber: 1
+  };
+
 
   constructor(
-    private chartDataService: ChartDataService,
+    private chartDataService: ChartDataService
   ) { }
 
   ngOnInit(): void {
@@ -28,7 +39,8 @@ export class ChartsComponent implements OnInit, OnDestroy {
           this.chartByCountry.destroy();
         if(this.chartTotal)
           this.chartTotal.destroy();
-
+        this.chartsData = data;
+        this.numOfMonths = data.monthNumber + 1;
         this.createCharts(data);
       })
     ).subscribe();
@@ -39,12 +51,65 @@ export class ChartsComponent implements OnInit, OnDestroy {
   }
 
   createCharts(data: {total: string[], country: CountryData | null}){
+    this.createCountryChart(data);
+    this.createTotalChart(data);
+  }
 
+  changeLabelForCountryChart(){
+    this.chartByCountry.destroy();
+    this.createCountryChart(this.chartsData);
+  }
+
+  changeLabelForTotalChart(){
+    this.chartTotal.destroy();
+    this.createTotalChart(this.chartsData);
+  }
+
+  private generateLabelsForCountryChart(): string[] {
+    let res: string[] = [];
+    if(this.selectedNumOfMonthsForCountryChart.value == "all"){
+      for(let i = 0; i < this.numOfMonths; i++) {
+        res.push(i.toString());
+      }
+    }
+    else if(this.numOfMonths > this.selectedNumOfMonthsForCountryChart.value) {
+      for (let i = this.numOfMonths - this.selectedNumOfMonthsForCountryChart.value; i < this.numOfMonths; i++) {
+        res.push(i.toString());
+      }
+    }
+    else{
+      for(let i = 0; i < this.selectedNumOfMonthsForCountryChart.value; i++) {
+        res.push(i.toString());
+      }
+    }
+    return res;
+  }
+
+  private generateLabelsForTotalChart(): string[] {
+    let res: string[] = [];
+    if(this.selectedNumOfMonthsForTotalChart.value == "all"){
+      for(let i = 1; i <= this.numOfMonths; i++) {
+        res.push(i.toString());
+      }
+    }
+    else if(this.numOfMonths > this.selectedNumOfMonthsForTotalChart.value)
+      for(let i = this.numOfMonths - this.selectedNumOfMonthsForTotalChart.value; i <= this.selectedNumOfMonthsForTotalChart.value; i++) {
+        res.push(i.toString());
+      }
+    else{
+      for(let i = 1; i <= this.selectedNumOfMonthsForTotalChart.value; i++) {
+        res.push(i.toString());
+      }
+    }
+    return res;
+  }
+
+  private createCountryChart(data: { total: string[]; country: CountryData | null }) {
     this.chartByCountry = new Chart("chartByCountry", {
       type: 'bar',
 
       data: {
-        labels: this.generateLabels(),
+        labels: this.generateLabelsForCountryChart(),
         datasets: [
           {
             label: "Romania",
@@ -93,7 +158,9 @@ export class ChartsComponent implements OnInit, OnDestroy {
       }
 
     });
+  }
 
+  private createTotalChart(data: { total: string[]; country: CountryData | null }) {
     this.chartTotal = new Chart("chartTotal", {
       type: 'line',
       data: {
@@ -104,20 +171,20 @@ export class ChartsComponent implements OnInit, OnDestroy {
           borderColor: "#302474",
           fill: true,
         }],
-        labels: this.generateLabels()
+        labels: this.generateLabelsForTotalChart()
       },
       options: {
-        aspectRatio:2.5,
+        aspectRatio: 2.5,
         responsive: true,
         scales: {
           y: {
-            title:{
+            title: {
               display: true,
               text: 'Miners amount'
             }
           },
           x: {
-            title:{
+            title: {
               display: true,
               text: 'Months'
             }
@@ -125,13 +192,5 @@ export class ChartsComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  private generateLabels(): string[] {
-    let res: string[] = [];
-    for(let i = 1; i <= MONTH_NUMBER; i++) {
-      res.push(i.toString());
-    }
-    return res;
   }
 }

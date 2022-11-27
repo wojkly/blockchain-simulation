@@ -119,9 +119,9 @@ export class SimulationService {
       .subscribe();
 
     this.chartDataService.getRequest().pipe(
-      tap(() => {
+      tap((monthNumber) => {
         const data = this.collectMinerData();
-        this.chartDataService.addData(data.total, data.country);
+        this.chartDataService.addData(data.total, data.country, monthNumber);
         this.chartDataService.emitData();
       })
     ).subscribe();
