@@ -17,6 +17,10 @@ export class Block {
     this._id = value;
   }
 
+  get minedBy(): number {
+    return this._minedBy;
+  }
+
   get weight(): number {
     return this._weight;
   }
