@@ -135,6 +135,16 @@ export class BlockchainComponent implements OnInit, OnDestroy {
         this.highlightPath(pathToLastBlock);
 
       } else {
+        // update the weights for GHOST
+        this.cy.$('#-1').data("block").weight = 0;
+        var bfs = this.cy.elements().bfs({
+          root: '#-1',
+          visit: function(v, e, u, i, depth) {
+            if (u) v.data("block").weight = 1 + u.data("block").weight;// + v.children()?.length;
+          }
+        });
+
+        // find max weighted subtree
         const max = this.cy.nodes().max( function(node: any) {
           return node.data('block').weight;
         });

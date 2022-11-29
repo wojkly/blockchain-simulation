@@ -200,8 +200,8 @@ export class SimulationService {
 
     if (minerNode === undefined) return;
 
-    let newBlock = new Block(this.nextId, minerNode.id, minerNode.getLast());
-    minerNode.addBlock(newBlock);
+    let newBlock = new Block(this.nextId, minerNode.id, minerNode.getParent());
+    minerNode.mineBlock(newBlock);
     this.blockchainService.emit();
 
     minerNode.mined++;

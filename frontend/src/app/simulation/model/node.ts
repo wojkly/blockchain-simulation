@@ -12,8 +12,9 @@ export class Node {
   private alive: boolean = true;
   public computingPower: number = 0;
 
-  // for miners
   private lastBlock?: Block;
+  private lastMined?: Block;
+
 
   // for full nodes
   public blockChain?: Block = new Block(-1, -1);
@@ -68,15 +69,32 @@ export class Node {
 
     if (this.nodeType == NodeType.Full) {
       // global variable for protocol
-      return this.findLastBlock(Protocol.LongestChain);
+      let lastBlock = this.findLastBlock(Protocol.LongestChain);
+      if (lastBlock) {
+        lastBlock.fullNodeLastBlock = true;
+        return lastBlock;
+      }
+    } else if (this.nodeType == NodeType.Miner) {
+
+      return this.lastMined;
+
     } else return this.lastBlock;
 
   }
 
+  public getParent(): Block | undefined {
+    return this.lastBlock;
+  }
+
+  public mineBlock(block: Block | undefined): void {
+    this.lastMined = block;
+  }
+
   // for miner nodes - switches parent block
   // for full nodes - adds the block to the blockchain
-  public addBlock(block: Block | undefined): void {
-    if (!block) return;
+  public addBlock(block1: Block | undefined): void {
+    if (!block1) return;
+    const block = new Block(block1.id, block1.minedBy, block1.parent, [], block1.weight, block1.fullNodeLastBlock);
     if (this.nodeType == NodeType.Full && this.blockChain) {
       if (!this.blockChainMap.has(block.id)) {
         if (block.parent) {
@@ -94,7 +112,13 @@ export class Node {
         this.blockChainSize++;
       }
     } else {
-      this.lastBlock = block;
+      if (this.nodeType == NodeType.Miner) {
+        if (block.fullNodeLastBlock || !this.lastBlock) {
+          this.lastBlock = block;
+        }
+      } else {
+        this.lastBlock = block;
+      }
     }
 
   }
