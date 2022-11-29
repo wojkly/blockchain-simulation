@@ -88,16 +88,16 @@ export class ChartsComponent implements OnInit, OnDestroy {
   private generateLabelsForTotalChart(): string[] {
     let res: string[] = [];
     if(this.selectedNumOfMonthsForTotalChart.value == "all"){
-      for(let i = 1; i <= this.numOfMonths; i++) {
+      for(let i = 0; i < this.numOfMonths; i++) {
         res.push(i.toString());
       }
     }
     else if(this.numOfMonths > this.selectedNumOfMonthsForTotalChart.value)
-      for(let i = this.numOfMonths - this.selectedNumOfMonthsForTotalChart.value; i <= this.selectedNumOfMonthsForTotalChart.value; i++) {
+      for(let i = this.numOfMonths - this.selectedNumOfMonthsForTotalChart.value; i < this.numOfMonths; i++) {
         res.push(i.toString());
       }
     else{
-      for(let i = 1; i <= this.selectedNumOfMonthsForTotalChart.value; i++) {
+      for(let i = 0; i < this.selectedNumOfMonthsForTotalChart.value; i++) {
         res.push(i.toString());
       }
     }

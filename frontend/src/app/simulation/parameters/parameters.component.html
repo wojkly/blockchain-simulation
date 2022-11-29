@@ -4,7 +4,7 @@
       <mat-card-title>Set electricity price</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
             <mat-card-subtitle>Current electricity price:
-            <mat-label>{{ electricityPrice}} / month</mat-label>
+            <mat-label>{{ electricityPrice| currency}} / month</mat-label>
             </mat-card-subtitle>
           <mat-slider [value]="electricityPrice" [max]="10" (change)="onElectricityPriceChange($event)" thumbLabel ></mat-slider>
       </div>
@@ -24,7 +24,7 @@
       <mat-card-title>Set reward for mining a block</mat-card-title>
       <div fxLayout="column" fxLayoutAlign="space-around start" >
             <mat-card-subtitle>Current reward:
-              <mat-label>{{ reward}}</mat-label>
+              <mat-label>{{ reward | currency}} </mat-label>
             </mat-card-subtitle>
           <mat-slider [value]="reward" (change)="onRewardChange($event)" thumbLabel></mat-slider>
       </div>

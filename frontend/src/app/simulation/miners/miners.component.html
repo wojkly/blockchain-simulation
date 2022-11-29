@@ -19,7 +19,7 @@
 
       <ng-container matColumnDef="money">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Money</mat-header-cell>
-        <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
+        <mat-cell *matCellDef="let miner">{{miner.money | currency}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="power">
@@ -39,7 +39,7 @@
 
       <ng-container matColumnDef="electricity">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price (per month)</mat-header-cell>
-        <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
+        <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country) | currency}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="edit">
@@ -73,7 +73,7 @@
 
       <ng-container matColumnDef="money">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Money</mat-header-cell>
-        <mat-cell *matCellDef="let miner">{{miner.money}}</mat-cell>
+        <mat-cell *matCellDef="let miner">{{miner.money | currency}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="power">
@@ -92,8 +92,8 @@
       </ng-container>
 
       <ng-container matColumnDef="electricity">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price</mat-header-cell>
-        <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country)}}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Electricity price (per month) </mat-header-cell>
+        <mat-cell *matCellDef="let miner">{{calculateElectricity(miner.country) | currency}}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumnsWithoutEdit"></mat-header-row>

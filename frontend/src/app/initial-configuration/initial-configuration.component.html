@@ -29,11 +29,11 @@
             <input matInput type="number" formControlName="power" placeholder="Computing power (from 1 to 10)">
           </mat-form-field>
           <mat-form-field>
-            <input matInput type="number" formControlName="money" placeholder="Initial budget">
+            <input matInput type="number" formControlName="money" placeholder="Initial budget $">
           </mat-form-field>
           <mat-form-field>
             <mat-select formControlName="country" placeholder="Country">
-              <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - price multiplier : {{c.electricityPrice}}</mat-option>
+              <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - electricity price multiplier : {{c.electricityPrice}}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>

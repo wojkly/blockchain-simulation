@@ -219,7 +219,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
           let content = document.createElement("div");
           content.setAttribute("style", "font-size:1em; padding-top: 2vh")
           if(node.data("value.type") === NodeType.Miner) {
-            content.innerHTML = `Mined: ${node._private.data.value.mined}, Money: ${node._private.data.value.money}, Power: ${node._private.data.value.computingPower}, Country: ${getCountryNameByEnumName(node._private.data.value.country)}`;
+            content.innerHTML = `Mined: ${node._private.data.value.mined}, Money: ${node._private.data.value.money}$, Power: ${node._private.data.value.computingPower}, Country: ${getCountryNameByEnumName(node._private.data.value.country)}`;
           }
           return content;
         }

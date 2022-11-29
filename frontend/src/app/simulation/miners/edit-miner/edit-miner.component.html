@@ -3,7 +3,7 @@
 
   <div [formGroup]="form" fxLayout="column" fxLayoutGap="20px" style="width: 200px; margin: 20px">
     <mat-form-field>
-      <mat-label>Amount of miner's money:</mat-label>
+      <mat-label>Amount of miner's money $:</mat-label>
       <input type="number" formControlName="minerMoneyFC" matInput>
       <mat-error *ngIf="minerMoneyFC.errors">Number must be greater then 1</mat-error>
     </mat-form-field>

@@ -16,7 +16,7 @@
         </mat-form-field>
         <mat-form-field>
           <mat-select formControlName="country" placeholder="Country">
-            <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - price multiplier: {{c.electricityPrice}} / month</mat-option>
+            <mat-option *ngFor="let c of COUNTRIES" [value]="c.enumName">{{c.name}} - electricity price multiplier: {{c.electricityPrice}} / month</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
