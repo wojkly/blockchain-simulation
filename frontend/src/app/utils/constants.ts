@@ -3,8 +3,6 @@ export enum Protocol {
     GHOST
 }
 
-export const MONTH_NUMBER = 24;
-
 export const DAY_STEPS = 10;
 export const MONTH_STEPS = DAY_STEPS * 30;
 export const YEAR_STEPS = MONTH_STEPS * 12;

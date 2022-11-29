@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {MONTH_NUMBER} from "../utils/constants";
 
 export class CountryData {
   constructor(
@@ -18,14 +17,6 @@ export class CountryData {
     this.spain.push(data.spain);
     this.germany.push(data.germany);
     this.greatBritain.push(data.greatBritain);
-
-    if(this.romania.length > MONTH_NUMBER) {
-      this.romania.shift();
-      this.poland.shift();
-      this.spain.shift();
-      this.germany.shift();
-      this.greatBritain.shift();
-    }
   }
 }
 
@@ -55,19 +46,21 @@ export class CountryDataSingleMonth {
 })
 export class ChartDataService {
 
-  private dataEmitter$ = new BehaviorSubject<{total: string[], country: CountryData | null}>({total: [], country: null});
+  private dataEmitter$ = new BehaviorSubject<{total: string[], country: CountryData | null, monthNumber: number}>({total: [], country: null, monthNumber: 1});
 
-  private requestEmitter$ = new BehaviorSubject<null>(null);
+  private requestEmitter$ = new BehaviorSubject<number>(1);
 
   private totalData: string[] = [];
   private countryData: CountryData | null = null;
+  private monthNumber: number = 1;
 
   constructor() { }
 
   public emitData() {
     this.dataEmitter$.next({
       total: this.totalData,
-      country: this.countryData
+      country: this.countryData,
+      monthNumber: this.monthNumber
     });
   }
 
@@ -75,18 +68,17 @@ export class ChartDataService {
     return this.dataEmitter$.asObservable();
   }
 
-  public emitRequest() {
-    this.requestEmitter$.next(null);
+  public emitRequest(value) {
+    this.requestEmitter$.next(value);
   }
 
   public getRequest() {
     return this.requestEmitter$.asObservable();
   }
 
-  public addData(total: string, byCountry: CountryDataSingleMonth) {
+  public addData(total: string, byCountry: CountryDataSingleMonth, monthNumber: number) {
     this.totalData.push(total);
-    if (this.totalData.length > MONTH_NUMBER)
-      this.totalData.shift();
+    this.monthNumber = monthNumber;
 
     if(this.countryData === null) {
       const initialData = byCountry.getInitialData();

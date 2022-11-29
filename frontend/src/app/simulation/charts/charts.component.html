@@ -1,15 +1,42 @@
-<div class="container" fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="30px">
-  <div>
-    <h2>The chart shows the number of miners from each country in a given week of the simulation</h2>
-    <canvas id="chartByCountry" >{{ chartByCountry }}</canvas>
-  </div>
-  <div>
-    <h2>The chart shows the number of miners from all countries in a given week of the simulation</h2>
-    <canvas id="chartTotal" > {{ chartTotal }}</canvas>
+<div class="container">
+
+
+  <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="30px">
+    <div>
+      <h2>The chart shows the number of miners from each country in a given week of the simulation</h2>
+      <mat-form-field appearance="fill">
+        <mat-label style="width: auto">Number of months on the chart</mat-label>
+        <mat-select [formControl]="selectedNumOfMonthsForCountryChart" (selectionChange)="changeLabelForCountryChart()">
+          <mat-option [value]=6>6</mat-option>
+          <mat-option [value]=12>12</mat-option>
+          <mat-option [value]=18>18</mat-option>
+          <mat-option [value]=24>24</mat-option>
+          <mat-option value="all">all</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="chartDiv">
+        <canvas id="chartByCountry" >{{ chartByCountry }}</canvas>
+      </div>
+    </div>
+    <div>
+      <h2>The chart shows the number of miners from all countries in a given week of the simulation</h2>
+      <mat-form-field appearance="fill">
+        <mat-label style="width: auto">Number of months on the chart</mat-label>
+        <mat-select [formControl]="selectedNumOfMonthsForTotalChart" (selectionChange)="changeLabelForTotalChart()">
+          <mat-option [value]=6>6</mat-option>
+          <mat-option [value]=12>12</mat-option>
+          <mat-option [value]=18>18</mat-option>
+          <mat-option [value]=24>24</mat-option>
+          <mat-option value="all">all</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="chartDiv">
+        <canvas id="chartTotal" > {{ chartTotal }}</canvas>
+      </div>
+    </div>
   </div>
 
 </div>
-
 
 
 

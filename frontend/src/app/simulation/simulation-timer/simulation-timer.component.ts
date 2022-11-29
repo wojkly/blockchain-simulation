@@ -30,7 +30,7 @@ export class SimulationTimerComponent implements OnInit {
     const newMonthCounter = Math.floor(Math.floor(this.stepCounter / DAY_STEPS) / 30);
     if (this.monthCounter !== newMonthCounter) {
       this.monthCounter = newMonthCounter;
-      this.chartDataService.emitRequest();
+      this.chartDataService.emitRequest(this.monthCounter);
     }
   }
 }
