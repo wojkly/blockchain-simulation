@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
-import {ChartDataService, CountryData} from "../../services/chart-data.service";
-import {tap} from "rxjs";
+import {MinersAmountChartService, CountryData} from "../../services/charts/miners-amount-chart.service";
+import {Subscription, tap} from "rxjs";
 import {FormControl} from "@angular/forms";
 
 
@@ -15,7 +15,8 @@ export class ChartsComponent implements OnInit, OnDestroy {
   public chartByCountry: any;
   public chartTotal: any;
 
-  private subscriber: any;
+  private minersAmountSubscriber;
+  private meanMoneySubscriber;
   public numOfMonths: number = 1;
 
   selectedNumOfMonthsForCountryChart: FormControl = new FormControl(6);
@@ -29,11 +30,11 @@ export class ChartsComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private chartDataService: ChartDataService
+    private minersAmountChartService: MinersAmountChartService
   ) { }
 
   ngOnInit(): void {
-    this.subscriber = this.chartDataService.getData().pipe(
+    this.minersAmountSubscriber = this.minersAmountChartService.getData().pipe(
       tap(data => {
         if (this.chartByCountry)
           this.chartByCountry.destroy();
@@ -47,7 +48,7 @@ export class ChartsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriber.unsubscribe();
+    this.minersAmountSubscriber.unsubscribe();
   }
 
   createCharts(data: {total: string[], country: CountryData | null}){

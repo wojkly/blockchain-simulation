@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {TimerService} from "../../services/timer.service";
 import {tap} from "rxjs";
-import {ChartDataService} from "../../services/chart-data.service";
+import {MinersAmountChartService} from "../../services/charts/miners-amount-chart.service";
 import {DAY_STEPS} from "../../utils/constants";
+import {MeanMoneyChartService} from "../../services/charts/mean-money-chart.service";
 
 @Component({
   selector: 'app-simulation-timer',
@@ -16,7 +17,8 @@ export class SimulationTimerComponent implements OnInit {
 
   constructor(
     private timerService: TimerService,
-    private chartDataService: ChartDataService,
+    private minersAmountChartService: MinersAmountChartService,
+    private meanMoneyChartService: MeanMoneyChartService
   ) { }
 
   ngOnInit(): void {
@@ -30,7 +32,8 @@ export class SimulationTimerComponent implements OnInit {
     const newMonthCounter = Math.floor(Math.floor(this.stepCounter / DAY_STEPS) / 30);
     if (this.monthCounter !== newMonthCounter) {
       this.monthCounter = newMonthCounter;
-      this.chartDataService.emitRequest(this.monthCounter);
+      this.minersAmountChartService.emitRequest(this.monthCounter);
+      this.meanMoneyChartService.emitRequest(this.monthCounter);
     }
   }
 }

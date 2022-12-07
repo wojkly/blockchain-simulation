@@ -21,7 +21,9 @@ import { Block } from '../simulation/model/block';
 import {EdgeService} from "./edge.service";
 import {MinersDeletingService} from "./miners-deleting.service";
 import {TimePeriod} from "../utils/constants";
-import {ChartDataService, CountryDataSingleMonth} from "./chart-data.service";
+import {MinersAmountChartService} from "./charts/miners-amount-chart.service";
+import {MeanMoneyChartService} from "./charts/mean-money-chart.service";
+import {CountryDataSingleMonth} from "./charts/country-data-classes";
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +42,8 @@ export class SimulationService {
               private addMinerService: AddMinerService,
               private edgeService: EdgeService,
               private minersDeletingService: MinersDeletingService,
-              private chartDataService: ChartDataService,
+              private minersAmountChartService: MinersAmountChartService,
+              private meanMoneyChartService: MeanMoneyChartService,
   ) {
     this.nextMinerID = this.parametersService.getAllNodes();
   }
@@ -118,13 +121,21 @@ export class SimulationService {
       )
       .subscribe();
 
-    this.chartDataService.getRequest().pipe(
+    this.minersAmountChartService.getRequest().pipe(
       tap((monthNumber) => {
-        const data = this.collectMinerData();
-        this.chartDataService.addData(data.total, data.country, monthNumber);
-        this.chartDataService.emitData();
+        const data = this.collectMinerAmountData();
+        this.minersAmountChartService.addData(data.total, data.country, monthNumber);
+        this.minersAmountChartService.emitData();
       })
     ).subscribe();
+
+    this.meanMoneyChartService.getRequest().pipe(
+      tap((monthNumber: number) => {
+        const meanData = this.collectMeanMoneyData();
+        this.meanMoneyChartService.addData(meanData.total, meanData.country, monthNumber);
+        this.meanMoneyChartService.emitData();
+      })
+    )
   }
 
   private startAddingMiners(simulationSpeed: number) {
@@ -276,7 +287,7 @@ export class SimulationService {
     return Array.from(this.graph.nodes.values()).filter((value, index) => value.nodeType != NodeType.Miner);
   }
 
-  private collectMinerData() {
+  private collectMinerAmountData() {
     const miners = this.getMiners();
 
     const totalCount = miners.length;
@@ -310,7 +321,7 @@ export class SimulationService {
           console.log("NO SUCH COUNTRY");
           break;
       }
-    })
+    });
 
     const byCountry = new CountryDataSingleMonth(
       counter.romania.toString(),
@@ -323,6 +334,72 @@ export class SimulationService {
     return {
       total: totalCount.toString(),
       country: byCountry
+    }
+  }
+
+  private collectMeanMoneyData() {
+    const miners = this.getMiners();
+
+    let counter = {
+      romania: 0,
+      poland: 0,
+      spain: 0,
+      germany: 0,
+      greatBritain: 0
+    };
+
+    let moneySum = {
+      romania: 0,
+      poland: 0,
+      spain: 0,
+      germany: 0,
+      greatBritain: 0
+    };
+
+    let totalSum: number = 0;
+
+    miners.forEach(miner => {
+      totalSum += miner.money;
+      switch (miner.country) {
+        case COUNTRIES[0].enumName:
+          counter.romania++;
+          moneySum.romania += miner.money;
+          break;
+        case COUNTRIES[1].enumName:
+          counter.poland++;
+          moneySum.poland += miner.money;
+          break;
+        case COUNTRIES[2].enumName:
+          counter.spain++;
+          moneySum.spain += miner.money;
+          break;
+        case COUNTRIES[3].enumName:
+          counter.germany++;
+          moneySum.germany += miner.money;
+          break;
+        case COUNTRIES[4].enumName:
+          counter.greatBritain++;
+          moneySum.greatBritain += miner.money;
+          break;
+        default:
+          console.log("NO SUCH COUNTRY");
+          break;
+      }
+    });
+
+    const meanByCountry = new CountryDataSingleMonth(
+      (moneySum.romania / counter.romania).toString(),
+      (moneySum.poland / counter.poland).toString(),
+      (moneySum.spain / counter.spain).toString(),
+      (moneySum.germany / counter.germany).toString(),
+      (moneySum.greatBritain / counter.greatBritain).toString()
+    );
+
+    const meanTotal = (totalSum / miners.length).toString();
+
+    return {
+      total: meanTotal,
+      country: meanByCountry
     }
   }
 }
