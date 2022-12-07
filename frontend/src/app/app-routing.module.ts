@@ -13,6 +13,7 @@ import {NetworkComponent} from "./simulation/network/network.component";
 import {MinersComponent} from "./simulation/miners/miners.component";
 import {ParametersComponent} from "./simulation/parameters/parameters.component";
 import { BlockchainComponent } from './simulation/blockchain/blockchain.component';
+import {ChartPairComponent} from "./simulation/charts/chart-pair/chart-pair.component";
 import {ChartsComponent} from "./simulation/charts/charts.component";
 
 const routes: Routes = [

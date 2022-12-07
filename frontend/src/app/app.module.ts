@@ -33,6 +33,7 @@ import { AddMinerComponent } from './simulation/miners/add-miner/add-miner.compo
 import { SimulationTimerComponent } from './simulation/simulation-timer/simulation-timer.component';
 import { SimulationTimerPipe } from './utils/pipes/simulation-timer.pipe';
 import { CommonModule } from '@angular/common';
+import { ChartPairComponent } from './simulation/charts/chart-pair/chart-pair.component';
 import { ChartsComponent } from './simulation/charts/charts.component';
 
 @NgModule({
@@ -50,6 +51,7 @@ import { ChartsComponent } from './simulation/charts/charts.component';
     AddMinerComponent,
     SimulationTimerComponent,
     SimulationTimerPipe,
+    ChartPairComponent,
     ChartsComponent
   ],
   imports: [
