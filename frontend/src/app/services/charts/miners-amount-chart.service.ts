@@ -2,11 +2,12 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {CountryData, CountryDataSingleMonth} from "./country-data-classes";
 import {ChartDataWrapper} from "./chart-data-wrapper";
+import {ChartService} from "./chart.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MinersAmountChartService {
+export class MinersAmountChartService implements ChartService{
 
   private dataEmitter$ = new BehaviorSubject<ChartDataWrapper>(new ChartDataWrapper([], null, 1));
 
@@ -14,6 +15,7 @@ export class MinersAmountChartService {
 
   private totalData: string[] = [];
   private countryData: CountryData | null = null;
+
   private monthNumber: number = 1;
 
   constructor() { }
@@ -53,5 +55,29 @@ export class MinersAmountChartService {
     } else {
       this.countryData.pushData(byCountry);
     }
+  }
+
+  getCountryChartTitle(): string {
+    return 'The chart shows the number of miners from each country in a given month of the simulation';
+  }
+
+  getTotalChartTitle(): string {
+    return 'The chart shows the number of miners from all countries in a given month of the simulation';
+  }
+
+  getXAxisLabel(): string {
+    return 'Month';
+  }
+
+  getYAxisLabel(): string {
+    return 'Miners amount';
+  }
+
+  getCountryChartId(): string {
+    return 'minersAmountByCountry';
+  }
+
+  getTotalChartId(): string {
+    return 'minersAmountTotal';
   }
 }

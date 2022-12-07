@@ -1,10 +1,9 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
-import {MinersAmountChartService} from "../../../services/charts/miners-amount-chart.service";
-import {tap} from "rxjs";
+import {catchError, tap} from "rxjs";
 import {FormControl} from "@angular/forms";
-import {MeanMoneyChartService} from "../../../services/charts/mean-money-chart.service";
 import {ChartDataWrapper} from "../../../services/charts/chart-data-wrapper";
+import {ChartService} from "../../../services/charts/chart.service";
 
 
 @Component({
@@ -13,7 +12,8 @@ import {ChartDataWrapper} from "../../../services/charts/chart-data-wrapper";
   styleUrls: ['./chart-pair.component.scss']
 })
 export class ChartPairComponent implements OnInit, OnDestroy {
-  @Input() chartService: any;
+  @Input()
+  chartService!: ChartService;
 
   public chartByCountry: any;
   public chartTotal: any;
@@ -31,8 +31,10 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // console.log(this.chartService);
     this.dataSubscriber = this.chartService.getData().pipe(
       tap((data: ChartDataWrapper) => {
+        console.log(data);
         if (this.chartByCountry)
           this.chartByCountry.destroy();
         if(this.chartTotal)
@@ -103,7 +105,9 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   }
 
   private createCountryChart(data: ChartDataWrapper) {
-    this.chartByCountry = new Chart("chartByCountry", {
+    // console.log(this.chartService.getCountryChartId());
+
+    this.chartByCountry = new Chart(this.chartService.getCountryChartId(), {
       type: 'bar',
 
       data: {
@@ -143,13 +147,13 @@ export class ChartPairComponent implements OnInit, OnDestroy {
           y: {
             title:{
               display: true,
-              text: 'Miners amount'
+              text: this.chartService.getYAxisLabel()
             }
           },
           x: {
             title:{
               display: true,
-              text: 'Months'
+              text: this.chartService.getXAxisLabel()
             }
           }
         }
@@ -159,7 +163,7 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   }
 
   private createTotalChart(data: ChartDataWrapper) {
-    this.chartTotal = new Chart("chartTotal", {
+    this.chartTotal = new Chart(this.chartService.getTotalChartId(), {
       type: 'line',
       data: {
         datasets: [{
@@ -178,13 +182,13 @@ export class ChartPairComponent implements OnInit, OnDestroy {
           y: {
             title: {
               display: true,
-              text: 'Miners amount'
+              text: this.chartService.getYAxisLabel()
             }
           },
           x: {
             title: {
               display: true,
-              text: 'Months'
+              text: this.chartService.getXAxisLabel()
             }
           }
         }

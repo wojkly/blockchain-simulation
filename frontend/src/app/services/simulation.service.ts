@@ -122,7 +122,7 @@ export class SimulationService {
       .subscribe();
 
     this.minersAmountChartService.getRequest().pipe(
-      tap((monthNumber) => {
+      tap((monthNumber: number) => {
         const data = this.collectMinerAmountData();
         this.minersAmountChartService.addData(data.total, data.country, monthNumber);
         this.minersAmountChartService.emitData();
@@ -135,7 +135,7 @@ export class SimulationService {
         this.meanMoneyChartService.addData(meanData.total, meanData.country, monthNumber);
         this.meanMoneyChartService.emitData();
       })
-    )
+    ).subscribe();
   }
 
   private startAddingMiners(simulationSpeed: number) {
@@ -153,8 +153,7 @@ export class SimulationService {
             this.addMinerSubscription?.unsubscribe();
           }
         })
-      )
-      .subscribe();
+      ).subscribe();
   }
   private stopAddingMiners() {
     this.addMinerFrequencySubscription?.unsubscribe();

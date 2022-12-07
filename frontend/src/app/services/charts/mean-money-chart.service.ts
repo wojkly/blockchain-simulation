@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {ChartDataWrapper} from "./chart-data-wrapper";
 import {CountryData, CountryDataSingleMonth} from "./country-data-classes";
+import {ChartService} from "./chart.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MeanMoneyChartService {
+export class MeanMoneyChartService implements ChartService {
   private dataEmitter$ = new BehaviorSubject<ChartDataWrapper>(new ChartDataWrapper([], null, 1));
 
   private requestEmitter$ = new BehaviorSubject<number>(1);
 
   private totalData: string[] = [];
-  private meanMoneyByCountry: CountryData | null = null;
+  private countryData: CountryData | null = null;
+
   private monthNumber: number = 1;
 
   constructor() { }
@@ -20,7 +22,7 @@ export class MeanMoneyChartService {
   public emitData() {
     this.dataEmitter$.next(new ChartDataWrapper(
       this.totalData,
-      this.meanMoneyByCountry,
+      this.countryData,
       this.monthNumber
     ));
   }
@@ -41,16 +43,40 @@ export class MeanMoneyChartService {
     this.totalData.push(total);
     this.monthNumber = monthNumber;
 
-    if(this.meanMoneyByCountry === null) {
+    if(this.countryData === null) {
       const initialData = byCountry.getInitialData();
-      this.meanMoneyByCountry = new CountryData(
+      this.countryData = new CountryData(
         initialData[0],
         initialData[1],
         initialData[2],
         initialData[3],
         initialData[4])
     } else {
-      this.meanMoneyByCountry.pushData(byCountry);
+      this.countryData.pushData(byCountry);
     }
+  }
+
+  getCountryChartTitle(): string {
+    return 'The chart shows the number of miners from each country in a given month of the simulation';
+  }
+
+  getTotalChartTitle(): string {
+    return 'The chart shows the number of miners from all countries in a given month of the simulation';
+  }
+
+  getXAxisLabel(): string {
+    return 'Month';
+  }
+
+  getYAxisLabel(): string {
+    return 'Mean money amount [$]';
+  }
+
+  getCountryChartId(): string {
+    return 'meanMoneyByCountry';
+  }
+
+  getTotalChartId(): string {
+    return 'meanMoneyTotal';
   }
 }
