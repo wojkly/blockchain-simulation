@@ -6,10 +6,6 @@ import {MeanMoneyChartService} from "../../services/charts/mean-money-chart.serv
   selector: 'app-charts',
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.scss'],
-  providers: [
-    {provide: MeanMoneyChartService},
-    {provide: MinersAmountChartService}
-  ]
 })
 export class ChartsComponent implements OnInit {
 

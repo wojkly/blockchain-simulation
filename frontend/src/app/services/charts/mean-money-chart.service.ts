@@ -61,7 +61,7 @@ export class MeanMoneyChartService implements ChartService {
   }
 
   getTotalChartTitle(): string {
-    return 'The chart shows the overall average amount of money of miners';
+    return 'The chart shows the overall average amount of money possessed by all miners';
   }
 
   getXAxisLabel(): string {
@@ -69,7 +69,7 @@ export class MeanMoneyChartService implements ChartService {
   }
 
   getYAxisLabel(): string {
-    return 'Mean money amount [$]';
+    return 'Average amount of money [$]';
   }
 
   getCountryChartId(): string {

@@ -1,9 +1,10 @@
-import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
 import {catchError, tap} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {ChartDataWrapper} from "../../../services/charts/chart-data-wrapper";
 import {ChartService} from "../../../services/charts/chart.service";
+import {ChartItem} from "chart.js";
 
 
 @Component({
@@ -11,9 +12,9 @@ import {ChartService} from "../../../services/charts/chart.service";
   templateUrl: './chart-pair.component.html',
   styleUrls: ['./chart-pair.component.scss']
 })
-export class ChartPairComponent implements OnInit, OnDestroy {
+export class ChartPairComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input()
-  chartService: any;
+  chartService!: ChartService;
 
   public chartByCountry: any;
   public chartTotal: any;
@@ -30,10 +31,11 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // console.log(this.chartService);
+  }
+
+  ngAfterViewInit(): void {
     this.dataSubscriber = this.chartService.getData().pipe(
       tap((data: ChartDataWrapper) => {
-        console.log(data);
         if (this.chartByCountry)
           this.chartByCountry.destroy();
         if(this.chartTotal)
@@ -104,11 +106,7 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   }
 
   private createCountryChart(data: ChartDataWrapper) {
-    // console.log(this.chartService.getCountryChartId());
-
-    // let countryRef = document.getElementById(this.chartService.getCountryChartId());
-
-    this.chartByCountry = new Chart(this.chartService.getCountryChartId(), {
+    this.chartByCountry = new Chart(document.getElementById(this.chartService.getCountryChartId()) as ChartItem, {
       type: 'bar',
 
       data: {
@@ -164,11 +162,11 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   }
 
   private createTotalChart(data: ChartDataWrapper) {
-    this.chartTotal = new Chart(this.chartService.getTotalChartId(), {
+    this.chartTotal = new Chart(document.getElementById(this.chartService.getTotalChartId()) as ChartItem, {
       type: 'line',
       data: {
         datasets: [{
-          label: 'Miners Amount',
+          label: this.chartService.getYAxisLabel(),
           data: data.total,
           backgroundColor: "#6864bc",
           borderColor: "#302474",
