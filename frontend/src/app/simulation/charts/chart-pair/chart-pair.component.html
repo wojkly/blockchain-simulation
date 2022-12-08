@@ -1,0 +1,42 @@
+<div class="container">
+
+
+  <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="30px">
+    <div>
+      <h2>{{this.chartService.getCountryChartTitle()}}</h2>
+      <mat-form-field appearance="fill">
+        <mat-label style="width: auto">Number of months on the chart</mat-label>
+        <mat-select [formControl]="selectedNumOfMonthsForCountryChart" (selectionChange)="changeLabelForCountryChart()">
+          <mat-option [value]=6>6</mat-option>
+          <mat-option [value]=12>12</mat-option>
+          <mat-option [value]=18>18</mat-option>
+          <mat-option [value]=24>24</mat-option>
+          <mat-option value="all">all</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="chartDiv">
+        <canvas [id]="chartService.getCountryChartId()" >{{ chartByCountry }}</canvas>
+      </div>
+    </div>
+    <div>
+      <h2>{{this.chartService.getTotalChartTitle()}}</h2>
+      <mat-form-field appearance="fill">
+        <mat-label style="width: auto">Number of months on the chart</mat-label>
+        <mat-select [formControl]="selectedNumOfMonthsForTotalChart" (selectionChange)="changeLabelForTotalChart()">
+          <mat-option [value]=6>6</mat-option>
+          <mat-option [value]=12>12</mat-option>
+          <mat-option [value]=18>18</mat-option>
+          <mat-option [value]=24>24</mat-option>
+          <mat-option value="all">all</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="chartDiv">
+        <canvas [id]="chartService.getTotalChartId()" > {{ chartTotal }}</canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
