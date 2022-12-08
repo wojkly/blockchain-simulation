@@ -22,8 +22,8 @@ export class ChartPairComponent implements AfterViewInit, OnDestroy {
   private dataSubscriber;
   public numOfMonths: number = 1;
 
-  selectedNumOfMonthsForCountryChart: FormControl = new FormControl(6);
-  selectedNumOfMonthsForTotalChart: FormControl = new FormControl(6);
+  selectedNumOfMonthsForCountryChart: FormControl = new FormControl('all');
+  selectedNumOfMonthsForTotalChart: FormControl = new FormControl('all');
 
   chartsData: ChartDataWrapper = new ChartDataWrapper([], null, 1);
 
