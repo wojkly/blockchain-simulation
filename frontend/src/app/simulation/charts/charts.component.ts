@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MinersAmountChartService} from "../../services/charts/miners-amount-chart.service";
 import {MeanMoneyChartService} from "../../services/charts/mean-money-chart.service";
 

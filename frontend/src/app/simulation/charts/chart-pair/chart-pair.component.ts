@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
-import {catchError, tap} from "rxjs";
+import {tap} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {ChartDataWrapper} from "../../../services/charts/chart-data-wrapper";
 import {ChartService} from "../../../services/charts/chart.service";
@@ -12,7 +12,7 @@ import {ChartItem} from "chart.js";
   templateUrl: './chart-pair.component.html',
   styleUrls: ['./chart-pair.component.scss']
 })
-export class ChartPairComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChartPairComponent implements AfterViewInit, OnDestroy {
   @Input()
   chartService!: ChartService;
 
@@ -28,9 +28,6 @@ export class ChartPairComponent implements OnInit, AfterViewInit, OnDestroy {
   chartsData: ChartDataWrapper = new ChartDataWrapper([], null, 1);
 
   constructor() {
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
