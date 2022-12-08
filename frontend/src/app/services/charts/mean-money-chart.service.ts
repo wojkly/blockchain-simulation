@@ -57,11 +57,11 @@ export class MeanMoneyChartService implements ChartService {
   }
 
   getCountryChartTitle(): string {
-    return 'The chart shows the number of miners from each country in a given month of the simulation';
+    return 'The chart shows the average amount of money possessed by miners in each country';
   }
 
   getTotalChartTitle(): string {
-    return 'The chart shows the number of miners from all countries in a given month of the simulation';
+    return 'The chart shows the overall average amount of money of miners';
   }
 
   getXAxisLabel(): string {

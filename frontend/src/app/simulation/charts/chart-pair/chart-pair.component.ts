@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import Chart from 'chart.js/auto';
 import {catchError, tap} from "rxjs";
 import {FormControl} from "@angular/forms";
@@ -13,7 +13,7 @@ import {ChartService} from "../../../services/charts/chart.service";
 })
 export class ChartPairComponent implements OnInit, OnDestroy {
   @Input()
-  chartService!: ChartService;
+  chartService: any;
 
   public chartByCountry: any;
   public chartTotal: any;
@@ -25,7 +25,6 @@ export class ChartPairComponent implements OnInit, OnDestroy {
   selectedNumOfMonthsForTotalChart: FormControl = new FormControl(6);
 
   chartsData: ChartDataWrapper = new ChartDataWrapper([], null, 1);
-
 
   constructor() {
   }
@@ -106,6 +105,8 @@ export class ChartPairComponent implements OnInit, OnDestroy {
 
   private createCountryChart(data: ChartDataWrapper) {
     // console.log(this.chartService.getCountryChartId());
+
+    // let countryRef = document.getElementById(this.chartService.getCountryChartId());
 
     this.chartByCountry = new Chart(this.chartService.getCountryChartId(), {
       type: 'bar',

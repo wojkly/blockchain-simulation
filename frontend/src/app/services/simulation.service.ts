@@ -132,6 +132,7 @@ export class SimulationService {
     this.meanMoneyChartService.getRequest().pipe(
       tap((monthNumber: number) => {
         const meanData = this.collectMeanMoneyData();
+        console.log(meanData)
         this.meanMoneyChartService.addData(meanData.total, meanData.country, monthNumber);
         this.meanMoneyChartService.emitData();
       })
@@ -339,6 +340,8 @@ export class SimulationService {
   private collectMeanMoneyData() {
     const miners = this.getMiners();
 
+    const totalCount = miners.length !== 0 ? miners.length : 1;
+
     let counter = {
       romania: 0,
       poland: 0,
@@ -386,6 +389,11 @@ export class SimulationService {
       }
     });
 
+    for (let counterKey in counter) {
+      if (counter[counterKey] === 0)
+        counter[counterKey] = 1;
+    }
+
     const meanByCountry = new CountryDataSingleMonth(
       (moneySum.romania / counter.romania).toString(),
       (moneySum.poland / counter.poland).toString(),
@@ -394,7 +402,7 @@ export class SimulationService {
       (moneySum.greatBritain / counter.greatBritain).toString()
     );
 
-    const meanTotal = (totalSum / miners.length).toString();
+    const meanTotal = (totalSum / totalCount).toString();
 
     return {
       total: meanTotal,
