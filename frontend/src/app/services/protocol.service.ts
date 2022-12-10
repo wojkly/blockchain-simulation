@@ -13,7 +13,6 @@ export class ProtocolService {
   }
 
   changeProtocol(isLongestChain: boolean): void {
-    console.log(isLongestChain)
     if(isLongestChain) {
       this.protocol = Protocol.LongestChain;
       return;

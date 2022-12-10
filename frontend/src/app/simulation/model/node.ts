@@ -131,14 +131,12 @@ export class Node {
         let lastBlock = this.longestPath(this.blockChain)[0];
         if (lastBlock == undefined)
           return;
-        console.log('longest')
         return this.blockChainMap.get(lastBlock);
       } else if (protocol == Protocol.GHOST) {
         this.updateWeights();
         const maxLen = 0;
         const maxWeight = 0;
         const blockId = -1;
-        console.log('GHOST')
         this.ghostPath(this.blockChain, 0, 0, maxWeight, maxLen, blockId);
 
       }

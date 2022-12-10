@@ -134,7 +134,6 @@ export class SimulationService {
     this.meanMoneyChartService.getRequest().pipe(
       tap((monthNumber: number) => {
         const meanData = this.collectMeanMoneyData();
-        // console.log(meanData)
         this.meanMoneyChartService.addData(meanData.total, meanData.country, monthNumber);
         this.meanMoneyChartService.emitData();
       })

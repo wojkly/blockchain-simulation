@@ -1,6 +1,4 @@
-<!--<mat-slide-toggle [(ngModel)]="isChecked" (click)="changeProtocol()">Active protocol: {{this.getProtocolName()}}</mat-slide-toggle>-->
-
-<mat-button-toggle-group #group="matButtonToggleGroup" [value]="isChecked" (change)="changeProtocol()" class="toggle-group">
-  <mat-button-toggle [value]="true">Longest Chain</mat-button-toggle>
-  <mat-button-toggle [value]="false">GHOST</mat-button-toggle>
+<mat-button-toggle-group #group="matButtonToggleGroup" (change)="changeProtocol()" class="toggle-group">
+  <mat-button-toggle>Longest Chain</mat-button-toggle>
+  <mat-button-toggle>GHOST</mat-button-toggle>
 </mat-button-toggle-group>
