@@ -65,11 +65,12 @@ export class Node {
     this.money += reward;
   }
 
-  public getLast(): Block | undefined {
+  public getLast(protocol: Protocol): Block | undefined {
 
     if (this.nodeType == NodeType.Full) {
       // global variable for protocol
-      let lastBlock = this.findLastBlock(Protocol.LongestChain);
+      let lastBlock = this.findLastBlock(protocol);
+
       if (lastBlock) {
         lastBlock.fullNodeLastBlock = true;
         return lastBlock;
@@ -101,7 +102,7 @@ export class Node {
           if (this.blockChainMap.has(block.parent.id)) {
             this.blockChainMap.get(block.parent.id)?.children?.push(block);
           } else {
-            
+
             this.blockChain.children?.push(block);
           }
         } else {
@@ -128,13 +129,16 @@ export class Node {
     if (this.nodeType == NodeType.Full && this.blockChain) {
       if (protocol == Protocol.LongestChain) {
         let lastBlock = this.longestPath(this.blockChain)[0];
-        if (lastBlock == undefined || lastBlock == null) return;
+        if (lastBlock == undefined)
+          return;
+        console.log('longest')
         return this.blockChainMap.get(lastBlock);
       } else if (protocol == Protocol.GHOST) {
         this.updateWeights();
         const maxLen = 0;
         const maxWeight = 0;
         const blockId = -1;
+        console.log('GHOST')
         this.ghostPath(this.blockChain, 0, 0, maxWeight, maxLen, blockId);
 
       }
