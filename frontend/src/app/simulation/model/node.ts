@@ -65,11 +65,12 @@ export class Node {
     this.money += reward;
   }
 
-  public getLast(): Block | undefined {
+  public getLast(protocol: Protocol): Block | undefined {
 
     if (this.nodeType == NodeType.Full) {
       // global variable for protocol
-      let lastBlock = this.findLastBlock(Protocol.LongestChain);
+      let lastBlock = this.findLastBlock(protocol);
+
       if (lastBlock) {
         lastBlock.fullNodeLastBlock = true;
         return lastBlock;
@@ -101,7 +102,7 @@ export class Node {
           if (this.blockChainMap.has(block.parent.id)) {
             this.blockChainMap.get(block.parent.id)?.children?.push(block);
           } else {
-            
+
             this.blockChain.children?.push(block);
           }
         } else {
@@ -128,15 +129,15 @@ export class Node {
     if (this.nodeType == NodeType.Full && this.blockChain) {
       if (protocol == Protocol.LongestChain) {
         let lastBlock = this.longestPath(this.blockChain)[0];
-        if (lastBlock == undefined || lastBlock == null) return;
+        if (lastBlock == undefined)
+          return;
         return this.blockChainMap.get(lastBlock);
       } else if (protocol == Protocol.GHOST) {
         this.updateWeights();
-        const maxLen = 0;
-        const maxWeight = 0;
-        const blockId = -1;
-        this.ghostPath(this.blockChain, 0, 0, maxWeight, maxLen, blockId);
-
+        this._maxWeight = -Infinity;
+        this._maxWeightLeaf = -1;
+        this.findGHOSTLeaf(this.blockChain);
+        return this.blockChainMap.get(this._maxWeightLeaf);
       }
     }
   }
@@ -159,19 +160,22 @@ export class Node {
     return el;
   }
 
-  private ghostPath(root: Block, weight: number, len: number, maxWeight: number, maxLen: number, blockId: number): void {
-    if (!root) {
-      if (maxLen < len) {
-        maxLen = len;
-        maxWeight = weight;
-        blockId = root;
-      } else if (maxLen == len && maxWeight == weight) {
-        maxWeight = weight;
-      }
-    }
+  _maxWeight: number = 0;
+  _maxWeightLeaf: number = -1;
 
-    for (let child of root.children) {
-      this.ghostPath(child, weight + root.weight, len + 1, maxWeight, maxLen, blockId)
+  private findGHOSTLeaf(root: Block): void {
+    if (!root) return;
+
+    // if leaf
+    if (root.children.length == 0) {
+      if (root.weight > this._maxWeight) {
+        this._maxWeight = root.weight;
+        this._maxWeightLeaf = root.id;
+      }
+    } else {
+      for (let child of root.children) {
+        this.findGHOSTLeaf(child);
+      }
     }
   }
 
@@ -179,6 +183,9 @@ export class Node {
   public updateWeights(): void {
     let visited = new Set();
     let queue: number[] = new Array<number>();
+    let root = this.blockChainMap.get(-1);
+    if (!root) return;
+    root.weight = 0;
     visited.add(-1);
     queue.push(-1);
 

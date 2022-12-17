@@ -24,6 +24,7 @@ import {TimePeriod} from "../utils/constants";
 import {MinersAmountChartService} from "./charts/miners-amount-chart.service";
 import {MeanMoneyChartService} from "./charts/mean-money-chart.service";
 import {CountryDataSingleMonth} from "./charts/country-data-classes";
+import {ProtocolService} from "./protocol.service";
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,7 @@ export class SimulationService {
               private minersDeletingService: MinersDeletingService,
               private minersAmountChartService: MinersAmountChartService,
               private meanMoneyChartService: MeanMoneyChartService,
+              private protocolService: ProtocolService,
   ) {
     this.nextMinerID = this.parametersService.getAllNodes();
   }
@@ -132,7 +134,6 @@ export class SimulationService {
     this.meanMoneyChartService.getRequest().pipe(
       tap((monthNumber: number) => {
         const meanData = this.collectMeanMoneyData();
-        // console.log(meanData)
         this.meanMoneyChartService.addData(meanData.total, meanData.country, monthNumber);
         this.meanMoneyChartService.emitData();
       })
@@ -236,8 +237,8 @@ export class SimulationService {
     if (!senderNode) return;
     if (!receiverNode) return;
 
-    const receivedBlock = senderNode.getLast();
-    const currLastBlock = receiverNode.getLast();
+    const receivedBlock = senderNode.getLast(this.protocolService.protocol);
+    const currLastBlock = receiverNode.getLast(this.protocolService.protocol);
 
     if (currLastBlock?.id != receivedBlock?.id) {
       receiverNode.addBlock(receivedBlock)
