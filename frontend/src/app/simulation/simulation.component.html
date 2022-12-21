@@ -1,10 +1,11 @@
 <div class="container" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="1vh">
   <div fxLayout="row" fxLayoutAlign="space-between">
-    <button mat-raised-button color="primary" (click)="goBackToInitConfig()">
-      <span>Initial nodes configuration </span>
-      <mat-icon>undo</mat-icon>
-    </button>
-    <div></div>
+    <div [style.height.rem]="4">
+      <button style="position: relative; top: 50%" mat-raised-button color="primary" (click)="goBackToInitConfig()">
+        <span>Initial nodes configuration </span>
+        <mat-icon>undo</mat-icon>
+      </button>
+    </div>
     <app-simulation-timer></app-simulation-timer>
     <app-protocol-switch></app-protocol-switch>
     <app-buttons></app-buttons>

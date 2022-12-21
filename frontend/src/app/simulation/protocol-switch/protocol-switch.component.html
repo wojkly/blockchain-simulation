@@ -1,4 +1,9 @@
-<mat-button-toggle-group #group="matButtonToggleGroup" value="0" (change)="changeProtocol()" class="toggle-group">
-  <mat-button-toggle value="0">Longest Chain</mat-button-toggle>
-  <mat-button-toggle value="1">GHOST</mat-button-toggle>
-</mat-button-toggle-group>
+<div fxLayout="column">
+  <h3>
+    Choose protocol:
+  </h3>
+  <mat-button-toggle-group #group="matButtonToggleGroup" value="0" (change)="changeProtocol()" class="toggle-group">
+    <mat-button-toggle value="0">Longest Chain</mat-button-toggle>
+    <mat-button-toggle value="1">GHOST</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>

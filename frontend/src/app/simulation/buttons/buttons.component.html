@@ -1,13 +1,18 @@
-<div class="buttons" fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="10px">
-  <mat-slider fxFlex="200px"
-    [disabled]="disabled"
-    [max]="100"
-    [min]="1"
-    [step]="1"
-    [thumbLabel]="true"
-    [(ngModel)]="value">
-  </mat-slider>
-  <button mat-fab [color]="disabled? 'accent' : 'primary'" (click)="disabled? stopSimulation() : startSimulation()">
-    {{getButtonTitle()}}
-  </button>
+<div fxLayout="column">
+  <h3>
+    Choose simulation speed:
+  </h3>
+  <div class="buttons" fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="10px">
+    <mat-slider fxFlex="200px"
+      [disabled]="disabled"
+      [max]="100"
+      [min]="1"
+      [step]="1"
+      [thumbLabel]="true"
+      [(ngModel)]="value">
+    </mat-slider>
+    <button mat-fab [color]="disabled? 'accent' : 'primary'" (click)="disabled? stopSimulation() : startSimulation()">
+      {{getButtonTitle()}}
+    </button>
+  </div>
 </div>
