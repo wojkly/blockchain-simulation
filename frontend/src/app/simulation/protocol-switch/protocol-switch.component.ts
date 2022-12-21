@@ -8,6 +8,9 @@ import {Protocol} from "../../utils/constants";
   styleUrls: ['./protocol-switch.component.scss']
 })
 export class ProtocolSwitchComponent implements OnInit {
+  public toggleButtonValue: string = "default";
+
+
   protocol: Protocol = Protocol.LongestChain;
 
   constructor(
@@ -22,6 +25,8 @@ export class ProtocolSwitchComponent implements OnInit {
       this.protocol = Protocol.GHOST;
     else
       this.protocol = Protocol.LongestChain;
+
+    console.log(this.protocol)
     this.protocolService.changeProtocol(this.protocol === Protocol.LongestChain);
   }
 
