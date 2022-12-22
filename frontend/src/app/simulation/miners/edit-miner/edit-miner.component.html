@@ -5,12 +5,12 @@
     <mat-form-field>
       <mat-label>Amount of miner's money $:</mat-label>
       <input type="number" formControlName="minerMoneyFC" matInput>
-      <mat-error *ngIf="minerMoneyFC.errors">Number must be greater then 1</mat-error>
+      <mat-error>Number must be greater than 1</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Miner computing power:</mat-label>
+      <mat-label>Miner computing power TFlops:</mat-label>
       <input type="number" formControlName="minerPowerFC" matInput>
-      <mat-error *ngIf="minerPowerFC.errors">Number must be greater then 0 and less then 10</mat-error>
+      <mat-error>Enter a value between 1 and 10</mat-error>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Country:</mat-label>
@@ -29,4 +29,3 @@
       <mat-icon>close</mat-icon></button>
   </div>
 </div>
-

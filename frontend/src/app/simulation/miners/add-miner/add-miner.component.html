@@ -9,10 +9,12 @@
     <ng-container *ngFor="let minerForm of miners.controls; let i = index">
       <div [formGroupName]="i" fxLayout="row" fxLayoutGap="10px">
         <mat-form-field>
-          <input matInput type="number" formControlName="power" placeholder="Computing power (from 1 to 10)">
+          <input matInput type="number" formControlName="power" placeholder="Computing power TFlops">
+          <mat-error>Enter a value between 1 and 10</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="number" formControlName="money" placeholder="Initial budget">
+          <input matInput type="number" formControlName="money" placeholder="Initial budget $">
+          <mat-error>Enter a value between 0 and 100000</mat-error>
         </mat-form-field>
         <mat-form-field>
           <mat-select formControlName="country" placeholder="Country">
