@@ -16,7 +16,7 @@ import {MinerService} from "./miner.service";
 import {BlockchainService} from "./blockchain.service";
 import {NodeType} from "../simulation/nodeType";
 import {AddMinerService} from "./add-miner.service";
-import {COUNTRIES} from "../simulation/model/country";
+import {COUNTRIES, getRandomCountryEnumName} from "../simulation/model/country";
 import { Block } from '../simulation/model/block';
 import {EdgeService} from "./edge.service";
 import {MinersDeletingService} from "./miners-deleting.service";
@@ -167,7 +167,7 @@ export class SimulationService {
     this.nextMinerID += 1;
     const immortalNode = this.getRandomNonMiner();
 
-    const newMiner = new Node(newMinerId, NodeType.Miner, immortalNode.country, randomIntFromInterval(100, 300));
+    const newMiner = new Node(newMinerId, NodeType.Miner, getRandomCountryEnumName(), randomIntFromInterval(50, 150));
     newMiner.computingPower = randomIntFromInterval(1, 10);
 
 

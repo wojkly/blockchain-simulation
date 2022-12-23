@@ -110,7 +110,7 @@ export class InitialConfigurationComponent implements OnInit {
     return this.formBuilder.group({
       power: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
       country: new FormControl('POLAND', [Validators.required]),
-      money: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(100000)]),
+      money: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(100000)]),
     })
   }
 
