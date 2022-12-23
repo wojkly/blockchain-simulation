@@ -57,7 +57,7 @@ export class BlockchainComponent implements OnInit, OnDestroy {
             'width': '100px',
             'height': '100px',
             'shape': 'round-rectangle',
-            'background-color': '#7fcdcd',
+            'background-color': '#e0d4ec',
 
             'label': (node: any) => {
                 if (node.data("block").id == -1) return "root";
@@ -75,9 +75,9 @@ export class BlockchainComponent implements OnInit, OnDestroy {
         {
           selector: '.highlighted',
           style: {
-            'line-color': '#ff80df',
+            'line-color': '#683cb4',
             'border-width': '3px',
-            'border-color': '#ff80df'
+            'border-color': '#683cb4'
           }
         }
       ]
