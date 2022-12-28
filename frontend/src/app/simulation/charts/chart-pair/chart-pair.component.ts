@@ -102,6 +102,20 @@ export class ChartPairComponent implements AfterViewInit, OnDestroy {
     return res;
   }
 
+  private parseTotalFC(): number {
+    if (this.selectedNumOfMonthsForTotalChart.value == "all")
+      return this.numOfMonths;
+
+    return this.selectedNumOfMonthsForTotalChart.value;
+  }
+
+  private parseCountryFC(): number {
+    if (this.selectedNumOfMonthsForCountryChart.value == "all")
+      return this.numOfMonths;
+
+    return this.selectedNumOfMonthsForCountryChart.value;
+  }
+
   private createCountryChart(data: ChartDataWrapper) {
     this.chartByCountry = new Chart(document.getElementById(this.chartService.getCountryChartId()) as ChartItem, {
       type: 'bar',
@@ -111,27 +125,27 @@ export class ChartPairComponent implements AfterViewInit, OnDestroy {
         datasets: [
           {
             label: "Romania",
-            data: data.country?.romania,
+            data: data.country?.romania.slice(-this.parseCountryFC()),
             backgroundColor: '#302474'
           },
           {
             label: "Poland",
-            data: data.country?.poland,
+            data: data.country?.poland.slice(-this.parseCountryFC()),
             backgroundColor: '#603494'
           },
           {
             label: "Spain",
-            data: data.country?.spain,
+            data: data.country?.spain.slice(-this.parseCountryFC()),
             backgroundColor: '#6864bc'
           },
           {
             label: "Germany",
-            data: data.country?.germany,
+            data: data.country?.germany.slice(-this.parseCountryFC()),
             backgroundColor: '#a094cc'
           },
           {
             label: "Great Britain",
-            data: data.country?.greatBritain,
+            data: data.country?.greatBritain.slice(-this.parseCountryFC()),
             backgroundColor: '#b8bcf4'
           },
         ]
@@ -164,7 +178,7 @@ export class ChartPairComponent implements AfterViewInit, OnDestroy {
       data: {
         datasets: [{
           label: this.chartService.getYAxisLabel(),
-          data: data.total,
+          data: data.total.slice(-this.parseTotalFC()),
           backgroundColor: "#6864bc",
           borderColor: "#302474",
           fill: true,
