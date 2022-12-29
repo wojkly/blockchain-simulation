@@ -9,7 +9,7 @@ Blockchain Simulation is an engineer's diploma project, created by WK, MZ, MC an
 
 ## How to run
 
-You can find it [here](https://www.degree-project2022-23.gihub.io/blockchain-simulation)
+You can find it [here](https://degree-project2022-23.github.io/blockchain-simulation/)
 
 ---
 
